@@ -20,3 +20,8 @@ model User {
   token          String?
   password       String?
 }
+
+model Grade {
+  id             Int             @id @default(autoincrement())
+  title          String
+}

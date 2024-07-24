@@ -103,7 +103,7 @@ export const authOptions = {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET || "secr3t",
+  secret: process.env.NEXTAUTH_SECRET || "secret",
   callbacks: {
     session: async ({ session, token }) => {
       console.log("SESSION");
@@ -120,7 +120,7 @@ export const authOptions = {
       return newSession!;
     },
     jwt: async ({ token, user }): Promise<JWT> => {
-      console.log("JWT");
+      console.log("JWT ", token);
       const newToken: token = token as token;
 
       if (user) {

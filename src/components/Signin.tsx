@@ -1,12 +1,12 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { useRef, useState } from 'react';
-import { toast } from 'sonner';
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useRef, useState } from "react";
+import { toast } from "sonner";
 
 const Signin = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -20,8 +20,8 @@ const Signin = () => {
     setIsPasswordVisible((prevState: any) => !prevState);
   }
   const router = useRouter();
-  const email = useRef('');
-  const password = useRef('');
+  const email = useRef("");
+  const password = useRef("");
 
   const handleSubmit = async (e?: React.FormEvent<HTMLButtonElement>) => {
     if (e) {
@@ -36,17 +36,22 @@ const Signin = () => {
       return;
     }
     setCheckingPassword(true);
-    const res = await signIn('credentials', {
+    const res = await signIn("credentials", {
       username: email.current,
       password: password.current,
       redirect: false,
     });
 
     if (!res?.error) {
-      router.push('/');
-      toast.success('Signed In');
+      const session = await getSession();
+      if (session?.user?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+      toast.success("Signed In");
     } else {
-      toast.error('oops something went wrong..!');
+      toast.error("oops something went wrong..!");
       setCheckingPassword(false);
     }
   };
@@ -82,7 +87,7 @@ const Signin = () => {
                 <Input
                   className="border-0"
                   name="password"
-                  type={isPasswordVisible ? 'text' : 'password'}
+                  type={isPasswordVisible ? "text" : "password"}
                   id="password"
                   placeholder="••••••••"
                   onChange={(e) => {
@@ -93,7 +98,7 @@ const Signin = () => {
                     password.current = e.target.value;
                   }}
                   onKeyDown={async (e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       setIsPasswordVisible(false);
                       handleSubmit();
                     }

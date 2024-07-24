@@ -1,6 +1,7 @@
 import { LandingPage } from "@/components/landing/landing-page";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Sidebar } from "@/components/Sidebar";
 
 const getUserDetails = async () => {
   const session = await getServerSession(authOptions);

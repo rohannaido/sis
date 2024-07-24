@@ -3,7 +3,6 @@ export const LandingPage = () => {
     <main className="flex flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
         <div className="md:text-md mb-4 flex items-center rounded-full border bg-blue-50 px-4 py-2.5 font-sans text-sm font-semibold uppercase text-blue-700 shadow-md md:px-5">
-          <div className="mr-2 h-5 w-5" />
           #1 sis platform
         </div>
 
