@@ -14,14 +14,22 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  name           String?
-  email          String?         @unique
-  token          String?
-  password       String?
+  id       String  @id @default(cuid())
+  name     String?
+  email    String? @unique
+  token    String?
+  password String?
 }
 
 model ClassGrade {
-  id             Int             @id @default(autoincrement())
-  title          String
+  id      Int       @id @default(autoincrement())
+  title   String
+  Subject Subject[]
+}
+
+model Subject {
+  id           Int        @id @default(autoincrement())
+  classGradeId Int
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  name         String?
 }

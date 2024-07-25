@@ -32,7 +32,7 @@ export default async function ClassePage({
             <CardTitle>Subjects</CardTitle>
             <CardDescription>You can manage subjects.</CardDescription>
           </div>
-          <SubjectFormDialog callbackFn={null} />
+          <SubjectFormDialog callbackFn={null} classGrade={classGrade!} />
         </CardHeader>
         <CardContent>Subject COntent</CardContent>
       </Card>

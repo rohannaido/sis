@@ -27,16 +27,19 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
+import { ClassGrade } from "../ClassGradeCard";
 
 const classSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title must be at least 1 character long.",
+  title: z.string().min(3, {
+    message: "Title must be at least 3 character long.",
   }),
 });
 
 export const SubjectFormDialog = ({
+  classGrade,
   callbackFn = null,
 }: {
+  classGrade: ClassGrade;
   callbackFn: Function | null;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,7 +55,13 @@ export const SubjectFormDialog = ({
   const onSubmit = async (data: z.infer<typeof classSchema>) => {
     setIsLoading(true);
     try {
-      await axios.post("/api/admin/classes", data);
+      let formData = {
+        name: data.title,
+      };
+      await axios.post(
+        `/api/admin/classGrades/${classGrade.id}/subjects`,
+        formData
+      );
       toast("class succesfully created");
       if (callbackFn) {
         callbackFn();
@@ -86,7 +95,7 @@ export const SubjectFormDialog = ({
               name="title"
               render={({ field }: { field: any }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter the Subject title" {...field} />
                   </FormControl>

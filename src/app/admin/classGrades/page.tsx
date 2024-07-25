@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { ClasseFormDialog } from "@/components/admin/classGrade/ClassGradeFormDialog";
+import { ClassGradeFormDialog } from "@/components/admin/classGrade/ClassGradeFormDialog";
 import { ClassGradeList } from "@/components/admin/classGrade/ClassGradesList";
 import { useEffect, useState } from "react";
 import { ClassGrade } from "@prisma/client";
@@ -42,7 +42,7 @@ export default function ClassGrades() {
           <CardTitle>Class</CardTitle>
           <CardDescription>You can manage classes.</CardDescription>
         </div>
-        <ClasseFormDialog callbackFn={() => fetchClasses()} />
+        <ClassGradeFormDialog callbackFn={() => fetchClasses()} />
       </CardHeader>
       <CardContent>
         {loading ? (

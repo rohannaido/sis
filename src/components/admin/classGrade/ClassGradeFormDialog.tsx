@@ -34,7 +34,11 @@ const classSchema = z.object({
   }),
 });
 
-export const ClasseFormDialog = ({ callbackFn }: { callbackFn: Function }) => {
+export const ClassGradeFormDialog = ({
+  callbackFn,
+}: {
+  callbackFn: Function;
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
