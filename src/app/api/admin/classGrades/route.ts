@@ -6,6 +6,12 @@ const requestBodySchema = z.object({
   title: z.string(),
 });
 
+export async function GET(req: NextRequest) {
+  const classGrades = await db.classGrade.findMany();
+
+  return NextResponse.json(classGrades);
+}
+
 export async function POST(req: NextRequest) {
   const parseResult = requestBodySchema.safeParse(await req.json());
 
@@ -25,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   console.log("GRADE CREATE");
 
-  await db.grade.create({
+  await db.classGrade.create({
     data: {
       title,
     },
@@ -33,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(
     {
-      message: "Grade is successfully added",
+      message: "Class is successfully added",
     },
     {
       status: 200,

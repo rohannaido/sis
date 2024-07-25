@@ -1,12 +1,14 @@
 "use client";
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -18,7 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,29 +28,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
 
-const gradeSchema = z.object({
+const classSchema = z.object({
   title: z.string().min(1, {
     message: "Title must be at least 1 character long.",
   }),
 });
 
-export default function Grades() {
+export const SectionFormDialog = ({
+  callbackFn = null,
+}: {
+  callbackFn: Function | null;
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof gradeSchema>>({
-    resolver: zodResolver(gradeSchema),
+  const form = useForm<z.infer<typeof classSchema>>({
+    resolver: zodResolver(classSchema),
     defaultValues: {
       title: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof gradeSchema>) => {
+  const onSubmit = async (data: z.infer<typeof classSchema>) => {
     setIsLoading(true);
     try {
-      await axios.post("/api/admin/grade", data);
-      toast("grade succesfully created");
-      router.push("/");
+      await axios.post("/api/admin/classes", data);
+      toast("class succesfully created");
+      if (callbackFn) {
+        callbackFn();
+      }
     } catch (error: any) {
       console.log(error);
       toast(error.message);
@@ -58,12 +65,17 @@ export default function Grades() {
     }
   };
   return (
-    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
-      <CardHeader>
-        <CardTitle>Create a new Grade</CardTitle>
-        <CardDescription>Fill in the grade details below</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4 p-4 pt-0">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">+ New</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Section</DialogTitle>
+          <DialogDescription>
+            Create new Section here. Click save when you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -76,22 +88,25 @@ export default function Grades() {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the grade title" {...field} />
+                    <Input placeholder="Enter the Section title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 flex justify-end">
               {isLoading ? (
                 <Button>Loading...</Button>
               ) : (
-                <Button type="submit">Create</Button>
+                <Button type="submit">Save</Button>
               )}
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+        {/* <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter> */}
+      </DialogContent>
+    </Dialog>
   );
-}
+};

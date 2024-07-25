@@ -21,7 +21,7 @@ model User {
   password       String?
 }
 
-model Grade {
+model ClassGrade {
   id             Int             @id @default(autoincrement())
   title          String
 }

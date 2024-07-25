@@ -29,7 +29,8 @@ export function Sidebar({}: {}) {
   }
 
   return (
-    <div className="absolute z-20 h-full w-[300px] min-w-[300px] cursor-pointer self-start overflow-y-scroll bg-gray-50 dark:bg-gray-800 sm:sticky sm:top-[64px] sm:h-sidebar">
+    //
+    <div className="absolute z-20 h-full w-[300px] min-w-[300px] cursor-pointer self-start overflow-y-scroll bg-gray-50 dark:bg-gray-800 sm:top-[64px] sm:sticky sm:h-sidebar">
       <div className="flex">{/* <GoBackButton /> */}</div>
       {/* TODO: render pages */}
       <Accordion type="single" collapsible className="w-full">
@@ -37,13 +38,13 @@ export function Sidebar({}: {}) {
           <AccordionTrigger>Academics</AccordionTrigger>
           <AccordionContent>
             <Link
-              key="grades"
-              href="/admin/grades"
+              key="classes"
+              href="/admin/classGrades"
               className={`flex cursor-pointer border-b p-2 hover:bg-gray-700`}
             >
               <div className="flex w-full justify-between">
                 <div className="flex">
-                  <div>{"Grades"}</div>
+                  <div>{"Classes"}</div>
                 </div>
               </div>
             </Link>
