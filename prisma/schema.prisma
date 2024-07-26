@@ -25,9 +25,17 @@ model ClassGrade {
   id      Int       @id @default(autoincrement())
   title   String
   Subject Subject[]
+  Section Section[]
 }
 
 model Subject {
+  id           Int        @id @default(autoincrement())
+  classGradeId Int
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  name         String?
+}
+
+model Section {
   id           Int        @id @default(autoincrement())
   classGradeId Int
   classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])

@@ -42,6 +42,7 @@ export const SubjectFormDialog = ({
   classGrade: ClassGrade;
   callbackFn: Function | null;
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -62,7 +63,8 @@ export const SubjectFormDialog = ({
         `/api/admin/classGrades/${classGrade.id}/subjects`,
         formData
       );
-      toast("class succesfully created");
+      toast("section succesfully created");
+      setOpen(false);
       if (callbackFn) {
         callbackFn();
       }
@@ -74,7 +76,7 @@ export const SubjectFormDialog = ({
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">+ New</Button>
       </DialogTrigger>

@@ -39,6 +39,7 @@ export const ClassGradeFormDialog = ({
 }: {
   callbackFn: Function;
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -54,6 +55,7 @@ export const ClassGradeFormDialog = ({
     try {
       await axios.post("/api/admin/classGrades", data);
       toast("class succesfully created");
+      setOpen(false);
       callbackFn();
     } catch (error: any) {
       console.log(error);
@@ -63,7 +65,7 @@ export const ClassGradeFormDialog = ({
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">+ New</Button>
       </DialogTrigger>

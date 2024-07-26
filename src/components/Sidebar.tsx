@@ -49,19 +49,6 @@ export function Sidebar({}: {}) {
               </div>
             </Link>
           </AccordionContent>
-          <AccordionContent>
-            <Link
-              key="sections"
-              href="/admin/sections"
-              className={`flex cursor-pointer border-b p-2 hover:bg-gray-700`}
-            >
-              <div className="flex w-full justify-between">
-                <div className="flex">
-                  <div>{"Sections"}</div>
-                </div>
-              </div>
-            </Link>
-          </AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>

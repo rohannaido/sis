@@ -27,18 +27,22 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
+import { ClassGrade } from "../ClassGradeCard";
 
 const classSchema = z.object({
   title: z.string().min(1, {
-    message: "Title must be at least 1 character long.",
+    message: "Name must be at least 1 character long.",
   }),
 });
 
 export const SectionFormDialog = ({
+  classGrade,
   callbackFn = null,
 }: {
+  classGrade: ClassGrade;
   callbackFn: Function | null;
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -52,8 +56,15 @@ export const SectionFormDialog = ({
   const onSubmit = async (data: z.infer<typeof classSchema>) => {
     setIsLoading(true);
     try {
-      await axios.post("/api/admin/classes", data);
-      toast("class succesfully created");
+      let formData = {
+        name: data.title,
+      };
+      await axios.post(
+        `/api/admin/classGrades/${classGrade.id}/sections`,
+        formData
+      );
+      toast("section succesfully created");
+      setOpen(false);
       if (callbackFn) {
         callbackFn();
       }
@@ -65,7 +76,7 @@ export const SectionFormDialog = ({
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">+ New</Button>
       </DialogTrigger>
@@ -73,7 +84,7 @@ export const SectionFormDialog = ({
         <DialogHeader>
           <DialogTitle>Section</DialogTitle>
           <DialogDescription>
-            Create new Section here. Click save when you&apos;re done.
+            Create new section here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -86,9 +97,9 @@ export const SectionFormDialog = ({
               name="title"
               render={({ field }: { field: any }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the Section title" {...field} />
+                    <Input placeholder="Enter the section name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

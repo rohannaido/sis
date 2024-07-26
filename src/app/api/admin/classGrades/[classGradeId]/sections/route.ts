@@ -6,12 +6,6 @@ const requestBodySchema = z.object({
   name: z.string(),
 });
 
-// export async function GET(req: NextRequest) {
-//   const classGrades = await db.classGrade.findMany();
-
-//   return NextResponse.json(classGrades);
-// }
-
 type Params = {
   classGradeId: string;
 };
@@ -19,13 +13,13 @@ type Params = {
 export async function GET(req: NextRequest, context: { params: Params }) {
   const classGradeId = parseInt(context.params.classGradeId);
 
-  const subjects = await db.subject.findMany({
+  const sections = await db.section.findMany({
     where: {
       classGradeId: classGradeId,
     },
   });
 
-  return NextResponse.json(subjects);
+  return NextResponse.json(sections);
 }
 
 export async function POST(req: NextRequest, context: { params: Params }) {
@@ -49,7 +43,7 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   console.log("GRADE CREATE");
 
-  await db.subject.create({
+  await db.section.create({
     data: {
       name: name,
       classGradeId: classGradeId,
@@ -58,7 +52,7 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   return NextResponse.json(
     {
-      message: "Subject is successfully added",
+      message: "Section is successfully added",
     },
     {
       status: 200,

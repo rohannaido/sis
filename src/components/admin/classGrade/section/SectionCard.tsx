@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export type Class = {
+export type Section = {
   id: number;
-  title: string;
+  name: string;
 };
 
-export const ClasseCard = ({ class }: { class: Class }) => {
+export const SectionCard = ({ section }: { section: Section }) => {
   const router = useRouter();
 
   function handleClasseViewClick(id: number) {
-    router.push(`/admin/classes/${id}`);
+    // router.push(`/admin/classes/${id}`);
   }
 
   return (
@@ -18,9 +18,11 @@ export const ClasseCard = ({ class }: { class: Class }) => {
       className={`max-w-sm border border-gray-200 bg-white mx-auto w-full shadow dark:border-gray-700 dark:bg-gray-800 rounded-lg`}
     >
       <div className="py-6 px-4 flex justify-between items-center">
-        <div>Class {class.title}</div>
+        <div>{section.name}</div>
         <div>
-          <Button onClick={() => handleClasseViewClick(class.id)}>View</Button>
+          <Button onClick={() => handleClasseViewClick(section.id)}>
+            View
+          </Button>
         </div>
       </div>
     </div>
