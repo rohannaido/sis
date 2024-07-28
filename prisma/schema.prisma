@@ -49,4 +49,15 @@ model Chapter {
   name      String
   subjectId Int
   subject   Subject @relation(fields: [subjectId], references: [id])
+
+  ChapterContent ChapterContent[]
+}
+
+model ChapterContent {
+  id        Int     @id @default(autoincrement())
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  name      String
+  type      String
+  url       String?
 }

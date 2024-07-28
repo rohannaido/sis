@@ -43,7 +43,7 @@ export default function SubjectLayout({
             <div className="w-3/12 mr-4">
               <SubjectNav subjectId={subject?.id}></SubjectNav>
             </div>
-            <div>{children}</div>
+            <div className="w-full">{children}</div>
           </div>
         ) : (
           <div>Loading...</div>
