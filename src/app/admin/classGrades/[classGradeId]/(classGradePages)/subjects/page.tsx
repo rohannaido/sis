@@ -1,9 +1,9 @@
 "use client";
 
-import { Subject } from "@/components/admin/classGrade/subject/SubjectCard";
-import { SubjectFormDialog } from "@/components/admin/classGrade/subject/SubjectFormDialog";
-import { SubjectList } from "@/components/admin/classGrade/subject/SubjectList";
-import { useEffect, useState } from "react";
+import { Subject } from "@/components/admin/subject/SubjectCard";
+import { SubjectFormDialog } from "@/components/admin/subject/SubjectFormDialog";
+import { SubjectList } from "@/components/admin/subject/SubjectList";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Card,
@@ -12,17 +12,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ClassGradeContext } from "../../layout";
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsLoading, setSubjectsLoading] = useState<boolean>(false);
+  const classGrade = useContext(ClassGradeContext);
 
   async function fetchSubjects() {
     setSubjectsLoading(true);
     try {
       const response = await fetch(
-        `/api/admin/classGrades/1/subjects`
-        // `/api/admin/classGrades/${classGradeId}/subjects`
+        `/api/admin/classGrades/${classGrade?.id}/subjects`
       );
       const data = await response.json();
       setSubjects(data);
@@ -34,8 +35,10 @@ export default function SubjectsPage() {
   }
 
   useEffect(() => {
-    fetchSubjects();
-  }, []);
+    if (classGrade) {
+      fetchSubjects();
+    }
+  }, [classGrade]);
 
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-6">
@@ -46,8 +49,7 @@ export default function SubjectsPage() {
         </div>
         <SubjectFormDialog
           callbackFn={() => fetchSubjects()}
-          // classGrade={classGrade!}
-          classGrade={{ id: 1, title: "1" }}
+          classGrade={classGrade!}
         />
       </CardHeader>
       <CardContent>

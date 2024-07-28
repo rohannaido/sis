@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,51 +19,44 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import { Subject } from "../subject/SubjectCard";
 import { toast } from "sonner";
-import { ClassGrade } from "../ClassGradeCard";
 
-const classSchema = z.object({
+const chapterSchema = z.object({
   title: z.string().min(3, {
-    message: "Title must be at least 3 character long.",
+    message: "Name must be at least 3 character long.",
   }),
 });
 
-export const SubjectFormDialog = ({
-  classGrade,
+export default function ChapterFormDialog({
+  subject,
   callbackFn = null,
 }: {
-  classGrade: ClassGrade;
+  subject: Subject;
   callbackFn: Function | null;
-}) => {
+}) {
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
 
-  const form = useForm<z.infer<typeof classSchema>>({
-    resolver: zodResolver(classSchema),
+  const form = useForm<z.infer<typeof chapterSchema>>({
+    resolver: zodResolver(chapterSchema),
     defaultValues: {
       title: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof classSchema>) => {
+  const onSubmit = async (data: z.infer<typeof chapterSchema>) => {
     setIsLoading(true);
     try {
       let formData = {
         name: data.title,
       };
-      await axios.post(
-        `/api/admin/classGrades/${classGrade.id}/subjects`,
-        formData
-      );
+      await axios.post(`/api/admin/subjects/${subject.id}/chapters`, formData);
       toast("section succesfully created");
       setOpen(false);
       if (callbackFn) {
@@ -82,9 +76,9 @@ export const SubjectFormDialog = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Subject</DialogTitle>
+          <DialogTitle>Chapter</DialogTitle>
           <DialogDescription>
-            Create new Subject here. Click save when you&apos;re done.
+            Create new Chapter here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -99,7 +93,7 @@ export const SubjectFormDialog = ({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the Subject title" {...field} />
+                    <Input placeholder="Enter the chapter name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,9 +109,9 @@ export const SubjectFormDialog = ({
           </form>
         </Form>
         {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
+            <Button type="submit">Save changes</Button>
+          </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
-};
+}

@@ -1,5 +1,7 @@
+import { ClassGradeContext } from "@/app/admin/classGrades/[classGradeId]/layout";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useContext } from "react";
 
 export type Subject = {
   id: number;
@@ -8,11 +10,7 @@ export type Subject = {
 };
 
 export const SubjectCard = ({ subject }: { subject: Subject }) => {
-  const router = useRouter();
-
-  function handleClasseViewClick(id: number) {
-    // router.push(`/admin/classes/${id}`);
-  }
+  const classGrade = useContext(ClassGradeContext);
 
   return (
     <div
@@ -21,9 +19,11 @@ export const SubjectCard = ({ subject }: { subject: Subject }) => {
       <div className="py-6 px-4 flex justify-between items-center">
         <div>{subject.name}</div>
         <div>
-          <Button onClick={() => handleClasseViewClick(subject.id)}>
-            View
-          </Button>
+          <Link
+            href={`/admin/classGrades/${classGrade?.id}/subjects/${subject.id}`}
+          >
+            <Button>View</Button>
+          </Link>
         </div>
       </div>
     </div>

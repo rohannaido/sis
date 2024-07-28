@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Card,
@@ -9,18 +9,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Section } from "@/components/admin/classGrade/section/SectionCard";
-import { SectionFormDialog } from "@/components/admin/classGrade/section/SectionFormDialog";
-import { SectionList } from "@/components/admin/classGrade/section/SectionList";
+import { ClassGradeContext } from "../../layout";
+import { Section } from "@/components/admin/section/SectionCard";
+import { SectionFormDialog } from "@/components/admin/section/SectionFormDialog";
+import { SectionList } from "@/components/admin/section/SectionList";
 
 export default function SectionsPage() {
+  const classGrade = useContext(ClassGradeContext);
   const [sections, setSections] = useState<Section[]>([]);
   const [sectionsLoading, setSectionsLoading] = useState<boolean>(false);
 
   async function fetchSections() {
     setSectionsLoading(true);
     try {
-      const response = await fetch(`/api/admin/classGrades/${1}/sections`);
+      const response = await fetch(
+        `/api/admin/classGrades/${classGrade?.id}/sections`
+      );
       const data = await response.json();
       setSections(data);
     } catch (err) {
@@ -37,14 +41,9 @@ export default function SectionsPage() {
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-col gap-2">
-          <CardTitle>Sections</CardTitle>
-          <CardDescription>You can manage Sections.</CardDescription>
-        </div>
         <SectionFormDialog
           callbackFn={() => fetchSections()}
-          classGrade={{ id: 1, title: "1" }}
-          // classGrade={classGrade!}
+          classGrade={classGrade!}
         />
       </CardHeader>
       <CardContent>

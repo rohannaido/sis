@@ -1,34 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { ClassGrade } from "@/components/admin/classGrade/ClassGradeCard";
+import { useContext, useEffect, useState } from "react";
 import ClassGradeNav from "@/components/admin/classGrade/ClassGradeNav";
 import SubjectsPage from "./(classGradePages)/subjects/page";
+import { ClassGradeContext } from "./layout";
 
 export default function ClassGradeIdPage({
   params,
 }: {
   params: { classGradeId: string };
 }) {
+  const classGrade = useContext(ClassGradeContext);
   const classGradeId = parseInt(params.classGradeId);
-
-  const [classGrade, setClassGrade] = useState<ClassGrade | null>(null);
-
-  async function fetchClassGrade() {
-    try {
-      const response = await fetch(`/api/admin/classGrades/${classGradeId}`);
-      const data = await response.json();
-      setClassGrade(data);
-    } catch (err) {
-      toast.error("Something went wrong while searching for class");
-    } finally {
-    }
-  }
-
-  useEffect(() => {
-    fetchClassGrade();
-  }, []);
 
   return (
     <>
