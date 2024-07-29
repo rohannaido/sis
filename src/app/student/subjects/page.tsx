@@ -1,5 +1,4 @@
 import StudentSubjectList from "@/components/student/subject/StudentSubjectList";
-import db from "@/db";
 import { getAllSubjects } from "@/db/subject";
 import { getServerSession } from "next-auth";
 
