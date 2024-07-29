@@ -1,3 +1,3 @@
 export default function Page() {
-  return <>Admin 123</>;
+  return <>Admin</>;
 }

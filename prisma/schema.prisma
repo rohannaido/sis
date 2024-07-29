@@ -14,11 +14,23 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String?
-  email    String? @unique
+  email    String?   @unique
   token    String?
   password String?
+  role     String?
+  Student  Student[]
+}
+
+model Student {
+  id           Int        @id @default(autoincrement())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  classGradeId Int
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  sectionId    Int
+  section      Section    @relation(fields: [sectionId], references: [id])
 }
 
 model ClassGrade {
@@ -26,6 +38,7 @@ model ClassGrade {
   title   String
   Subject Subject[]
   Section Section[]
+  Student Student[]
 }
 
 model Subject {
@@ -42,6 +55,7 @@ model Section {
   classGradeId Int
   classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
   name         String?
+  Student      Student[]
 }
 
 model Chapter {

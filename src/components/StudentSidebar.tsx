@@ -13,7 +13,7 @@ import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export function Sidebar({}: {}) {
+export function StudentSidebar({}: {}) {
   const pathName = usePathname();
 
   const [sidebarOpen, setSidebarOpen] = useRecoilState(sidebarOpenAtom);
@@ -34,12 +34,12 @@ export function Sidebar({}: {}) {
       <div className="flex"></div>
       <Link
         key="classes"
-        href="/admin/classGrades"
+        href="/student/subjects"
         className={`flex cursor-pointer border-b p-2 hover:bg-gray-700`}
       >
         <div className="flex w-full justify-between">
           <div className="flex">
-            <div>{"Classes"}</div>
+            <div>{"Subjects"}</div>
           </div>
         </div>
       </Link>

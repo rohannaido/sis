@@ -22,7 +22,7 @@ interface token extends JWT {
   jwtToken: string;
 }
 
-interface user {
+interface User {
   id: string;
   name: string;
   email: string;
@@ -123,7 +123,7 @@ export const authOptions = {
 
       if (user) {
         newToken.uid = user.id;
-        newToken.jwtToken = (user as user).token;
+        newToken.jwtToken = (user as User).token;
       }
       return newToken;
     },

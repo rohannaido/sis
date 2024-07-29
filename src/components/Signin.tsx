@@ -47,7 +47,7 @@ const Signin = () => {
       if (session?.user?.role === "admin") {
         router.push("/admin");
       } else {
-        router.push("/");
+        router.push("/student");
       }
       toast.success("Signed In");
     } else {
