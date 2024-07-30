@@ -1,17 +1,10 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "./ui/button";
-import { BackArrow } from "@/icons/BackArrow";
 import { useRecoilState } from "recoil";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { HomeIcon, SquareLibrary } from "lucide-react";
 
 export function Sidebar({}: {}) {
   const pathName = usePathname();
@@ -30,19 +23,29 @@ export function Sidebar({}: {}) {
 
   return (
     //
-    <div className="absolute z-20 h w-[300px] min-w-[300px] cursor-pointer self-start overflow-y-scroll bg-gray-50 dark:bg-gray-800 sm:top-[64px] sm:sticky sm:h-sidebar">
-      <div className="flex"></div>
-      <Link
-        key="classes"
-        href="/admin/classGrades"
-        className={`flex cursor-pointer border-b p-2 hover:bg-gray-700`}
-      >
-        <div className="flex w-full justify-between">
-          <div className="flex">
-            <div>{"Classes"}</div>
-          </div>
-        </div>
-      </Link>
+    <div
+      className={`${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } w-[200px] min-w-[200px] flex-col border-r bg-background p-4 md:flex absolute z-20 sm:sticky sm:top-[64px] sm:h-sidebar transition-transform duration-300`}
+    >
+      <nav className="flex flex-col gap-2">
+        <Link
+          href="/admin"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          prefetch={false}
+        >
+          <HomeIcon className="h-5 w-5" />
+          Dashboard
+        </Link>
+        <Link
+          href="/admin/classGrades"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          prefetch={false}
+        >
+          <SquareLibrary className="h-5 w-5" />
+          Classes
+        </Link>
+      </nav>
     </div>
   );
 }
