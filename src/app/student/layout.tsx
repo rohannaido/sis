@@ -9,7 +9,9 @@ export default function StudentLayout({
     <>
       <div className="relative flex min-h-screen">
         <StudentSidebar />
-        <div className="no-scrollbar grow overflow-y-auto p-2">{children}</div>
+        <div className="no-scrollbar grow overflow-y-auto mx-auto max-w-screen-xl justify-between p-2 text-black dark:text-white">
+          {children}
+        </div>
       </div>
     </>
   );
