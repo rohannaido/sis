@@ -31,12 +31,12 @@ export default async function StudentSubjectChapterContent({
                 <iframe
                   width="900"
                   height="575"
-                  src={item.url}
+                  src={item?.url || undefined}
                   title="Scaling your Node.js app | Horizontal vs Vertical Scaling | Capacity Estimation - Cohort 2 Preview"
-                  frameborder="0"
+                  frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allowfullscreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
                 ></iframe>
               </div>
             </div>

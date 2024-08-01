@@ -1,4 +1,4 @@
-import { Subject } from "@prisma/client";
+import { Subject } from "@/components/admin/subject/SubjectCard";
 import StudentSubjectCard from "./StudentSubjectCard";
 
 export default function StudentSubjectList({

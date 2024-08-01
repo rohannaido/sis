@@ -2,10 +2,10 @@
 
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { SubjectContext } from "../layout";
 import { Chapter } from "@/components/admin/chapter/ChapterCard";
 import ChapterFormDialog from "@/components/admin/chapter/ChapterFormDialog";
 import ChapterList from "@/components/admin/chapter/ChapterList";
+import { SubjectContext } from "@/contexts";
 
 export default function ChapterPage() {
   const subject = useContext(SubjectContext);

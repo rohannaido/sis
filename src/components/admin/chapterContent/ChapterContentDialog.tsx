@@ -1,4 +1,3 @@
-import { SubjectContext } from "@/app/admin/classGrades/[classGradeId]/(classGradePages)/subjects/[subjectId]/layout";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SubjectContext } from "@/contexts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useContext, useState } from "react";

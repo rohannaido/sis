@@ -1,12 +1,12 @@
-import { ClassGradeContext } from "@/app/admin/classGrades/[classGradeId]/layout";
 import { Button } from "@/components/ui/button";
+import { ClassGradeContext } from "@/contexts";
 import Link from "next/link";
 import { useContext } from "react";
 
 export type Subject = {
   id: number;
-  classId: number;
-  name: string;
+  classGradeId: number;
+  name: string | null;
 };
 
 export const SubjectCard = ({ subject }: { subject: Subject }) => {

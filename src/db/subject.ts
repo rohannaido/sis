@@ -12,6 +12,7 @@ export const getAllSubjects = async (email: string) => {
                 select: {
                   id: true,
                   name: true,
+                  classGradeId: true,
                 },
               },
             },

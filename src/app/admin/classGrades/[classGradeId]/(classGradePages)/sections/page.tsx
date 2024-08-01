@@ -9,10 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ClassGradeContext } from "../../layout";
 import { Section } from "@/components/admin/section/SectionCard";
 import { SectionFormDialog } from "@/components/admin/section/SectionFormDialog";
 import { SectionList } from "@/components/admin/section/SectionList";
+import { ClassGradeContext } from "@/contexts";
 
 export default function SectionsPage() {
   const classGrade = useContext(ClassGradeContext);

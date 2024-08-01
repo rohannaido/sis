@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import ClassGradeNav from "@/components/admin/classGrade/ClassGradeNav";
 import SubjectsPage from "./(classGradePages)/subjects/page";
-import { ClassGradeContext } from "./layout";
+import { ClassGradeContext } from "@/contexts";
 
 export default function ClassGradeIdPage({
   params,

@@ -44,11 +44,12 @@ const Signin = () => {
 
     if (!res?.error) {
       const session = await getSession();
-      if (session?.user?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/student");
-      }
+      // TODO: HIGH PRIORITY
+      // if (session?.user?.role === "admin") {
+      router.push("/admin");
+      // } else {
+      //   router.push("/student");
+      // }
       toast.success("Signed In");
     } else {
       toast.error("oops something went wrong..!");

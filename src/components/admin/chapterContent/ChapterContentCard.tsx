@@ -40,10 +40,10 @@ export default function ChapterContentCard({
               height="575"
               src={chapterContent.url}
               title="Scaling your Node.js app | Horizontal vs Vertical Scaling | Capacity Estimation - Cohort 2 Preview"
-              frameborder="0"
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
             ></iframe>
           ) : (
             <div></div>

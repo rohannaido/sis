@@ -27,7 +27,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
-import { ClassGrade } from "../ClassGradeCard";
+import { ClassGrade } from "../classGrade/ClassGradeCard";
 
 const classSchema = z.object({
   title: z.string().min(1, {

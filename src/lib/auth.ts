@@ -105,7 +105,7 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET || "secret",
   callbacks: {
-    session: async ({ session, token }) => {
+    session: async ({ session, token }): Promise<session> => {
       const newSession: session = session as session;
       if (newSession.user && token.uid) {
         newSession.user.id = token.uid as string;

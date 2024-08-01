@@ -1,5 +1,4 @@
-import { SubjectContext } from "@/app/admin/classGrades/[classGradeId]/(classGradePages)/subjects/[subjectId]/layout";
-import { ClassGradeContext } from "@/app/admin/classGrades/[classGradeId]/layout";
+import { ClassGradeContext, SubjectContext } from "@/contexts";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

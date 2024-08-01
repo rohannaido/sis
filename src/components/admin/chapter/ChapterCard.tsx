@@ -1,6 +1,5 @@
-import { SubjectContext } from "@/app/admin/classGrades/[classGradeId]/(classGradePages)/subjects/[subjectId]/layout";
-import { ClassGradeContext } from "@/app/admin/classGrades/[classGradeId]/layout";
 import { Button } from "@/components/ui/button";
+import { ClassGradeContext, SubjectContext } from "@/contexts";
 import Link from "next/link";
 import { useContext } from "react";
 
