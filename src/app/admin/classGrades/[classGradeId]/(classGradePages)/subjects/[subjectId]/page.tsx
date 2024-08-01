@@ -3,11 +3,11 @@
 import ChapterList from "@/components/admin/chapter/ChapterList";
 import { Subject } from "@/components/admin/subject/SubjectCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { SubjectContext } from "./layout";
 import SubjectNav from "@/components/admin/subject/SubjectNav";
 import ChapterPage from "./chapters/page";
+import { SubjectContext } from "@/contexts";
 
 export default function SubjectDetailPage({
   params,

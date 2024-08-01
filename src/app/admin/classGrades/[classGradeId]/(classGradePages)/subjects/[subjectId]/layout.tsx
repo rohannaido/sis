@@ -2,10 +2,9 @@
 
 import { Subject } from "@/components/admin/subject/SubjectCard";
 import SubjectNav from "@/components/admin/subject/SubjectNav";
-import React, { createContext, useEffect, useState } from "react";
+import { SubjectContext } from "@/contexts";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-export const SubjectContext = createContext<Subject | null>(null);
 
 export default function SubjectLayout({
   children,

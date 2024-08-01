@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { ClassGrade } from "@/components/admin/classGrade/ClassGradeCard";
 import ClassGradeNav from "@/components/admin/classGrade/ClassGradeNav";
-import { ClassGradeContext } from "../layout";
+import { ClassGradeContext } from "@/contexts";
 
 export default function ClassGradePages({
   children,
   params,
 }: {
-  children: { children: React.ReactNode };
+  children: React.ReactNode;
   params: { classGradeId: string };
 }) {
   const classGrade = useContext(ClassGradeContext);

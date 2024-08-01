@@ -1,10 +1,9 @@
 "use client";
 
 import { ClassGrade } from "@/components/admin/classGrade/ClassGradeCard";
-import { createContext, useEffect, useState } from "react";
+import { ClassGradeContext } from "@/contexts";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-export const ClassGradeContext = createContext<ClassGrade | null>(null);
 
 export default function ClassGradeLayout({
   children,

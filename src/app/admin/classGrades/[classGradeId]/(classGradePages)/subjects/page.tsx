@@ -3,7 +3,7 @@
 import { Subject } from "@/components/admin/subject/SubjectCard";
 import { SubjectFormDialog } from "@/components/admin/subject/SubjectFormDialog";
 import { SubjectList } from "@/components/admin/subject/SubjectList";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ClassGradeContext } from "../../layout";
+import { ClassGradeContext } from "@/contexts";
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
