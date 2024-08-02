@@ -21,13 +21,22 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const chapterContentSchema = z.object({
   title: z.string().min(4, {
     message: "Name must be at least 4 character long.",
   }),
   type: z.string().min(1, {
-    message: "Content Type must by 1 character long.",
+    message: "Select a content type.",
   }),
   url: z.string().min(5, {
     message: "Content URL must by a valid url.",
@@ -109,9 +118,22 @@ export default function ChapterContentDialog({
                 <>
                   <FormItem>
                     <FormLabel>Content Type</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter the content type" {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a content type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent {...field}>
+                        <SelectGroup>
+                          <SelectLabel>Type</SelectLabel>
+                          <SelectItem value="YT_LINK">Youtube URL</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </>
