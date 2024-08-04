@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { HomeIcon, SquareLibrary } from "lucide-react";
+import { HomeIcon, SquareLibrary, UserRoundPen } from "lucide-react";
 
 export function Sidebar({}: {}) {
   const pathName = usePathname();
@@ -44,6 +44,14 @@ export function Sidebar({}: {}) {
         >
           <SquareLibrary className="h-5 w-5" />
           Classes
+        </Link>
+        <Link
+          href="/admin/classGrades"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          prefetch={false}
+        >
+          <UserRoundPen className="h-5 w-5" />
+          Teachers
         </Link>
       </nav>
     </div>
