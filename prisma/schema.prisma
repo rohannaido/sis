@@ -21,6 +21,7 @@ model User {
   password String?
   role     String?
   Student  Student[]
+  Teacher  Teacher[]
 }
 
 model Student {
@@ -33,12 +34,30 @@ model Student {
   section      Section    @relation(fields: [sectionId], references: [id])
 }
 
+model Teacher {
+  id                           Int                            @id @default(autoincrement())
+  userId                       String
+  user                         User                           @relation(fields: [userId], references: [id])
+  TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
+}
+
+model TeacherClassGradeSubjectLink {
+  id           Int        @id @default(autoincrement())
+  teacherId    Int
+  teacher      Teacher    @relation(fields: [teacherId], references: [id])
+  classGradeId Int
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  subjectId    Int
+  subject      Subject    @relation(fields: [subjectId], references: [id])
+}
+
 model ClassGrade {
-  id      Int       @id @default(autoincrement())
-  title   String
-  Subject Subject[]
-  Section Section[]
-  Student Student[]
+  id                           Int                            @id @default(autoincrement())
+  title                        String
+  Subject                      Subject[]
+  Section                      Section[]
+  Student                      Student[]
+  TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
 }
 
 model Subject {
@@ -47,7 +66,8 @@ model Subject {
   classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
   name         String?
 
-  Chapter Chapter[]
+  Chapter                      Chapter[]
+  TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
 }
 
 model Section {
