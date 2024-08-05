@@ -31,8 +31,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StudentFormDialog } from "@/components/admin/student/StudentFormDialog";
-import { ClassGradeContext } from "@/contexts";
-import { useContext, useState } from "react";
+import { ClassGradeContext, SectionContext } from "@/contexts";
+import { useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type Student = {
   id: number;
@@ -73,19 +74,14 @@ export const columns: ColumnDef<Student>[] = [
   },
 ];
 
-const data: Student[] = [
-  {
-    id: 1,
-    name: "rohan",
-    email: "rohan@email.com",
-  },
-];
-
 export default function StudentsPage() {
   const classGrade = useContext(ClassGradeContext);
+  const section = useContext(SectionContext);
+
+  const [studentList, setStudentList] = useState<Student[]>([]);
 
   const table = useReactTable({
-    data,
+    data: studentList,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -93,14 +89,27 @@ export default function StudentsPage() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
+  async function fetchStudents() {
+    try {
+      const response = await fetch(
+        `/api/admin/sections/${section?.id}/students`
+      );
+      const data = await response.json();
+      setStudentList(data);
+    } catch (err) {
+      toast.error("Error fetching list!");
+    } finally {
+    }
+  }
+
+  useEffect(() => {
+    fetchStudents();
+  }, [section]);
+
   return (
     <div className="w-full">
       <div className="mb-2">
-        {classGrade ? (
-          <StudentFormDialog classGrade={classGrade} callbackFn={null} />
-        ) : (
-          <></>
-        )}
+        {classGrade ? <StudentFormDialog callbackFn={fetchStudents} /> : <></>}
       </div>
       <div className="rounded-md border">
         <Table>

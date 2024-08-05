@@ -3,23 +3,41 @@ import db from "@/db";
 import { z } from "zod";
 
 type Params = {
-  subjectId: string;
+  sectionId: string;
 };
 
 const requestBodySchema = z.object({
   name: z.string(),
+  email: z.string().email(),
 });
 
 export async function GET(req: NextRequest, context: { params: Params }) {
-  const subjectId = parseInt(context.params.subjectId);
+  const sectionId = parseInt(context.params.sectionId);
 
-  const chapterList = await db.chapter.findMany({
+  let studentList = await db.student.findMany({
     where: {
-      subjectId: subjectId,
+      sectionId: sectionId,
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 
-  return NextResponse.json(chapterList);
+  const studentListParsed = studentList.map((item) => {
+    const { user, ...rest } = item;
+    return {
+      ...rest,
+      name: user.name,
+      email: user.email,
+    };
+  });
+
+  return NextResponse.json(studentListParsed);
 }
 
 export async function POST(req: NextRequest, context: { params: Params }) {
@@ -32,19 +50,40 @@ export async function POST(req: NextRequest, context: { params: Params }) {
     );
   }
 
-  const subjectId = parseInt(context.params.subjectId);
-  const { name } = parseResult.data;
+  const sectionId = parseInt(context.params.sectionId);
+  const { name, email } = parseResult.data;
 
-  await db.chapter.create({
+  const sectionDetail = await db.section.findFirst({
+    where: {
+      id: sectionId,
+    },
+  });
+
+  if (!sectionDetail) {
+    return NextResponse.json({ error: "Error Creating" }, { status: 400 });
+  }
+
+  const user = await db.user.create({
     data: {
-      subjectId,
+      email,
       name,
+      role: "STUDENT",
+      // TODO: set Password hash
+      // password:
+    },
+  });
+
+  await db.student.create({
+    data: {
+      classGradeId: sectionDetail.classGradeId,
+      userId: user.id,
+      sectionId,
     },
   });
 
   return NextResponse.json(
     {
-      message: "Chapter is successfully added",
+      message: "Student is successfully added",
     },
     {
       status: 200,

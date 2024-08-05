@@ -21,35 +21,36 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
 import { ClassGrade } from "../classGrade/ClassGradeCard";
+import { SectionContext } from "@/contexts";
 
 const classSchema = z.object({
   title: z.string().min(1, {
     message: "Name must be at least 1 character long.",
   }),
+  email: z.string().email("Please enter valid email."),
 });
 
 export const StudentFormDialog = ({
-  classGrade,
   callbackFn = null,
 }: {
-  classGrade: ClassGrade;
   callbackFn: Function | null;
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
+  const section = useContext(SectionContext);
 
   const form = useForm<z.infer<typeof classSchema>>({
     resolver: zodResolver(classSchema),
     defaultValues: {
       title: "",
+      email: "",
     },
   });
 
@@ -58,12 +59,10 @@ export const StudentFormDialog = ({
     try {
       let formData = {
         name: data.title,
+        email: data.email,
       };
-      await axios.post(
-        `/api/admin/classGrades/${classGrade.id}/sections`,
-        formData
-      );
-      toast("student succesfully created");
+      await axios.post(`/api/admin/sections/${section?.id}/students`, formData);
+      toast("Student succesfully created");
       setOpen(false);
       if (callbackFn) {
         callbackFn();
@@ -100,6 +99,19 @@ export const StudentFormDialog = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter the name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }: { field: any }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter the email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
