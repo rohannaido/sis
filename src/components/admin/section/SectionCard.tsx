@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
+import { ClassGradeContext } from "@/contexts";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 export type Section = {
   id: number;
@@ -9,8 +11,10 @@ export type Section = {
 export const SectionCard = ({ section }: { section: Section }) => {
   const router = useRouter();
 
+  const classGrade = useContext(ClassGradeContext);
+
   function handleClasseViewClick(id: number) {
-    // router.push(`/admin/classes/${id}`);
+    router.push(`/admin/classGrades/${classGrade?.id}/sections/${id}`);
   }
 
   return (
