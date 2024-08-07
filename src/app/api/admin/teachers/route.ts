@@ -7,6 +7,7 @@ const requestBodySchema = z.object({
   email: z.string().email(),
   teacherClassSubjectLink: z.array(
     z.object({
+      id: z.number(),
       subjectId: z.number(),
       classGradeId: z.number(),
     })
