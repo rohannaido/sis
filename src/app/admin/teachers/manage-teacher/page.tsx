@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -132,10 +133,22 @@ export default function ManageTeacherPage() {
     name: "teacherClassSubjectLink",
   });
 
-  const onSubmit = (data: z.infer<typeof teacherSchema>) => {
-    console.log("SUBMIT");
-    console.log(data);
-    router.push("/admin/teachers");
+  const onSubmit = async (data: z.infer<typeof teacherSchema>) => {
+    try {
+      const { title, ...rest } = data;
+      const formData = {
+        name: title,
+        ...rest,
+      };
+      const res = await axios.post("/api/admin/teachers", formData);
+      toast.success("Teacher created Successfully");
+      setTimeout(() => {
+        router.push("/admin/teachers");
+      }, 300);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+    }
   };
 
   return (
