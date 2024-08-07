@@ -13,6 +13,29 @@ const requestBodySchema = z.object({
   ),
 });
 
+// TODO: add pagination
+export async function GET() {
+  const teacherList = await db.teacher.findMany({
+    select: {
+      id: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  const parsedTeacherList = teacherList.map((item) => ({
+    id: item.id,
+    name: item.user.name,
+    email: item.user.email,
+  }));
+
+  return NextResponse.json(parsedTeacherList);
+}
+
 export async function POST(req: NextRequest) {
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
