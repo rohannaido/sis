@@ -95,3 +95,20 @@ model ChapterContent {
   type      String
   url       String?
 }
+
+model SlotsGroup {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Slots Slots[]
+}
+
+model Slots {
+  id          Int        @id @default(autoincrement())
+  slotGroupId Int
+  slotGroup   SlotsGroup @relation(fields: [slotGroupId], references: [id])
+  slotNumber  Int
+  dayOfWeek   String
+  startTime   String
+  endTime     String
+  type        String
+}
