@@ -59,7 +59,7 @@ const slotGroupSchema = z.object({
   }),
   slots: z.array(
     z.object({
-      id: z.number(),
+      // id: z.number(),
       slotNumber: z.number(),
       startDateTime: z.date(),
       endDateTime: z.date(),
@@ -118,7 +118,7 @@ export default function SlotGroupForm({
   const handleAddSlotAppend = () => {
     append({
       slotNumber: fields.length + 1,
-      id: 0,
+      // id: 0,
       startDateTime: new Date(),
       endDateTime: new Date(),
       type: "",
@@ -156,15 +156,21 @@ export default function SlotGroupForm({
 
   const onSubmit = async (data: z.infer<typeof slotGroupSchema>) => {
     try {
+      console.log("ON SUBMIT");
+
       const { title, slots, ...rest } = data;
 
+      console.log(data);
+
       const formattedSlots = slots.map((slotItem) => ({
-        id: slotItem.id,
+        // id: slotItem.id,
         slotNumber: slotItem.slotNumber,
         startTime: formatDateToTime(slotItem.startDateTime),
         endTime: formatDateToTime(slotItem.endDateTime),
         type: slotItem.type,
       }));
+
+      console.log(formattedSlots);
 
       let formData = {
         ...rest,
@@ -174,19 +180,19 @@ export default function SlotGroupForm({
 
       console.log(formData);
 
-      // if (type === "EDIT") {
-      //   const res = await axios.put(
-      //     `/api/admin/slot-groups/${slotGroupId}`,
-      //     formData
-      //   );
-      //   toast.success("Teacher updated Successfully");
-      // } else {
-      const res = await axios.post("/api/admin/slot-groups", formData);
-      toast.success("Slots created Successfully");
-      // }
+      if (type === "EDIT") {
+        const res = await axios.put(
+          `/api/admin/slot-groups/${slotGroupId}`,
+          formData
+        );
+        toast.success("Teacher updated Successfully");
+      } else {
+        const res = await axios.post("/api/admin/slot-groups", formData);
+        toast.success("Slots created Successfully");
+      }
       setTimeout(() => {
         router.push("/admin/time-table/slot-groups");
-      }, 300);
+      }, 500);
     } catch (err: any) {
       toast.error(err.message);
     } finally {

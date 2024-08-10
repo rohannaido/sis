@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
-
-enum DaysOfWeek {
-  MONDAY = "Monday",
-  TUESDAY = "Tuesday",
-  WEDNESDAY = "Wednesday",
-  THURSDAY = "Thursday",
-  FRIDAY = "Friday",
-  SATURDAY = "Saturday",
-  //   SUNDAY = "Sunday",
-}
-
-const timeFormat = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+import { DaysOfWeek, timeFormat } from "@/lib/utils";
 
 // TODO: add validations for time
 const requestBodySchema = z.object({

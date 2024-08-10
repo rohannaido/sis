@@ -18,3 +18,15 @@ export const getNextRouteFragment = (
 
   return tabValue;
 };
+
+export const timeFormat = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
+export enum DaysOfWeek {
+  MONDAY = "Monday",
+  TUESDAY = "Tuesday",
+  WEDNESDAY = "Wednesday",
+  THURSDAY = "Thursday",
+  FRIDAY = "Friday",
+  SATURDAY = "Saturday",
+  //   SUNDAY = "Sunday",
+}
