@@ -37,16 +37,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-type Slots = {
+export type SlotsGroup = {
   id: number;
   name: string | null;
 };
 
-export default function TimeTableSlotPage() {
+export default function SlotGroupListPage() {
   const router = useRouter();
-  const [slotsGroupList, setSlotsGroupList] = useState<Slots[]>([]);
+  const [slotsGroupList, setSlotsGroupList] = useState<SlotsGroup[]>([]);
 
-  const columns: ColumnDef<Slots>[] = [
+  const columns: ColumnDef<SlotsGroup>[] = [
     {
       accessorKey: "id",
       header: "ID",
@@ -75,7 +75,9 @@ export default function TimeTableSlotPage() {
               <DropdownMenuItem
                 onClick={() => {
                   router.push(
-                    `/admin/slot-groups/manage-slot-group/${row.getValue("id")}`
+                    `/admin/time-table/slot-groups/manage-slot-group/${row.getValue(
+                      "id"
+                    )}`
                   );
                 }}
               >
@@ -120,7 +122,7 @@ export default function TimeTableSlotPage() {
           <CardTitle>Time table Slots</CardTitle>
           <CardDescription>You can manage time table slots.</CardDescription>
         </div>
-        <Link href="/admin/slot-groups/manage-slot-group">
+        <Link href="/admin/time-table/slot-groups/manage-slot-group">
           <Button variant="outline">+ Slot group</Button>
         </Link>
       </CardHeader>
