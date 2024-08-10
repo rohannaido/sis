@@ -170,8 +170,6 @@ export default function SlotGroupForm({
         type: slotItem.type,
       }));
 
-      console.log(formattedSlots);
-
       let formData = {
         ...rest,
         name: title,

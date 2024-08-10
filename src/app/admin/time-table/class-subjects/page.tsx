@@ -45,8 +45,10 @@ export default function ClassSubjectsPage() {
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
-          <CardTitle>Class Subjects Link</CardTitle>
-          <CardDescription>You can manage class subjects link.</CardDescription>
+          <CardTitle>Class Subjects</CardTitle>
+          <CardDescription>
+            You can manage class subjects for time table.
+          </CardDescription>
         </div>
       </CardHeader>
       <div className="px-6 pb-6">

@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,10 +23,11 @@ import { Subject } from "../subject/SubjectCard";
 import { useEffect, useState } from "react";
 import { SlotsGroup } from "@/app/admin/time-table/slot-groups/page";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
 
 const classGradeSubjectTimeTableSchema = z.object({
   slotsGroupId: z.number().gt(0, "Select slots group!"),
-  array: z.array(
+  classSubjectCountList: z.array(
     z.object({
       subjectId: z.number().gt(0, "Select valid subject."),
       subjectPeriodCount: z.number().gt(0, "Select valid period count."),
@@ -38,9 +45,7 @@ export default function ClassGradeSubjectTimeTableForm({
 
   const form = useForm<z.infer<typeof classGradeSubjectTimeTableSchema>>({
     resolver: zodResolver(classGradeSubjectTimeTableSchema),
-    defaultValues: {
-      array: [],
-    },
+    defaultValues: {},
   });
 
   async function fetchSubjects() {
@@ -67,11 +72,28 @@ export default function ClassGradeSubjectTimeTableForm({
     }
   }
 
+  async function fetchClassGradeSubjectTimeTableLink() {
+    try {
+      const response = await fetch(
+        `/api/admin/classGrades/${classGradeId}/time-table-subjects`
+      );
+      const data = await response.json();
+      form.reset(data);
+    } catch (err) {
+      toast.error("Something went wrong while searching for class details");
+    } finally {
+    }
+  }
+
   useEffect(() => {
     fetchSlotGroups();
   }, []);
 
   useEffect(() => {
+    form.reset({
+      classSubjectCountList: [],
+    });
+    fetchClassGradeSubjectTimeTableLink();
     fetchSubjects();
   }, [classGradeId]);
 
@@ -79,11 +101,23 @@ export default function ClassGradeSubjectTimeTableForm({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "array",
+    name: "classSubjectCountList",
   });
 
-  function onSubmit(data: z.infer<typeof classGradeSubjectTimeTableSchema>) {
-    console.log("TEST @!#");
+  async function onSubmit(
+    data: z.infer<typeof classGradeSubjectTimeTableSchema>
+  ) {
+    console.log("TEST @!#f", data);
+    try {
+      const res = await axios.put(
+        `/api/admin/classGrades/${classGradeId}/time-table-subjects`,
+        data
+      );
+      toast.success("Successfully linked class subjects to time table!");
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+    }
   }
 
   function handleLinkSubjectClick() {
@@ -106,49 +140,84 @@ export default function ClassGradeSubjectTimeTableForm({
         >
           <div className="flex flex-col gap-4 min-w-full">
             <Label>Slots Group</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a slots group" />
-              </SelectTrigger>
-              <SelectContent>
-                {slotsGroupList?.map((slotGroupItem) => (
-                  <SelectItem
-                    key={slotGroupItem.id}
-                    value={slotGroupItem.id.toString()}
-                  >
-                    {slotGroupItem.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {fields.map((item, index) => {
+            <FormField
+              render={({ field }: { field: any }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select
+                      value={field.value?.toString()}
+                      onValueChange={(e) => field.onChange(parseInt(e))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a slots group" />
+                      </SelectTrigger>
+                      <SelectContent {...field}>
+                        {slotsGroupList?.map((slotGroupItem) => (
+                          <SelectItem
+                            key={slotGroupItem.id}
+                            value={slotGroupItem.id.toString()}
+                          >
+                            {slotGroupItem.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+              name="slotsGroupId"
+              control={control}
+            />
+            {fields.map((field, index) => {
               return (
-                <div className="flex gap-2" key={index}>
+                <div className="flex gap-2" key={field.id}>
                   <FormField
                     render={({ field }) => (
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a subject" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {subjectList.map((subjectItem, subjectIndex) => (
-                            <SelectItem
-                              key={index}
-                              value={subjectItem.id.toString()}
-                            >
-                              {subjectItem.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Select
+                            value={field.value?.toString()}
+                            onValueChange={(e) => field.onChange(parseInt(e))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a subject" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {subjectList.map((subjectItem, subjectIndex) => (
+                                <SelectItem
+                                  key={subjectIndex}
+                                  value={subjectItem.id.toString()}
+                                >
+                                  {subjectItem.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                    name={`array.${index}.subjectId`}
+                    name={`classSubjectCountList.${index}.subjectId`}
+                    control={control}
                   />
                   <FormField
                     render={({ field }) => (
-                      <Input placeholder="Enter periods per week" />
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Input
+                            value={field.value}
+                            onChange={(e) =>
+                              field.onChange(parseInt(e.target.value))
+                            }
+                            placeholder="Enter periods per week"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                    name={`array.${index}.subjectId`}
+                    control={control}
+                    name={`classSubjectCountList.${index}.subjectPeriodCount`}
                   />
                   <Button
                     onClick={() => handleDeleteSubjectLinkClick(index)}

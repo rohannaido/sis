@@ -54,6 +54,8 @@ model TeacherClassGradeSubjectLink {
 model ClassGrade {
   id                           Int                            @id @default(autoincrement())
   title                        String
+  slotsGroupId                 Int?
+  slotsGroup                   SlotsGroup?                    @relation(fields: [slotsGroupId], references: [id])
   Subject                      Subject[]
   Section                      Section[]
   Student                      Student[]
@@ -61,10 +63,11 @@ model ClassGrade {
 }
 
 model Subject {
-  id           Int        @id @default(autoincrement())
-  classGradeId Int
-  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
-  name         String?
+  id                 Int        @id @default(autoincrement())
+  classGradeId       Int
+  classGrade         ClassGrade @relation(fields: [classGradeId], references: [id])
+  periodCountPerWeek Int        @default(0)
+  name               String?
 
   Chapter                      Chapter[]
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
@@ -97,9 +100,10 @@ model ChapterContent {
 }
 
 model SlotsGroup {
-  id    Int     @id @default(autoincrement())
-  name  String
-  Slots Slots[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  Slots      Slots[]
+  ClassGrade ClassGrade[]
 }
 
 model Slots {

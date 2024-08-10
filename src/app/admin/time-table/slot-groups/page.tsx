@@ -71,7 +71,6 @@ export default function SlotGroupListPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
                   router.push(
