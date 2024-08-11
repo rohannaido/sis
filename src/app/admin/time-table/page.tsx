@@ -1,11 +1,11 @@
 "use client";
 
-import SlotGroupListPage from "./slot-groups/page";
+import TimeTableListPage from "./time-table-list/page";
 
 export default function TimeTablePage() {
   return (
     <>
-      <SlotGroupListPage />
+      <TimeTableListPage />
     </>
   );
 }

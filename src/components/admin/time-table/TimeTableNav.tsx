@@ -6,6 +6,10 @@ export default function TimeTableNav() {
   const pathname = usePathname();
   const routeList = [
     {
+      name: "Time Table",
+      href: `/admin/time-table/time-table-list`,
+    },
+    {
       name: "Slot Groups",
       href: `/admin/time-table/slot-groups`,
     },

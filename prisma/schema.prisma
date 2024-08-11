@@ -55,7 +55,7 @@ model ClassGrade {
   id                           Int                            @id @default(autoincrement())
   title                        String
   slotsGroupId                 Int?
-  slotsGroup                   SlotsGroup?                    @relation(fields: [slotsGroupId], references: [id])
+  SlotsGroup                   SlotsGroup?                    @relation(fields: [slotsGroupId], references: [id])
   Subject                      Subject[]
   Section                      Section[]
   Student                      Student[]

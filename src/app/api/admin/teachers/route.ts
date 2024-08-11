@@ -62,10 +62,17 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const teacherClassSubjectLinkList = teacherClassSubjectLink.map((item) => ({
-    ...item,
-    teacherId: teacher.id,
-  }));
+  const parsedTeacherClassSubjectLink = teacherClassSubjectLink.map((item) => {
+    const { id, ...rest } = item;
+    return rest;
+  });
+
+  const teacherClassSubjectLinkList = parsedTeacherClassSubjectLink.map(
+    (item) => ({
+      ...item,
+      teacherId: teacher.id,
+    })
+  );
 
   await db.teacherClassGradeSubjectLink.createMany({
     data: teacherClassSubjectLinkList,
