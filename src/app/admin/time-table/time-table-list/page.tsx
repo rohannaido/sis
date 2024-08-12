@@ -13,12 +13,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function TimeTableListPage() {
-  const [sectionTimeTableList, setSectionTimeTableList] = useState([]);
+  const [classTimeTableList, setClassTimeTableList] = useState([]);
   async function fetchGenerateTimeTable() {
     try {
       const res = await fetch("/api/admin/time-table");
       const data = await res.json();
-      setSectionTimeTableList(data);
+      setClassTimeTableList(data);
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -43,7 +43,7 @@ export default function TimeTableListPage() {
         </Button>
       </CardHeader>
       <CardContent>
-        <TimeTableCardList sectionTimeTableList={sectionTimeTableList} />
+        <TimeTableCardList classTimeTableList={classTimeTableList} />
       </CardContent>
     </Card>
   );

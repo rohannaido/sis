@@ -30,3 +30,13 @@ export enum DaysOfWeek {
   SATURDAY = "Saturday",
   //   SUNDAY = "Sunday",
 }
+
+export function timeStringToDate(timeString: string): Date {
+  const today = new Date();
+
+  const [hours, minutes, seconds] = timeString.split(":").map(Number);
+
+  today.setHours(hours, minutes, seconds, 0);
+
+  return today;
+}

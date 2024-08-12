@@ -9,19 +9,18 @@ export default function TimeTableCard({
   const timeSlots = timeTable.DailySlots[Object.keys(timeTable.DailySlots)[0]];
   return (
     <Card>
-      <CardHeader className="py-2">{timeTable.name}</CardHeader>
+      <CardHeader className="py-2">Section {timeTable.name}</CardHeader>
       <CardContent>
         <div
-          //     grid-cols-${
-          //     Object.keys(timeTable.DailySlots).length + 1
-          //   } grid-rows-${timeSlots.length + 1}
           className={`grid
-            grid-cols-7 grid-rows-4 
-           gap-2`}
+            grid-cols-7 grid-rows-4
+            gap-2`}
         >
           <div>Timings</div>
           {Object.keys(timeTable.DailySlots).map((item) => (
-            <div key={item}>{item}</div>
+            <div key={item} className="flex flex-col items-center">
+              {item}
+            </div>
           ))}
           {timeSlots.map((item) => {
             const daysSlotArray: (newSlot | undefined)[] = [];
@@ -38,7 +37,17 @@ export default function TimeTableCard({
                   {item.startTime} - {item.endTime}
                 </div>
                 {daysSlotArray.map((dayItem) => (
-                  <div key={item.slotNumber}>{dayItem?.subject?.name}</div>
+                  <div
+                    key={item.slotNumber}
+                    className="flex flex-col items-center"
+                  >
+                    <div>{dayItem?.subject?.name}</div>
+                    {dayItem?.teacher?.user.name ? (
+                      <div className="">({dayItem?.teacher?.user.name})</div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
                 ))}
               </>
             );

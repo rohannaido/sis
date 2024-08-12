@@ -1,11 +1,12 @@
 import db from "@/db";
-import { DaysOfWeek } from "@/lib/utils";
+import { DaysOfWeek, timeStringToDate } from "@/lib/utils";
 import {
   Section,
   Slots,
   Subject,
   Teacher,
   TeacherClassGradeSubjectLink,
+  User,
 } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -38,12 +39,13 @@ export interface TeacherDailySlots {
   [key: string]: {
     startTime: string;
     endTime: string;
-    section: Section;
-    subject: Subject;
+    // section: Section;
+    // subject: Subject;
   }[];
 }
 
 export interface NewTeacher extends Teacher {
+  user: User;
   dailySlots: TeacherDailySlots;
   TeacherClassGradeSubjectLink: TeacherClassGradeSubjectLink[];
 }
@@ -137,6 +139,7 @@ export async function GET() {
   const teacherList = await db.teacher.findMany({
     include: {
       TeacherClassGradeSubjectLink: true,
+      user: true,
     },
   });
 
@@ -158,18 +161,32 @@ export async function GET() {
 
   newClassSlots.forEach((classItem) => {
     for (const sectionItem of classItem.Section) {
+      const subjectOccuerenceLowestCount: any = {};
+      sectionItem.Subjects.forEach((sectionItemForMap) => {
+        subjectOccuerenceLowestCount[sectionItemForMap.id] = 0;
+      });
+      const subjectPerDayCount: any = {};
+      Object.keys(sectionItem.DailySlots).forEach((item) => {
+        const subjectCount: any = {};
+        sectionItem.Subjects.forEach((sectionItemForMap) => {
+          subjectCount[sectionItemForMap.id] = 0;
+        });
+        subjectPerDayCount[item] = subjectCount;
+      });
+
       for (const weekDayItem of Object.keys(sectionItem.DailySlots)) {
         for (const slotItem of sectionItem.DailySlots[weekDayItem]) {
-          console.log(slotItem.teacher, slotItem.subject);
           if (slotItem.teacher && slotItem.subject) {
             continue;
           }
 
           let subjectToAdd = sectionItem.Subjects.find(
-            (subjectItem) => subjectItem.periodCountPerWeek > 0
+            (subjectItem) =>
+              subjectItem.periodCountPerWeek > 0 &&
+              subjectPerDayCount[weekDayItem][subjectItem.id] ==
+                subjectOccuerenceLowestCount[subjectItem.id]
           );
 
-          console.log(subjectToAdd);
           if (!subjectToAdd) {
             continue;
           }
@@ -194,25 +211,57 @@ export async function GET() {
             );
           }
 
+          slotItem.startTime, slotItem.endTime;
+
+          let canAccomodate = true;
+          const slotStartTime = timeStringToDate(slotItem.startTime);
+          const slotEndTime = timeStringToDate(slotItem.endTime);
+
+          for (const teacherSlot of teacherForSubject.dailySlots[weekDayItem]) {
+            const teacherSlotStartTime = timeStringToDate(
+              teacherSlot.startTime
+            );
+            const teacherSlotEndTime = timeStringToDate(teacherSlot.endTime);
+            if (
+              (slotStartTime < teacherSlotEndTime &&
+                slotStartTime >= teacherSlotStartTime) ||
+              (slotEndTime > teacherSlotStartTime &&
+                slotEndTime <= teacherSlotEndTime) ||
+              (slotStartTime <= teacherSlotStartTime &&
+                slotEndTime >= teacherSlotEndTime)
+            ) {
+              canAccomodate = false;
+            }
+          }
+
+          if (canAccomodate == false) {
+            continue;
+          }
+
+          teacherForSubject.dailySlots[weekDayItem].push({
+            startTime: slotItem.startTime,
+            endTime: slotItem.endTime,
+          });
+
           subjectToAdd.teacher = teacherForSubject;
 
           slotItem.teacher = teacherForSubject;
           slotItem.subject = subjectToAdd;
           subjectToAdd.periodCountPerWeek--;
+          subjectPerDayCount[weekDayItem][subjectToAdd.id]++;
+
+          const subjectInDayCountArray: any[] = [];
+          Object.values(subjectPerDayCount).forEach((subjectCountItem: any) => {
+            subjectInDayCountArray.push(subjectCountItem[subjectToAdd.id]);
+          });
+
+          subjectOccuerenceLowestCount[subjectToAdd.id] = Math.min(
+            ...subjectInDayCountArray
+          );
         }
       }
     }
   });
 
-  console.log(JSON.stringify(newClassSlots));
-
-  //section wise
-
-  const sectionList: any[] = [];
-
-  newClassSlots.forEach((classItem) => {
-    sectionList.push(...classItem.Section);
-  });
-
-  return NextResponse.json(sectionList);
+  return NextResponse.json(newClassSlots);
 }
