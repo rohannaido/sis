@@ -25,15 +25,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, MoreVertical } from "lucide-react";
+import { MoreHorizontal, MoreVertical, Settings } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import SlotGroupListPage from "../slot-groups/page";
-import ClassSubjectsPage from "../class-subjects/page";
+import SlotGroupListPage from "../../../../components/admin/time-table/SlotGroupListPage";
+import ClassSubjectsPage from "../../../../components/admin/time-table/TimeTableClassSettings";
+import SlotGroupPage from "@/components/admin/time-table/SlotGroupPage";
 
 export default function TimeTableListPage() {
   const [classTimeTableList, setClassTimeTableList] = useState([]);
-  const [open, setOpen] = useState<boolean>(false);
+  const [openClassSettings, setOpenClassSettings] = useState<boolean>(false);
+  const [openSlotGroupSettings, setOpenSlotGroupSettings] =
+    useState<boolean>(false);
   async function fetchGenerateTimeTable() {
     try {
       const res = await fetch("/api/admin/time-table");
@@ -64,26 +67,39 @@ export default function TimeTableListPage() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="h-10 w-10 p-0">
+              <Button variant="secondary" className="h-12 w-12 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
+                <Settings className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setOpen(true)}>
-                Class Subjects Link
+              <DropdownMenuItem onClick={() => setOpenClassSettings(true)}>
+                Class Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpenSlotGroupSettings(true)}>
+                Slot Settings
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={openClassSettings} onOpenChange={setOpenClassSettings}>
           <DialogContent className="sm:max-w-[800px] sm:h-[800px]">
             <ClassSubjectsPage />
           </DialogContent>
         </Dialog>
-        <TimeTableCardList classTimeTableList={classTimeTableList} />
+        <Dialog
+          open={openSlotGroupSettings}
+          onOpenChange={setOpenSlotGroupSettings}
+        >
+          <DialogContent className="sm:max-w-[800px] sm:h-[800px]">
+            <SlotGroupPage />
+          </DialogContent>
+        </Dialog>
+        <div>
+          <TimeTableCardList classTimeTableList={classTimeTableList} />
+        </div>
       </CardContent>
     </Card>
   );

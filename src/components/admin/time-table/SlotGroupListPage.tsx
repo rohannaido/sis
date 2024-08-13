@@ -42,7 +42,13 @@ export type SlotsGroup = {
   name: string | null;
 };
 
-export default function SlotGroupListPage() {
+export default function SlotGroupListPage({
+  addAction,
+  editAction,
+}: {
+  addAction: () => void;
+  editAction: (slotGroupId: number) => void;
+}) {
   const router = useRouter();
   const [slotsGroupList, setSlotsGroupList] = useState<SlotsGroup[]>([]);
 
@@ -72,13 +78,7 @@ export default function SlotGroupListPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => {
-                  router.push(
-                    `/admin/time-table/slot-groups/manage-slot-group/${row.getValue(
-                      "id"
-                    )}`
-                  );
-                }}
+                onClick={() => editAction(parseInt(row.getValue("id")))}
               >
                 Edit
               </DropdownMenuItem>
@@ -121,9 +121,9 @@ export default function SlotGroupListPage() {
           <CardTitle>Time table Slots</CardTitle>
           <CardDescription>You can manage time table slots.</CardDescription>
         </div>
-        <Link href="/admin/time-table/slot-groups/manage-slot-group">
-          <Button variant="outline">+ Slot group</Button>
-        </Link>
+        <Button onClick={() => addAction()} variant="outline">
+          + Slot group
+        </Button>
       </CardHeader>
 
       <Table>

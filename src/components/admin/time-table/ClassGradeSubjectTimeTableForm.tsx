@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Subject } from "../subject/SubjectCard";
 import { useEffect, useState } from "react";
-import { SlotsGroup } from "@/app/admin/time-table/slot-groups/page";
+import { SlotsGroup } from "@/components/admin/time-table/SlotGroupListPage";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 

@@ -89,7 +89,7 @@ export default function SlotGroupForm({
     if (type == "EDIT") {
       fetchSlotGroupDetail();
     }
-  }, []);
+  }, [slotGroupId]);
 
   async function fetchSlotGroupDetail() {
     try {
