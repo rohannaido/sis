@@ -13,10 +13,10 @@ export default function TimeTableNav() {
       name: "Slot Groups",
       href: `/admin/time-table/slot-groups`,
     },
-    {
-      name: "Class Subjects",
-      href: `/admin/time-table/class-subjects`,
-    },
+    // {
+    //   name: "Class Subjects",
+    //   href: `/admin/time-table/class-subjects`,
+    // },
   ];
 
   return (
