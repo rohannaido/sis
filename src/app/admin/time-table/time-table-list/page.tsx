@@ -25,7 +25,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, MoreVertical, Settings } from "lucide-react";
+import {
+  Clock10,
+  MoreHorizontal,
+  MoreVertical,
+  School,
+  Settings,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import SlotGroupListPage from "../../../../components/admin/time-table/SlotGroupListPage";
@@ -53,54 +59,58 @@ export default function TimeTableListPage() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
-      <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-col gap-2">
-          <CardTitle>Time table</CardTitle>
-          <CardDescription>
-            You can generate and manage time tables here.
-          </CardDescription>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={handleGenerateTimeTableClick} variant="default">
-            Generate Time table
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="h-12 w-12 p-0">
-                <span className="sr-only">Open menu</span>
-                <Settings className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setOpenClassSettings(true)}>
-                Class Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setOpenSlotGroupSettings(true)}>
-                Slot Settings
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Dialog open={openClassSettings} onOpenChange={setOpenClassSettings}>
-          <DialogContent className="sm:max-w-[800px] sm:h-[800px]">
-            <ClassSubjectsPage />
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={openSlotGroupSettings}
-          onOpenChange={setOpenSlotGroupSettings}
+    <div className="flex justify-between">
+      <Card className="w-full max-w-6xl overflow-y-auto lg:mt-10">
+        <CardHeader className="flex flex-row justify-between">
+          <div className="flex flex-col gap-2">
+            <CardTitle>Time table</CardTitle>
+            <CardDescription>
+              You can generate and manage time tables here.
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleGenerateTimeTableClick} variant="default">
+              Generate Time table
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Dialog open={openClassSettings} onOpenChange={setOpenClassSettings}>
+            <DialogContent className="sm:max-w-[900px] sm:h-full">
+              <ClassSubjectsPage />
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={openSlotGroupSettings}
+            onOpenChange={setOpenSlotGroupSettings}
+          >
+            <DialogContent className="sm:max-w-[900px] sm:h-full">
+              <SlotGroupPage />
+            </DialogContent>
+          </Dialog>
+          <div>
+            <TimeTableCardList classTimeTableList={classTimeTableList} />
+          </div>
+        </CardContent>
+      </Card>
+      <div className="rounded-lg flex flex-col gap-2 sm:fixed sm:top-[80px] sm:right-8">
+        <Button
+          className="h-20 flex flex-col justify-between p-3"
+          variant="secondary"
+          onClick={() => setOpenClassSettings(true)}
         >
-          <DialogContent className="sm:max-w-[800px] sm:h-[800px]">
-            <SlotGroupPage />
-          </DialogContent>
-        </Dialog>
-        <div>
-          <TimeTableCardList classTimeTableList={classTimeTableList} />
-        </div>
-      </CardContent>
-    </Card>
+          <School />
+          Class Settings
+        </Button>
+        <Button
+          className="h-20 flex flex-col justify-between p-3"
+          variant="secondary"
+          onClick={() => setOpenSlotGroupSettings(true)}
+        >
+          <Clock10 />
+          Slot Settings
+        </Button>
+      </div>
+    </div>
   );
 }

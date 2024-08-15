@@ -6,9 +6,10 @@ import { useState } from "react";
 import SlotGroupForm from "../slotGroup/SlotGroupForm";
 import { ArrowBigLeft, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
 
 export default function SlotGroupPage() {
-  const [openEditor, setOpenEditor] = useState<boolean>(true);
+  const [openEditor, setOpenEditor] = useState<boolean>(false);
   const [slotFormType, setSlotFormType] = useState<string>("");
   const [slotGroupEditId, setSlotGroupEditId] = useState<number>(0);
 
@@ -28,14 +29,19 @@ export default function SlotGroupPage() {
   return (
     <>
       {openEditor ? (
-        <div>
-          <Button
-            onClick={() => setOpenEditor(false)}
-            variant="secondary"
-            className="h-12 w-12"
-          >
-            <ArrowLeft />
-          </Button>
+        <div className="h-full overflow-y-auto">
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => setOpenEditor(false)}
+              variant="secondary"
+              className="h-12 w-12"
+            >
+              <ArrowLeft />
+            </Button>
+            <CardTitle>
+              {slotFormType === "EDIT" ? <>Edit</> : <>Add</>} Slot Group
+            </CardTitle>
+          </div>
           <SlotGroupForm type={slotFormType} slotGroupId={slotGroupEditId} />
         </div>
       ) : (

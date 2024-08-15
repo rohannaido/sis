@@ -198,24 +198,14 @@ export default function SlotGroupForm({
   };
 
   return (
-    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-8">
-      <CardHeader className="flex flex-row justify-between">
-        <div className="flex flex-col gap-2">
-          <CardTitle>
-            {type === "EDIT" ? <>Edit</> : <>Add</>} Slot Group
-          </CardTitle>
-          <CardDescription>
-            {type === "EDIT" ? <>Edit</> : <>Add</>} Slot group here
-          </CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent>
+    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-2">
+      <CardContent className="mt-2">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-2"
           >
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-2 lg:grid-cols-2">
               <FormField
                 control={form.control}
                 name="title"
@@ -233,10 +223,10 @@ export default function SlotGroupForm({
                 )}
               />
             </div>
-            <div className="mt-4">
+            <div className="mt-2">
               {fields?.length > 0 ? <div>Slots</div> : <></>}
             </div>
-            <div className="flex flex-col items-start gap-4 min-w-full">
+            <div className="flex flex-col items-start gap-2 min-w-full overflow-y-auto h-1/2">
               {fields.map((item, index) => {
                 return (
                   <div
