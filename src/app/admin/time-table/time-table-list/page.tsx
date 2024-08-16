@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import SlotGroupListPage from "../../../../components/admin/time-table/SlotGroupListPage";
 import ClassSubjectsPage from "../../../../components/admin/time-table/TimeTableClassSettings";
 import SlotGroupPage from "@/components/admin/time-table/SlotGroupPage";
+import axios from "axios";
 
 export default function TimeTableListPage() {
   const [classTimeTableList, setClassTimeTableList] = useState([]);
@@ -45,9 +46,14 @@ export default function TimeTableListPage() {
     useState<boolean>(false);
   async function fetchGenerateTimeTable() {
     try {
-      const res = await fetch("/api/admin/time-table");
-      const data = await res.json();
-      setClassTimeTableList(data);
+      const res = await axios.post("/api/admin/time-table");
+      const data = await res.data;
+      toast.success("Generated Time Table!");
+      const responseGet = await axios.get("/api/admin/time-table");
+      const timeTableData = responseGet.data;
+      console.log("timeTableData");
+      console.log(timeTableData);
+      setClassTimeTableList(timeTableData);
     } catch (err: any) {
       toast.error(err.message);
     } finally {

@@ -1,6 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import TimeTableCard from "./TimeTableCard";
-import { NewSection } from "@/app/api/admin/time-table/route";
+import { NewSection } from "@/app/api/admin/time-table/route1";
+import { Section, Slots, TimeTable } from "@prisma/client";
+
+export interface SectionWithTimeTable extends Section {
+  timeTable: TimeTable[];
+}
 
 export default function TimeTableCardList({
   classTimeTableList,
@@ -14,9 +19,15 @@ export default function TimeTableCardList({
           <Card>
             <CardHeader>Class {classTimeTableItem.title}</CardHeader>
             <CardContent className="flex flex-col gap-4">
-              {classTimeTableItem.Section.map((sectionItem: NewSection) => (
-                <TimeTableCard key={index} timeTable={sectionItem} />
-              ))}
+              {classTimeTableItem.Section.map(
+                (sectionItem: SectionWithTimeTable) => (
+                  <TimeTableCard
+                    key={index}
+                    sectionItem={sectionItem}
+                    slotsList={classTimeTableItem.SlotsGroup.Slots}
+                  />
+                )
+              )}
             </CardContent>
           </Card>
         </div>

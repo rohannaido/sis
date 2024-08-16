@@ -1,57 +1,61 @@
-import { NewSection, newSlot } from "@/app/api/admin/time-table/route";
+import { NewSection, newSlot } from "@/app/api/admin/time-table/route1";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Slots, TimeTable } from "@prisma/client";
+import { SectionWithTimeTable } from "./TimeTableCardList";
 
 export default function TimeTableCard({
-  timeTable,
+  sectionItem,
+  slotsList,
 }: {
-  timeTable: NewSection;
+  sectionItem: SectionWithTimeTable;
+  slotsList: Slots[];
 }) {
-  const timeSlots = timeTable.DailySlots[Object.keys(timeTable.DailySlots)[0]];
+  const dayOfWeek = new Set<string>();
+
+  let slotsPerDay = [];
+  const slotsMap: {
+    [key: string]: Slots;
+  } = {};
+  slotsList.forEach((slotsItem) => {
+    slotsMap[slotsItem.slotNumber] = slotsItem;
+    dayOfWeek.add(slotsItem.dayOfWeek);
+  });
+  slotsPerDay = Object.values(slotsMap).map((item) => {
+    let startTimeSplit = item.startTime.split(":");
+    startTimeSplit.splice(2, 1);
+    let startTime = startTimeSplit.join(":");
+
+    let endTimeSplit = item.endTime.split(":");
+    endTimeSplit.splice(2, 1);
+    let endTime = endTimeSplit.join(":");
+
+    return {
+      slotNumber: item.slotNumber,
+      startTime,
+      endTime,
+    };
+  });
+
   return (
     <Card>
-      <CardHeader className="py-2">Section {timeTable.name}</CardHeader>
+      <CardHeader className="py-2">Section {sectionItem.name}</CardHeader>
       <CardContent>
-        <div
-          className={`grid
-            grid-cols-7 grid-rows-4
-            gap-2`}
-        >
-          <div>Timings</div>
-          {Object.keys(timeTable.DailySlots).map((item) => (
-            <div key={item} className="flex flex-col items-center">
-              {item}
+        <div>
+          <div className="p-2 flex justify-between w-full border-2 rounded-xl">
+            Timings
+            {Array.from(dayOfWeek).map((dayItem, index) => (
+              <div key={index}>{dayItem}</div>
+            ))}
+          </div>
+          {slotsPerDay.map((slotItem) => (
+            <div className="p-2 flex" key={slotItem.slotNumber}>
+              <div className="flex flex-col">
+                <div>{slotItem.startTime}</div>
+                <div>{slotItem.endTime}</div>
+              </div>
+              <div>test</div>
             </div>
           ))}
-          {timeSlots.map((item) => {
-            const daysSlotArray: (newSlot | undefined)[] = [];
-            Object.keys(timeTable.DailySlots).forEach((dayOfWeek) => {
-              const slotDetail = timeTable.DailySlots[dayOfWeek].find(
-                (slotItem) => slotItem.slotNumber == item.slotNumber
-              );
-              daysSlotArray.push(slotDetail);
-            });
-
-            return (
-              <>
-                <div key={item.slotNumber}>
-                  {item.startTime} - {item.endTime}
-                </div>
-                {daysSlotArray.map((dayItem) => (
-                  <div
-                    key={item.slotNumber}
-                    className="flex flex-col items-center"
-                  >
-                    <div>{dayItem?.subject?.name}</div>
-                    {dayItem?.teacher?.user.name ? (
-                      <div className="">({dayItem?.teacher?.user.name})</div>
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ))}
-              </>
-            );
-          })}
         </div>
       </CardContent>
     </Card>

@@ -39,6 +39,8 @@ model Teacher {
   userId                       String
   user                         User                           @relation(fields: [userId], references: [id])
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
+  TimeTable                    TimeTable[]
+  SectionSubjectTeacher        SectionSubjectTeacher[]
 }
 
 model TeacherClassGradeSubjectLink {
@@ -60,6 +62,8 @@ model ClassGrade {
   Section                      Section[]
   Student                      Student[]
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
+
+  TimeTable TimeTable[]
 }
 
 model Subject {
@@ -71,14 +75,18 @@ model Subject {
 
   Chapter                      Chapter[]
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
+  TimeTable                    TimeTable[]
+  SectionSubjectTeacher        SectionSubjectTeacher[]
 }
 
 model Section {
-  id           Int        @id @default(autoincrement())
-  classGradeId Int
-  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
-  name         String?
-  Student      Student[]
+  id                    Int                     @id @default(autoincrement())
+  classGradeId          Int
+  classGrade            ClassGrade              @relation(fields: [classGradeId], references: [id])
+  name                  String?
+  Student               Student[]
+  TimeTable             TimeTable[]
+  SectionSubjectTeacher SectionSubjectTeacher[]
 }
 
 model Chapter {
@@ -104,15 +112,52 @@ model SlotsGroup {
   name       String
   Slots      Slots[]
   ClassGrade ClassGrade[]
+  TimeTable  TimeTable[]
 }
 
 model Slots {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   slotGroupId Int
-  slotGroup   SlotsGroup @relation(fields: [slotGroupId], references: [id])
+  slotGroup   SlotsGroup  @relation(fields: [slotGroupId], references: [id])
   slotNumber  Int
   dayOfWeek   String
   startTime   String
   endTime     String
   type        String
+  TimeTable   TimeTable[]
+}
+
+model SectionSubjectTeacher {
+  id        Int     @id @default(autoincrement())
+  sectionId Int
+  section   Section @relation(fields: [sectionId], references: [id])
+  subjectId Int
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  teacherId Int
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+}
+
+model TimeTableGroup {
+  id Int @id @default(autoincrement())
+
+  TimeTable TimeTable[]
+}
+
+model TimeTable {
+  id               Int            @id @default(autoincrement())
+  timeTableGroupId Int
+  timeTableGroup   TimeTableGroup @relation(fields: [timeTableGroupId], references: [id])
+  classGradeId     Int
+  classGrade       ClassGrade     @relation(fields: [classGradeId], references: [id])
+  sectionId        Int
+  section          Section        @relation(fields: [sectionId], references: [id])
+  slotsGroupId     Int
+  slotsGroup       SlotsGroup     @relation(fields: [slotsGroupId], references: [id])
+  dayOfWeek        String
+  slotsId          Int
+  slots            Slots          @relation(fields: [slotsId], references: [id])
+  subjectId        Int?
+  subject          Subject?       @relation(fields: [subjectId], references: [id])
+  teacherId        Int?
+  teacher          Teacher?       @relation(fields: [teacherId], references: [id])
 }
