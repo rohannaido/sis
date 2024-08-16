@@ -4,7 +4,7 @@ import { NewSection } from "@/app/api/admin/time-table/route1";
 import { Section, Slots, TimeTable } from "@prisma/client";
 
 export interface SectionWithTimeTable extends Section {
-  timeTable: TimeTable[];
+  TimeTable: TimeTable[];
 }
 
 export default function TimeTableCardList({

@@ -35,7 +35,7 @@ export function generateTimeTableItem(
   sectionTeacherSubjectList: SectionSubjectTeacher[],
   timeTableList: TimeTableWithSlots[]
 ) {
-  let subjectToAdd = getSubjectToAdd(timeTableList, subjectList, slot);
+  let subjectToAdd = getSubjectToAdd(timeTableList, subjectList, slot, section);
 
   if (!subjectToAdd) {
     return null;
@@ -97,6 +97,19 @@ export function generateTimeTableItem(
       teacherId: teacherForSubject?.id!,
       subjectId: subjectToAdd.id,
     };
+  } else {
+    const teacherTimeTableForToday = getTeacherTimeTableForDay(
+      sectionTeacherForSubject.teacherId,
+      timeTableList,
+      slot.dayOfWeek
+    );
+    const canTeacherAccomodate = canTeacherAccomodateSlot(
+      slot,
+      teacherTimeTableForToday
+    );
+    if (!canTeacherAccomodate) {
+      return null;
+    }
   }
 
   return {
@@ -152,7 +165,7 @@ export function getTeacherTimeTableForDay(
   const teacherTimeTableForToday = [];
   for (const timeTableItem of timeTableList) {
     if (
-      timeTableItem.teacherId === teacherId &&
+      timeTableItem.teacherId == teacherId &&
       timeTableItem.dayOfWeek === dayOfWeek
     ) {
       teacherTimeTableForToday.push(timeTableItem);
@@ -165,7 +178,8 @@ export function getTeacherTimeTableForDay(
 export function getSubjectToAdd(
   timeTableList: TimeTableWithSlots[],
   subjectList: Subject[],
-  slot: Slots
+  slot: Slots,
+  section: Section
 ) {
   for (const subjectItem of subjectList) {
     const daySubjectCount: { [key: string]: number } = {};
@@ -173,7 +187,10 @@ export function getSubjectToAdd(
       daySubjectCount[item] = 0;
     });
     for (const timeTableItem of timeTableList) {
-      if (timeTableItem.subjectId == subjectItem.id) {
+      if (
+        timeTableItem.subjectId == subjectItem.id &&
+        timeTableItem.sectionId == section.id
+      ) {
         // if (!daySubjectCount[timeTableItem.dayOfWeek]) {
         //   daySubjectCount[timeTableItem.dayOfWeek] = 0;
         // } else {
@@ -187,7 +204,7 @@ export function getSubjectToAdd(
         return accumulator + currentValue;
       }, 0) === subjectItem.periodCountPerWeek
     ) {
-      return null;
+      continue;
     }
 
     if (

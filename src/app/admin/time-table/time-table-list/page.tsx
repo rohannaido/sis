@@ -46,9 +46,9 @@ export default function TimeTableListPage() {
     useState<boolean>(false);
   async function fetchGenerateTimeTable() {
     try {
-      const res = await axios.post("/api/admin/time-table");
-      const data = await res.data;
-      toast.success("Generated Time Table!");
+      // const res = await axios.post("/api/admin/time-table");
+      // const data = await res.data;
+      // toast.success("Generated Time Table!");
       const responseGet = await axios.get("/api/admin/time-table");
       const timeTableData = responseGet.data;
       console.log("timeTableData");
