@@ -13,6 +13,7 @@ import {
 } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { generateTimeTableItem, TimeTableWithSlots } from "./utils";
+import { TimeTableGenerator } from "@/lib/timeTableGenerator";
 
 export async function GET() {
   const classSlots = await db.classGrade.findMany({
@@ -39,40 +40,44 @@ export async function GET() {
     },
   });
 
-  const sectionTeacherSubjectList: SectionSubjectTeacher[] = [];
-  const timeTableList: TimeTableWithSlots[] = [];
+  // const sectionTeacherSubjectList: SectionSubjectTeacher[] = [];
+  // const timeTableList: TimeTableWithSlots[] = [];
 
-  for (const classItem of classSlots) {
-    for (const sectionItem of classItem.Section) {
-      const slotWiseDay: { [key: string]: Slots[] } = {};
-      classItem.SlotsGroup?.Slots?.forEach((slotItem) => {
-        if (!slotWiseDay[slotItem.slotNumber]) {
-          slotWiseDay[slotItem.slotNumber] = [];
-        }
-        slotWiseDay[slotItem.slotNumber].push(slotItem);
-      });
-      for (const slotNumber of Object.keys(slotWiseDay)) {
-        for (const slotItem of slotWiseDay[slotNumber]) {
-          const timeTableItem = generateTimeTableItem(
-            slotItem,
-            sectionItem,
-            classItem.Subject,
-            teacherList,
-            sectionTeacherSubjectList,
-            timeTableList
-          );
-          if (timeTableItem) {
-            timeTableList.push(timeTableItem.timeTableItem);
-            if (timeTableItem.newSectionTeacherForSubject) {
-              sectionTeacherSubjectList.push(
-                timeTableItem.newSectionTeacherForSubject
-              );
-            }
-          }
-        }
-      }
-    }
-  }
+  // for (const classItem of classSlots) {
+  //   for (const sectionItem of classItem.Section) {
+  //     const slotWiseDay: { [key: string]: Slots[] } = {};
+  //     classItem.SlotsGroup?.Slots?.forEach((slotItem) => {
+  //       if (!slotWiseDay[slotItem.slotNumber]) {
+  //         slotWiseDay[slotItem.slotNumber] = [];
+  //       }
+  //       slotWiseDay[slotItem.slotNumber].push(slotItem);
+  //     });
+  //     for (const slotNumber of Object.keys(slotWiseDay)) {
+  //       for (const slotItem of slotWiseDay[slotNumber]) {
+  //         const timeTableItem = generateTimeTableItem(
+  //           slotItem,
+  //           sectionItem,
+  //           classItem.Subject,
+  //           teacherList,
+  //           sectionTeacherSubjectList,
+  //           timeTableList
+  //         );
+  //         if (timeTableItem) {
+  //           timeTableList.push(timeTableItem.timeTableItem);
+  //           if (timeTableItem.newSectionTeacherForSubject) {
+  //             sectionTeacherSubjectList.push(
+  //               timeTableItem.newSectionTeacherForSubject
+  //             );
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  const timeTableGenerator = new TimeTableGenerator(classSlots, teacherList);
+
+  const timeTableList = timeTableGenerator.generate();
 
   const classSlotsWithTimeTable = await db.classGrade.findMany({
     where: {
