@@ -10,7 +10,6 @@ export default function TimeTableLayout({
   return (
     <>
       <div className="mx-auto max-w-screen-xl justify-between p-2 text-black dark:text-white">
-        {/* <TimeTableNav /> */}
         {children}
       </div>
     </>
