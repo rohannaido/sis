@@ -33,29 +33,27 @@ import {
   Settings,
 } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
-import SlotGroupListPage from "../../../../components/admin/time-table/SlotGroupListPage";
 import ClassSubjectsPage from "../../../../components/admin/time-table/TimeTableClassSettings";
 import SlotGroupPage from "@/components/admin/time-table/SlotGroupPage";
 import axios from "axios";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function TimeTableListPage() {
+  const { toast } = useToast();
   const [classTimeTableList, setClassTimeTableList] = useState([]);
   const [openClassSettings, setOpenClassSettings] = useState<boolean>(false);
   const [openSlotGroupSettings, setOpenSlotGroupSettings] =
     useState<boolean>(false);
   async function fetchGenerateTimeTable() {
     try {
-      // const res = await axios.post("/api/admin/time-table");
-      // const data = await res.data;
-      // toast.success("Generated Time Table!");
       const responseGet = await axios.get("/api/admin/time-table");
       const timeTableData = responseGet.data;
-      console.log("timeTableData");
-      console.log(timeTableData);
       setClassTimeTableList(timeTableData);
     } catch (err: any) {
-      toast.error(err.message);
+      toast({
+        variant: "destructive",
+        description: err?.response?.data?.message || "Something went wrong!",
+      });
     } finally {
     }
   }

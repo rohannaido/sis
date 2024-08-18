@@ -57,6 +57,7 @@ export class TimeTableGenerator {
         for (const slotNumber of Object.keys(slotWiseDay)) {
           for (const slotItem of slotWiseDay[slotNumber]) {
             const timeTableItem = this.generateTimeTableItem(
+              classItem,
               slotItem,
               sectionItem,
               classItem.Subject
@@ -77,7 +78,12 @@ export class TimeTableGenerator {
     return this.timeTableList;
   }
 
-  generateTimeTableItem(slot: Slots, section: Section, subjectList: Subject[]) {
+  generateTimeTableItem(
+    classItem: ClassGradeTimeTable,
+    slot: Slots,
+    section: Section,
+    subjectList: Subject[]
+  ) {
     let subjectToAdd = this.getSubjectToAdd(subjectList, slot, section);
 
     if (!subjectToAdd) {
@@ -105,7 +111,9 @@ export class TimeTableGenerator {
         );
 
         if (!teacherForSubject) {
-          throw new Error("Teacher not Found");
+          throw new Error(
+            `Teacher not found for class ${classItem.title} ${section.name} - ${subjectToAdd.name}`
+          );
         }
 
         const teacherTimeTableForToday = this.getTeacherTimeTableForDay(

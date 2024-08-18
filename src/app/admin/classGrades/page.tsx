@@ -25,7 +25,7 @@ export default function ClassGrades() {
       const data = await response.json();
       setClassGrades(data);
     } catch (err) {
-      toast.error("Something went wrong while searching for videos");
+      toast.error("Something went wrong while searching for classes");
     } finally {
       setLoading(false);
     }
