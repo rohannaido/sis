@@ -1,6 +1,7 @@
 "use client";
 
 import BookDialog from "@/components/admin/library/book/BookDialog";
+import BookList from "@/components/admin/library/book/BookList";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +39,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-type Book = {
+export type Book = {
   id: number;
   title: string | null;
   author: string | null;
@@ -91,15 +92,6 @@ export default function BooksPage() {
     },
   ];
 
-  const table = useReactTable({
-    data: bookList,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
-
   async function fetchBooks() {
     try {
       const response = await fetch("/api/library/books");
@@ -129,48 +121,7 @@ export default function BooksPage() {
         />
       </CardHeader>
 
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <BookList columnDef={columns} bookList={bookList} />
     </Card>
   );
 }
