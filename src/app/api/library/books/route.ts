@@ -1,0 +1,45 @@
+import { LibraryManager } from "@/lib/Library";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const bookRequestSchema = z.object({
+  title: z.string(),
+  author: z.string(),
+});
+
+export async function GET() {
+  const libraryManager = new LibraryManager();
+  const bookList = await libraryManager.getAllBooks();
+
+  return NextResponse.json(bookList);
+}
+
+export async function POST(req: NextRequest) {
+  const parsedRequest = bookRequestSchema.safeParse(await req.json());
+
+  if (!parsedRequest.success) {
+    return NextResponse.json(
+      {
+        error: parsedRequest.error,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  const libraryManager = new LibraryManager();
+  await libraryManager.addBook(
+    parsedRequest.data.title,
+    parsedRequest.data.author
+  );
+
+  return NextResponse.json(
+    {
+      message: "Saved book!",
+    },
+    {
+      status: 200,
+    }
+  );
+}

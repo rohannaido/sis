@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(cuid())
-  name     String?
-  email    String?   @unique
-  token    String?
-  password String?
-  role     String?
-  Student  Student[]
-  Teacher  Teacher[]
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  token         String?
+  password      String?
+  role          String?
+  Student       Student[]
+  Teacher       Teacher[]
+  BookBorrowing BookBorrow[]
 }
 
 model Student {
@@ -160,4 +161,21 @@ model TimeTable {
   subject          Subject?       @relation(fields: [subjectId], references: [id])
   teacherId        Int?
   teacher          Teacher?       @relation(fields: [teacherId], references: [id])
+}
+
+model Book {
+  id         Int          @id @default(autoincrement())
+  title      String
+  author     String
+  bookBorrow BookBorrow[]
+}
+
+model BookBorrow {
+  id         Int       @id @default(autoincrement())
+  bookId     Int
+  book       Book      @relation(fields: [bookId], references: [id])
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  lendDate   DateTime  @default(now())
+  returnDate DateTime?
 }

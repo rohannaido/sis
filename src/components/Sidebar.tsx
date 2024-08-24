@@ -61,6 +61,14 @@ export function Sidebar({}: {}) {
           <Clock8 className="h-5 w-5" />
           Time Table
         </Link>
+        <Link
+          href="/library"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          prefetch={false}
+        >
+          <Clock8 className="h-5 w-5" />
+          Library
+        </Link>
       </nav>
     </div>
   );
