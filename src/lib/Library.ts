@@ -1,10 +1,28 @@
 import db from "@/db";
 import { Book as BookDb } from "@prisma/client";
 import { Book } from "./Book";
+import { title } from "process";
 
 export class LibraryManager {
   async getAllBooks(): Promise<BookDb[]> {
-    return await db.book.findMany({});
+    const bookListDb = await db.book.findMany({
+      include: {
+        bookBorrow: true,
+      },
+    });
+
+    const bookList = bookListDb.map((bookListItem) => ({
+      id: bookListItem.id,
+      title: bookListItem.title,
+      author: bookListItem.author,
+      status: bookListItem.bookBorrow.find(
+        (bookBorrowItem) => !bookBorrowItem.returnDate
+      )
+        ? "BORROWED"
+        : "AVAILABLE",
+    }));
+
+    return bookList;
   }
 
   async addBook(title: string, author: string): Promise<void> {

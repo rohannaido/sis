@@ -63,28 +63,29 @@ export default function StudentLibraryPage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Borrowed Books</h2>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[
-                { id: 1, title: "The Great Gatsby", dueDate: "2023-06-30" },
-                {
-                  id: 2,
-                  title: "To Kill a Mockingbird",
-                  dueDate: "2023-07-15",
-                },
-                { id: 3, title: "1984", dueDate: "2023-08-01" },
-              ].map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell className="font-medium">{book.title}</TableCell>
-                  <TableCell>{book.dueDate}</TableCell>
-                  <TableCell>
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Due Date</TableHead>
+                  {/* <TableHead>Actions</TableHead> */}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[
+                  { id: 1, title: "The Great Gatsby", dueDate: "2023-06-30" },
+                  {
+                    id: 2,
+                    title: "To Kill a Mockingbird",
+                    dueDate: "2023-07-15",
+                  },
+                  { id: 3, title: "1984", dueDate: "2023-08-01" },
+                ].map((book) => (
+                  <TableRow key={book.id}>
+                    <TableCell className="font-medium">{book.title}</TableCell>
+                    <TableCell>{book.dueDate}</TableCell>
+                    {/* <TableCell>
                     <div className="flex items-center gap-2">
                       <Button size="sm" variant="outline">
                         Renew
@@ -93,11 +94,13 @@ export default function StudentLibraryPage() {
                         Return
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  </TableCell> */}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+
           <div className="flex items-center justify-between my-4">
             <h2 className="text-xl font-semibold">All Books</h2>
           </div>

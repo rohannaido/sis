@@ -1,5 +1,5 @@
-import BorrowedBooksPage from "./borrowed-books/page";
+import BooksPage from "./books/page";
 
 export default function LibraryPage() {
-  return <BorrowedBooksPage />;
+  return <BooksPage />;
 }

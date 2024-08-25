@@ -2,6 +2,9 @@
 
 import BookDialog from "@/components/admin/library/book/BookDialog";
 import BookList from "@/components/admin/library/book/BookList";
+import BorrowBookFormDialog from "@/components/admin/library/BorrowBookFormDialog";
+import ReturnBookFormDialog from "@/components/admin/library/ReturnBookFormDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,6 +53,8 @@ export default function BooksPage() {
   const [bookList, setBookList] = useState<Book[]>([]);
   const [editingBookId, setEditingBookId] = useState<number | null>(null);
   const [openBookForm, setOpenBookForm] = useState<boolean>(false);
+  const [openBorrowBookForm, setOpenBorrowBookForm] = useState<boolean>(false);
+  const [openReturnBookForm, setOpenReturnBookForm] = useState<boolean>(false);
 
   const columns: ColumnDef<Book>[] = [
     {
@@ -61,6 +66,13 @@ export default function BooksPage() {
       accessorKey: "author",
       header: "Author",
       cell: ({ row }) => <div>{row.getValue("author")}</div>,
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge variant="secondary">{row.getValue("status")}</Badge>
+      ),
     },
     {
       accessorKey: "id",
@@ -76,6 +88,26 @@ export default function BooksPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {row.getValue("status") === "AVAILABLE" ? (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditingBookId(row.getValue("id"));
+                    setOpenBorrowBookForm(true);
+                  }}
+                >
+                  Borrow
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditingBookId(row.getValue("id"));
+                    setOpenReturnBookForm(true);
+                  }}
+                >
+                  Return
+                </DropdownMenuItem>
+              )}
+
               <DropdownMenuItem
                 onClick={() => {
                   setEditingBookId(row.getValue("id"));
@@ -119,6 +151,22 @@ export default function BooksPage() {
           open={openBookForm}
           setOpen={setOpenBookForm}
         />
+        {openBorrowBookForm && (
+          <BorrowBookFormDialog
+            callbackFn={() => fetchBooks()}
+            bookId={editingBookId}
+            open={openBorrowBookForm}
+            setOpen={setOpenBorrowBookForm}
+          />
+        )}
+        {openReturnBookForm && (
+          <ReturnBookFormDialog
+            callbackFn={() => fetchBooks()}
+            bookId={editingBookId}
+            open={openReturnBookForm}
+            setOpen={setOpenReturnBookForm}
+          />
+        )}
       </CardHeader>
 
       <BookList columnDef={columns} bookList={bookList} />

@@ -26,7 +26,11 @@ export class Book {
           id: bookId,
         },
         include: {
-          bookBorrow: true,
+          bookBorrow: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
 
@@ -48,6 +52,13 @@ export class Book {
 
   isAvailable(): boolean {
     return !this.bookBorrowList?.find((item) => !item.returnDate);
+  }
+
+  currentBookBorrowTxn() {
+    if ((this.bookBorrowList?.length || 0) - 1 < 0) {
+      return null;
+    }
+    return this.bookBorrowList?.[this.bookBorrowList?.length - 1];
   }
 
   async borrowBook(userId: string) {
