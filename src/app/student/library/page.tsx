@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function StudentLibraryPage() {
   const [bookList, setBookList] = useState<Book[]>([]);
@@ -53,6 +54,13 @@ export default function StudentLibraryPage() {
       accessorKey: "author",
       header: "Author",
       cell: ({ row }) => <div>{row.getValue("author")}</div>,
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge variant="secondary">{row.getValue("status")}</Badge>
+      ),
     },
   ];
 
