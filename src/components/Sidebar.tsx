@@ -4,7 +4,13 @@ import { useRecoilState } from "recoil";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Clock8, HomeIcon, SquareLibrary, UserRoundPen } from "lucide-react";
+import {
+  Clock8,
+  HomeIcon,
+  LibraryBig,
+  SquareLibrary,
+  UserRoundPen,
+} from "lucide-react";
 
 export function Sidebar({}: {}) {
   const pathName = usePathname();
@@ -66,7 +72,7 @@ export function Sidebar({}: {}) {
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           prefetch={false}
         >
-          <Clock8 className="h-5 w-5" />
+          <LibraryBig className="h-5 w-5" />
           Library
         </Link>
       </nav>
