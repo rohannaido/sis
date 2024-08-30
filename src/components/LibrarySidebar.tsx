@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpenIcon, HomeIcon, Library } from "lucide-react";
+import { BookOpenIcon, HomeIcon, Library, Share } from "lucide-react";
 
 export function LibrarySidebar({}: {}) {
   const pathName = usePathname();
@@ -37,7 +37,7 @@ export function LibrarySidebar({}: {}) {
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           prefetch={false}
         >
-          <BookOpenIcon className="h-5 w-5" />
+          <Share className="h-5 w-5" />
           Borrowed Books
         </Link>
       </nav>
