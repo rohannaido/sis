@@ -1,9 +1,8 @@
 import db from "@/db";
 import { Book as BookDb } from "@prisma/client";
 import { Book } from "./Book";
-import { title } from "process";
 
-export class LibraryManager {
+class LibraryManager {
   async getAllBooks(): Promise<BookDb[]> {
     const bookListDb = await db.book.findMany({
       include: {
@@ -92,3 +91,5 @@ export class LibraryManager {
     console.log(`Book with ID ${bookId} has been updated.`);
   }
 }
+
+export const libraryManager = new LibraryManager();

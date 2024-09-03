@@ -1,5 +1,5 @@
 import { Book } from "@/lib/Book";
-import { LibraryManager } from "@/lib/Library";
+import { libraryManager } from "@/lib/Library";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -35,7 +35,6 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
 
   const bookId = parseInt(context.params.bookId);
 
-  const libraryManager = new LibraryManager();
   await libraryManager.updateBook(
     bookId,
     parsedRequest.data.title,

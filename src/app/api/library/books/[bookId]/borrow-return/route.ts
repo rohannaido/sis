@@ -1,5 +1,5 @@
 import { Book } from "@/lib/Book";
-import { LibraryManager } from "@/lib/Library";
+import { libraryManager } from "@/lib/Library";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -30,7 +30,6 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   const { userId, txnType } = parsedRequest.data;
 
-  const libraryManager = new LibraryManager();
   if (txnType == "BORROW") {
     await libraryManager.lendBook(bookId, userId);
   } else {
@@ -65,7 +64,6 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
 
   const { userId, txnType } = parsedRequest.data;
 
-  const libraryManager = new LibraryManager();
   await libraryManager.returnBook(bookId, userId);
 
   return NextResponse.json(
