@@ -28,6 +28,9 @@ const bookSchema = z.object({
   author: z.string().min(2, {
     message: "Author must be at least 2 character long.",
   }),
+  copies: z.number().min(1, {
+    message: "Copies must be at least 1.",
+  }),
 });
 
 export default function BookDialog({
@@ -48,6 +51,7 @@ export default function BookDialog({
     defaultValues: {
       title: "",
       author: "",
+      copies: 1,
     },
   });
 
@@ -125,6 +129,29 @@ export default function BookDialog({
                     <FormLabel>Author</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter the book author" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="copies"
+              render={({ field }: { field: any }) => (
+                <>
+                  <FormItem>
+                    <FormLabel>Copies</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter the book copies"
+                        type="number"
+                        {...field}
+                        onChange={(event) =>
+                          field.onChange(event.target.valueAsNumber)
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -96,12 +96,12 @@ export function Sidebar({}: {}) {
                 Books
               </Link>
               <Link
-                href="/admin/library/borrowed-books"
+                href="/admin/library/book-borrows"
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 prefetch={false}
               >
                 <Share className="h-5 w-5" />
-                Borrowed Books
+                Book Borrows
               </Link>
             </AccordionContent>
           </AccordionItem>

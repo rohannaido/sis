@@ -10,25 +10,30 @@ class LibraryManager {
       },
     });
 
-    const bookList = bookListDb.map((bookListItem) => ({
-      id: bookListItem.id,
-      title: bookListItem.title,
-      author: bookListItem.author,
-      status: bookListItem.bookBorrow.find(
+    const bookList = bookListDb.map((bookListItem) => {
+      const borrowedCopiesCount = bookListItem.bookBorrow.filter(
         (bookBorrowItem) => !bookBorrowItem.returnDate
-      )
-        ? "BORROWED"
-        : "AVAILABLE",
-    }));
+      )?.length;
+      return {
+        id: bookListItem.id,
+        title: bookListItem.title,
+        author: bookListItem.author,
+        copies: bookListItem.copies,
+        borrowedCopies: borrowedCopiesCount,
+        status:
+          borrowedCopiesCount == bookListItem.copies ? "BORROWED" : "AVAILABLE",
+      };
+    });
 
     return bookList;
   }
 
-  async addBook(title: string, author: string): Promise<void> {
+  async addBook(title: string, author: string, copies: number): Promise<void> {
     await db.book.create({
       data: {
         title: title,
         author: author,
+        copies: copies,
       },
     });
   }
@@ -89,6 +94,15 @@ class LibraryManager {
     });
 
     console.log(`Book with ID ${bookId} has been updated.`);
+  }
+
+  async getAllBookBorrowTxn() {
+    return await db.bookBorrow.findMany({
+      include: {
+        book: true,
+        user: true,
+      },
+    });
   }
 }
 

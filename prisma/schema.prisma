@@ -168,6 +168,7 @@ model Book {
   title      String
   author     String
   bookBorrow BookBorrow[]
+  copies     Int          @default(0)
 }
 
 model BookBorrow {

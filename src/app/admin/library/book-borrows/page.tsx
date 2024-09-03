@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BookBorrow } from "@prisma/client";
 import {
   ColumnDef,
   flexRender,
@@ -37,29 +38,45 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-type Teacher = {
-  id: number;
-  name: string | null;
-  email: string | null;
-};
-
-export default function TeachersPage() {
+export default function BookBorrowsPage() {
   const router = useRouter();
-  const [teacherList, setTeacherList] = useState<Teacher[]>([]);
+  const [bookBorrowsList, setBookBorrowsList] = useState<BookBorrow[]>([]);
 
-  const columns: ColumnDef<Teacher>[] = [
+  const columns: ColumnDef<BookBorrow>[] = [
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: "user.name",
+      id: "firstName",
+      header: "User",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("name")}</div>
+        <div className="capitalize">{row.getValue("firstName")}</div>
       ),
     },
     {
-      accessorKey: "email",
-      header: "Email",
+      accessorKey: "book.title",
+      id: "bookTitle",
+      header: "Book",
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("email")}</div>
+        <div className="lowercase">{row.getValue("bookTitle")}</div>
+      ),
+    },
+    {
+      accessorKey: "lendDate",
+      header: "Borrow Date",
+      cell: ({ row }) => (
+        <div className="lowercase">
+          {new Date(row.getValue("lendDate")).toLocaleDateString()}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "returnDate",
+      header: "Return Date",
+      cell: ({ row }) => (
+        <div className="lowercase">
+          {row.getValue("returnDate")
+            ? new Date(row.getValue("returnDate")).toLocaleDateString()
+            : "-"}
+        </div>
       ),
     },
     {
@@ -94,7 +111,7 @@ export default function TeachersPage() {
   ];
 
   const table = useReactTable({
-    data: teacherList,
+    data: bookBorrowsList,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -102,31 +119,31 @@ export default function TeachersPage() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  async function fetchTeachers() {
+  async function fetchBorrowedBooks() {
     try {
-      const response = await fetch("/api/admin/teachers");
+      const response = await fetch("/api/library/book-borrows");
       const data = await response.json();
-      setTeacherList(data);
+      const bookBorrowsDisplayList = bookBorrowsList.map((item: any) => ({
+        userName: item.user.name,
+      }));
+      setBookBorrowsList(data);
     } catch (err) {
-      toast.error("Something went wrong while searching for videos");
+      toast.error("Something went wrong while searching for txn");
     } finally {
     }
   }
 
   useEffect(() => {
-    fetchTeachers();
+    fetchBorrowedBooks();
   }, []);
 
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
-          <CardTitle>Teachers</CardTitle>
-          <CardDescription>You can manage teachers.</CardDescription>
+          <CardTitle>Book Borrows</CardTitle>
+          <CardDescription>You can manage book borrows.</CardDescription>
         </div>
-        <Link href="/admin/teachers/manage-teacher">
-          <Button variant="outline">+ Teacher</Button>
-        </Link>
       </CardHeader>
 
       <Table>

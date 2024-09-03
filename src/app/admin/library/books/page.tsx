@@ -46,6 +46,8 @@ export type Book = {
   id: number;
   title: string | null;
   author: string | null;
+  copies: number;
+  borrowedCopies: number;
 };
 
 export default function BooksPage() {
@@ -66,6 +68,18 @@ export default function BooksPage() {
       accessorKey: "author",
       header: "Author",
       cell: ({ row }) => <div>{row.getValue("author")}</div>,
+    },
+    {
+      accessorKey: "borrowedCopies",
+      header: "Borrowed Copies",
+      cell: ({ row }) => (
+        <div>
+          {row.getValue("borrowedCopies") + " / " + row.getValue("copies")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "copies",
     },
     {
       accessorKey: "status",

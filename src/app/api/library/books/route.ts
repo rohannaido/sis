@@ -5,6 +5,7 @@ import { z } from "zod";
 const bookRequestSchema = z.object({
   title: z.string(),
   author: z.string(),
+  copies: z.number(),
 });
 
 export async function GET() {
@@ -29,7 +30,8 @@ export async function POST(req: NextRequest) {
 
   await libraryManager.addBook(
     parsedRequest.data.title,
-    parsedRequest.data.author
+    parsedRequest.data.author,
+    parsedRequest.data.copies
   );
 
   return NextResponse.json(

@@ -1,3 +1,4 @@
+import { Book } from "@/app/admin/library/books/page";
 import {
   Table,
   TableBody,
@@ -15,12 +16,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-type Book = {
-  id: number;
-  title: string | null;
-  author: string | null;
-};
 
 export default function BookList({
   columnDef,

@@ -6,16 +6,19 @@ export class Book {
   private title: string;
   private author: string;
   private bookBorrowList?: BookBorrow[];
+  private copies: number;
 
   private constructor(
     id: number,
     title: string,
     author: string,
+    copies: number,
     bookBorrowList?: BookBorrow[]
   ) {
     this.id = id;
     this.title = title;
     this.author = author;
+    this.copies = copies;
     this.bookBorrowList = bookBorrowList;
   }
 
@@ -39,6 +42,7 @@ export class Book {
           bookData.id,
           bookData.title,
           bookData.author,
+          bookData.copies,
           bookData.bookBorrow
         );
       } else {
@@ -51,7 +55,11 @@ export class Book {
   }
 
   isAvailable(): boolean {
-    return !this.bookBorrowList?.find((item) => !item.returnDate);
+    return !(
+      this.bookBorrowList?.filter(
+        (bookBorrowItem) => !bookBorrowItem.returnDate
+      )?.length == this.copies
+    );
   }
 
   currentBookBorrowTxn() {
