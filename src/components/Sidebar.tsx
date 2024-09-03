@@ -7,10 +7,18 @@ import Link from "next/link";
 import {
   Clock8,
   HomeIcon,
+  Library,
   LibraryBig,
+  Share,
   SquareLibrary,
   UserRoundPen,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 
 export function Sidebar({}: {}) {
   const pathName = usePathname();
@@ -67,14 +75,37 @@ export function Sidebar({}: {}) {
           <Clock8 className="h-5 w-5" />
           Time Table
         </Link>
-        <Link
-          href="/library"
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          prefetch={false}
+
+        <Accordion
+          type="single"
+          className="rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          collapsible
         >
-          <LibraryBig className="h-5 w-5" />
-          Library
-        </Link>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="flex items-center">
+              <LibraryBig className="h-5 w-5" />
+              Library
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/admin/library/books"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                prefetch={false}
+              >
+                <Library className="h-5 w-5" />
+                Books
+              </Link>
+              <Link
+                href="/admin/library/borrowed-books"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                prefetch={false}
+              >
+                <Share className="h-5 w-5" />
+                Borrowed Books
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </nav>
     </div>
   );

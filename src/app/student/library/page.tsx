@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import BookList from "@/components/admin/library/book/BookList";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Book } from "@/app/library/books/page";
+import { Book } from "@/app/admin/library/books/page";
 import {
   DropdownMenu,
   DropdownMenuContent,

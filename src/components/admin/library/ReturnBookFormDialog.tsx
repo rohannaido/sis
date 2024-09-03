@@ -1,4 +1,4 @@
-import { Book } from "@/app/library/books/page";
+import { Book } from "@/app/admin/library/books/page";
 import { Button } from "@/components/ui/button";
 import {
   Command,
