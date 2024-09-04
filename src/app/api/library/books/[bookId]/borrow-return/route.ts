@@ -1,5 +1,5 @@
-import { Book } from "@/lib/Book";
-import { libraryManager } from "@/lib/Library";
+import { currentBookBorrowTxn, getBookById } from "@/lib/book.service";
+import { lendBook, returnBook } from "@/lib/library.service";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -31,9 +31,9 @@ export async function POST(req: NextRequest, context: { params: Params }) {
   const { userId, txnType } = parsedRequest.data;
 
   if (txnType == "BORROW") {
-    await libraryManager.lendBook(bookId, userId);
+    await lendBook(bookId, userId);
   } else {
-    await libraryManager.returnBook(bookId, userId);
+    await returnBook(bookId, userId);
   }
 
   return NextResponse.json(
@@ -64,7 +64,7 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
 
   const { userId, txnType } = parsedRequest.data;
 
-  await libraryManager.returnBook(bookId, userId);
+  await returnBook(bookId, userId);
 
   return NextResponse.json(
     {
@@ -78,7 +78,6 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
 
 export async function GET(req: NextRequest, context: { params: Params }) {
   const bookId = parseInt(context.params.bookId);
-  const bookDetail = await Book.fetchFromDatabase(bookId);
-  const bookBorrowDetail = bookDetail?.currentBookBorrowTxn();
+  const bookBorrowDetail = await currentBookBorrowTxn(bookId);
   return NextResponse.json(bookBorrowDetail);
 }

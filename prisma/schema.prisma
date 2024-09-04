@@ -27,6 +27,7 @@ model User {
 
 model Student {
   id           Int        @id @default(autoincrement())
+  uniqueNumber Int        @default(0)
   userId       String
   user         User       @relation(fields: [userId], references: [id])
   classGradeId Int

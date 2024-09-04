@@ -1,4 +1,4 @@
-import { libraryManager } from "@/lib/Library";
+import { addBook, getAllBooks } from "@/lib/book.service";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -9,7 +9,7 @@ const bookRequestSchema = z.object({
 });
 
 export async function GET() {
-  const bookList = await libraryManager.getAllBooks();
+  const bookList = await getAllBooks();
 
   return NextResponse.json(bookList);
 }
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await libraryManager.addBook(
+  await addBook(
     parsedRequest.data.title,
     parsedRequest.data.author,
     parsedRequest.data.copies

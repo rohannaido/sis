@@ -102,7 +102,8 @@ export default function BooksPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {row.getValue("status") === "AVAILABLE" ? (
+              {parseInt(row.getValue("borrowedCopies") || "0") !=
+                row.getValue("copies") && (
                 <DropdownMenuItem
                   onClick={() => {
                     setEditingBookId(row.getValue("id"));
@@ -111,7 +112,8 @@ export default function BooksPage() {
                 >
                   Borrow
                 </DropdownMenuItem>
-              ) : (
+              )}
+              {parseInt(row.getValue("borrowedCopies") || "0") > 0 && (
                 <DropdownMenuItem
                   onClick={() => {
                     setEditingBookId(row.getValue("id"));

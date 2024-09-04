@@ -1,5 +1,4 @@
-import { Book } from "@/lib/Book";
-import { libraryManager } from "@/lib/Library";
+import { getBookById, updateBook } from "@/lib/book.service";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -14,7 +13,7 @@ type Params = {
 
 export async function GET(req: NextRequest, context: { params: Params }) {
   const bookId = parseInt(context.params.bookId);
-  const book = await Book.fetchFromDatabase(bookId);
+  const book = await getBookById(bookId);
 
   return NextResponse.json(book);
 }
@@ -35,11 +34,7 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
 
   const bookId = parseInt(context.params.bookId);
 
-  await libraryManager.updateBook(
-    bookId,
-    parsedRequest.data.title,
-    parsedRequest.data.author
-  );
+  await updateBook(bookId, parsedRequest.data.title, parsedRequest.data.author);
 
   return NextResponse.json(
     {
