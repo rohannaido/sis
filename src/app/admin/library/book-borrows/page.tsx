@@ -141,8 +141,10 @@ export default function BookBorrowsPage() {
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
-          <CardTitle>Book Borrows</CardTitle>
-          <CardDescription>You can manage book borrows.</CardDescription>
+          <CardTitle>Book Borrow Transactions</CardTitle>
+          <CardDescription>
+            You can manage book borrow transactions.
+          </CardDescription>
         </div>
       </CardHeader>
 

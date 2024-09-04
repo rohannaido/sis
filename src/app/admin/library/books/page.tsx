@@ -96,7 +96,7 @@ export default function BooksPage() {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
+              <Button variant="ghost" className="h-2 w-4 p-0">
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
@@ -155,7 +155,7 @@ export default function BooksPage() {
 
   return (
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className="flex flex-row justify-between items-center">
         <div className="flex flex-col gap-2">
           <CardTitle>Books</CardTitle>
         </div>
