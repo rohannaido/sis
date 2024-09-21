@@ -1,11 +1,10 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
+export const teacherSchema = z.object({
   id: z.string(),
   name: z.string().min(3).max(31),
-  email: z.string().email(),
   password: z.string().min(6).max(255),
   role: z.string().min(1),
 });
 
-export type User = z.infer<typeof userSchema>;
+export type Teacher = z.infer<typeof teacherSchema>;

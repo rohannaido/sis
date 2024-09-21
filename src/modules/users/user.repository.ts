@@ -43,4 +43,16 @@ export class UserRepository {
       throw error;
     }
   }
+
+  async createUserWithoutPassword(input: User) {
+    try {
+      const user = await db.user.create({
+        data: input,
+      });
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
