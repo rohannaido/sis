@@ -101,13 +101,19 @@ export async function removeBook(bookId: number): Promise<void> {
 }
 
 export async function checkBookAvailable(bookId: number): Promise<boolean> {
-  const bookBorrows = await db.bookBorrow.findMany({
+  const book = await getBookById(bookId);
+  if (!book) {
+    throw new Error("Book is not found.");
+  }
+
+  const bookBorrows = await db.bookBorrow.count({
     where: {
       bookId,
+      returnDate: null,
     },
   });
 
-  return bookBorrows?.every((bookBorrowItem) => !bookBorrowItem.returnDate);
+  return bookBorrows < book.copies;
 }
 
 export async function currentBookBorrowTxn(bookId: number) {
@@ -128,4 +134,24 @@ export async function currentBookBorrowTxn(bookId: number) {
   console.log(bookBorrows?.[bookBorrows?.length - 1]);
 
   return bookBorrows?.[bookBorrows?.length - 1];
+}
+
+export async function getAllBookBorrowedUsers(bookId: number) {
+  const bookBorrows = await db.bookBorrow.findMany({
+    where: {
+      bookId,
+      returnDate: null,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  const userList = [];
+
+  for (let i = 0; i < bookBorrows.length; i++) {
+    userList.push(bookBorrows[i].user);
+  }
+
+  return userList;
 }
