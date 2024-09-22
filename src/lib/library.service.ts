@@ -1,16 +1,34 @@
 import db from "@/db";
 import { checkBookAvailable, getBookById } from "./book.service";
 
-export async function lendBook(bookId: number, userId: string): Promise<void> {
+export async function lendBook(
+  bookId: number,
+  userId: string,
+  dueDate: string
+): Promise<void> {
   const isBookAvailable = await checkBookAvailable(bookId);
   if (!isBookAvailable) {
     throw new Error("Book is not available.");
   }
 
+  const userBorrowedCount = await db.bookBorrow.count({
+    where: {
+      userId,
+      returnDate: null,
+    },
+  });
+
+  if (userBorrowedCount > 0) {
+    throw new Error("User cannot borrow more books.");
+  }
+
+  dueDate = new Date(dueDate).toISOString();
+
   await db.bookBorrow.create({
     data: {
       bookId,
       userId,
+      dueDate,
     },
   });
 }
@@ -53,6 +71,9 @@ export async function getAllBookBorrowTxn() {
     include: {
       book: true,
       user: true,
+    },
+    orderBy: {
+      lendDate: "desc",
     },
   });
 }

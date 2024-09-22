@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
 import { Signout } from "./Signout";
+import { ProfileDropDown } from "./profile-menu/ProfileDropDown";
 
 export const AppbarAuth = () => {
   const session = useSession();
@@ -20,6 +21,7 @@ export const AppbarAuth = () => {
       Login
     </Button>
   ) : (
-    <Signout />
+    <ProfileDropDown />
+    // <Signout />
   );
 };

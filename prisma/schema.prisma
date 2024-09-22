@@ -179,5 +179,6 @@ model BookBorrow {
   userId     String
   user       User      @relation(fields: [userId], references: [id])
   lendDate   DateTime  @default(now())
+  dueDate    DateTime  @db.Date
   returnDate DateTime?
 }

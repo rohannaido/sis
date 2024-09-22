@@ -1,1 +1,12 @@
-[{"id":2,"classGradeId":1,"name":"Math"},{"id":3,"classGradeId":1,"name":"English"},{"id":4,"classGradeId":1,"name":"Hindi"},{"id":5,"classGradeId":1,"name":"Art"},{"id":6,"classGradeId":1,"name":"Games"},{"id":7,"classGradeId":2,"name":"Math"},{"id":8,"classGradeId":2,"name":"Math"},{"id":9,"classGradeId":2,"name":"Science"},{"id":10,"classGradeId":1,"name":"Science"}]
+[
+    {"id": 2, "classGradeId": 1, "name": "Math", "periodCountPerWeek": 0},
+    {"id": 3, "classGradeId": 1, "name": "English", "periodCountPerWeek": 0},
+    {"id": 4, "classGradeId": 1, "name": "Hindi", "periodCountPerWeek": 0},
+    {"id": 5, "classGradeId": 1, "name": "Art", "periodCountPerWeek": 0},
+    {"id": 6, "classGradeId": 1, "name": "Games", "periodCountPerWeek": 0},
+    {"id": 7, "classGradeId": 2, "name": "Math", "periodCountPerWeek": 0},
+    {"id": 8, "classGradeId": 2, "name": "Math", "periodCountPerWeek": 0},
+    {"id": 9, "classGradeId": 2, "name": "Science", "periodCountPerWeek": 0},
+    {"id": 10, "classGradeId": 1, "name": "Science", "periodCountPerWeek": 0}
+  ]
+  

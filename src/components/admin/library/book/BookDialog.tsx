@@ -98,7 +98,7 @@ export default function BookDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          {bookId ? "Edit" : "Add"} book {bookId || `id - ${bookId}`}
+          {bookId ? "Edit" : "Add"} book {bookId && `id - ${bookId}`}
         </DialogHeader>
         <Form {...form}>
           <form

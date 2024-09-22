@@ -29,18 +29,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
 import axios from "axios";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
+import { format } from "date-fns";
 
 const borrowBookSchema = z.object({
   userId: z.string(),
+  dueDate: z.date({
+    required_error: "A due date is required.",
+  }),
 });
 
 export default function BorrowBookFormDialog({
@@ -54,6 +59,7 @@ export default function BorrowBookFormDialog({
   setOpen: (value: boolean) => void;
   callbackFn?: Function;
 }) {
+  const { toast } = useToast();
   const [book, setBook] = useState<Book | null>(null);
   const [userList, setUserList] = useState<User[]>([]);
 
@@ -66,6 +72,8 @@ export default function BorrowBookFormDialog({
     resolver: zodResolver(borrowBookSchema),
     defaultValues: {
       userId: "",
+      // 2 weeks from now
+      dueDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
     },
   });
 
@@ -74,7 +82,10 @@ export default function BorrowBookFormDialog({
       const response = await axios.get(`/api/library/books/${bookId}`);
       setBook(response.data);
     } catch (err: any) {
-      toast("Something went wrong finding book detail");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong finding book detail",
+      });
     } finally {
     }
   }
@@ -84,7 +95,10 @@ export default function BorrowBookFormDialog({
       const response = await axios.get(`/api/admin/users`);
       setUserList(response.data);
     } catch (err: any) {
-      toast("Something went wrong finding user list");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong finding users",
+      });
     } finally {
     }
   }
@@ -93,15 +107,21 @@ export default function BorrowBookFormDialog({
     try {
       const payload = {
         userId: data.userId,
+        dueDate: format(data.dueDate, "yyyy-MM-dd"),
         txnType: "BORROW",
       };
       await axios.post(`/api/library/books/${bookId}/borrow-return`, payload);
-      toast("Book borrowed");
+      toast({
+        variant: "default",
+        description: "Book borrowed successfully",
+      });
       callbackFn?.();
       setOpen(false);
     } catch (error: any) {
-      console.log(error);
-      toast(error.message);
+      toast({
+        variant: "destructive",
+        description: error?.response?.data?.error || "Something went wrong!",
+      });
     } finally {
     }
   }
@@ -175,6 +195,48 @@ export default function BorrowBookFormDialog({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Due Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="lg:col-span-2 flex justify-end">
               <Button type="submit">Borrow</Button>
             </div>

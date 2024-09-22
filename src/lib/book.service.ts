@@ -70,7 +70,8 @@ export async function getBookById(bookId: number): Promise<Book | null> {
 export async function updateBook(
   bookId: number,
   title?: string,
-  author?: string
+  author?: string,
+  copies?: number
 ): Promise<void> {
   const updateData: Partial<BookDb> = {};
 
@@ -80,6 +81,10 @@ export async function updateBook(
 
   if (author) {
     updateData.author = author;
+  }
+
+  if (copies) {
+    updateData.copies = copies;
   }
 
   await db.book.update({
