@@ -24,6 +24,7 @@ export function Sidebar({}: {}) {
   const pathName = usePathname();
 
   const [sidebarOpen, setSidebarOpen] = useRecoilState(sidebarOpenAtom);
+  const [libraryMenuOpen, setLibraryMenuOpen] = useState(false);
 
   useEffect(() => {
     if (window.innerWidth < 500) {
@@ -51,6 +52,35 @@ export function Sidebar({}: {}) {
           <HomeIcon className="h-5 w-5" />
           Dashboard
         </Link>
+        <div>
+          <div
+            onClick={() => setLibraryMenuOpen(!libraryMenuOpen)}
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <LibraryBig className="h-5 w-5" />
+            Library
+          </div>
+          {libraryMenuOpen && (
+            <div className="ml-4">
+              <Link
+                href="/admin/library/books"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                prefetch={false}
+              >
+                <Library className="h-5 w-5" />
+                Books
+              </Link>
+              <Link
+                href="/admin/library/book-borrows"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                prefetch={false}
+              >
+                <Share className="h-5 w-5" />
+                Book Borrows
+              </Link>
+            </div>
+          )}
+        </div>
         <Link
           href="/admin/students"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -83,37 +113,6 @@ export function Sidebar({}: {}) {
           <Clock8 className="h-5 w-5" />
           Time Table
         </Link>
-
-        <Accordion
-          type="single"
-          className="rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          collapsible
-        >
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="flex items-center">
-              <LibraryBig className="h-5 w-5" />
-              Library
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/admin/library/books"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                prefetch={false}
-              >
-                <Library className="h-5 w-5" />
-                Books
-              </Link>
-              <Link
-                href="/admin/library/book-borrows"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                prefetch={false}
-              >
-                <Share className="h-5 w-5" />
-                Book Borrows
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </nav>
     </div>
   );

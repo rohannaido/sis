@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import {
   ColumnDef,
   flexRender,
@@ -40,7 +41,6 @@ import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export type Book = {
   id: number;
@@ -51,6 +51,7 @@ export type Book = {
 };
 
 export default function BooksPage() {
+  const { toast } = useToast();
   const router = useRouter();
   const [bookList, setBookList] = useState<Book[]>([]);
   const [editingBookId, setEditingBookId] = useState<number | null>(null);
@@ -147,7 +148,10 @@ export default function BooksPage() {
       const data = await response.json();
       setBookList(data);
     } catch (err) {
-      toast.error("Something went wrong while searching for books");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong while fetching books",
+      });
     } finally {
     }
   }

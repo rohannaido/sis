@@ -92,7 +92,7 @@ export default function BookBorrowsPage() {
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            {/* <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => {
                   router.push(
@@ -103,7 +103,7 @@ export default function BookBorrowsPage() {
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
+            </DropdownMenuContent> */}
           </DropdownMenu>
         );
       },

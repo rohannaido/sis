@@ -10,6 +10,14 @@ type Params = {
 const borrowRequestSchema = z.object({
   userId: z.string(),
   txnType: z.string(),
+  dueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD"),
+});
+
+const returnRequestSchema = z.object({
+  userId: z.string(),
+  txnType: z.string(),
 });
 
 export async function POST(req: NextRequest, context: { params: Params }) {
@@ -28,28 +36,39 @@ export async function POST(req: NextRequest, context: { params: Params }) {
     );
   }
 
-  const { userId, txnType } = parsedRequest.data;
+  const { userId, txnType, dueDate } = parsedRequest.data;
 
-  if (txnType == "BORROW") {
-    await lendBook(bookId, userId);
-  } else {
-    await returnBook(bookId, userId);
-  }
-
-  return NextResponse.json(
-    {
-      message: "Transaction successful!",
-    },
-    {
-      status: 200,
+  try {
+    if (txnType == "BORROW") {
+      await lendBook(bookId, userId, dueDate);
+    } else {
+      await returnBook(bookId, userId);
     }
-  );
+
+    return NextResponse.json(
+      {
+        message: "Transaction successful!",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
 }
 
 export async function PATCH(req: NextRequest, context: { params: Params }) {
   const bookId = parseInt(context.params.bookId);
 
-  const parsedRequest = borrowRequestSchema.safeParse(await req.json());
+  const parsedRequest = returnRequestSchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
     return NextResponse.json(
@@ -64,16 +83,27 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
 
   const { userId, txnType } = parsedRequest.data;
 
-  await returnBook(bookId, userId);
+  try {
+    await returnBook(bookId, userId);
 
-  return NextResponse.json(
-    {
-      message: "Transaction successful!",
-    },
-    {
-      status: 200,
-    }
-  );
+    return NextResponse.json(
+      {
+        message: "Transaction successful!",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 400,
+      }
+    );
+  }
 }
 
 export async function GET(req: NextRequest, context: { params: Params }) {

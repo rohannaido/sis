@@ -1,1 +1,6 @@
-[{"id":1,"title":"1"},{"id":2,"title":"2"},{"id":3,"title":"3"}]
+[
+    {"id": 1, "title": "1", "slotsGroupId": 0},
+    {"id": 2, "title": "2", "slotsGroupId": 0},
+    {"id": 3, "title": "3", "slotsGroupId": 0}
+]
+  

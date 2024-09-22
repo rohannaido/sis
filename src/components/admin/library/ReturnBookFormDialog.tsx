@@ -29,6 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
@@ -36,7 +37,6 @@ import axios from "axios";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 
 const borrowBookSchema = z.object({
@@ -54,6 +54,7 @@ export default function ReturnBookFormDialog({
   setOpen: (value: boolean) => void;
   callbackFn?: Function;
 }) {
+  const { toast } = useToast();
   const [book, setBook] = useState<Book | null>(null);
   const [borrowTxn, setBorrowTxn] = useState<any>({});
   const [userList, setUserList] = useState<User[]>([]);
@@ -76,7 +77,10 @@ export default function ReturnBookFormDialog({
       const response = await axios.get(`/api/library/books/${bookId}`);
       setBook(response.data);
     } catch (err: any) {
-      toast("Something went wrong finding book detail");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong finding book detail",
+      });
     } finally {
     }
   }
@@ -88,7 +92,10 @@ export default function ReturnBookFormDialog({
       );
       setBorrowTxn(response.data);
     } catch (err: any) {
-      toast("Something went wrong finding book detail");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong finding book detail",
+      });
     } finally {
     }
   }
@@ -100,7 +107,10 @@ export default function ReturnBookFormDialog({
       );
       setUserList(response.data);
     } catch (err: any) {
-      toast("Something went wrong finding users");
+      toast({
+        variant: "destructive",
+        description: "Something went wrong finding book detail",
+      });
     } finally {
     }
   }
@@ -114,10 +124,18 @@ export default function ReturnBookFormDialog({
           txnType: "RETURN",
         }
       );
+      toast({
+        variant: "default",
+        description: "Book returned successfully",
+      });
       callbackFn?.();
       setOpen(false);
     } catch (err: any) {
-      toast("Returned Book");
+      toast({
+        variant: "destructive",
+        description:
+          err?.response?.data?.error || "Something went wrong returning book",
+      });
     } finally {
     }
   }

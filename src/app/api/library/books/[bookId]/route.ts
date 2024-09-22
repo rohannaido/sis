@@ -5,6 +5,7 @@ import { z } from "zod";
 const bookRequestSchema = z.object({
   title: z.string(),
   author: z.string(),
+  copies: z.number(),
 });
 
 type Params = {
@@ -34,7 +35,12 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
 
   const bookId = parseInt(context.params.bookId);
 
-  await updateBook(bookId, parsedRequest.data.title, parsedRequest.data.author);
+  await updateBook(
+    bookId,
+    parsedRequest.data.title,
+    parsedRequest.data.author,
+    parsedRequest.data.copies
+  );
 
   return NextResponse.json(
     {
