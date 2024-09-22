@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
-import { z } from "zod";
 
 type Params = {
   classGradeId: string;
