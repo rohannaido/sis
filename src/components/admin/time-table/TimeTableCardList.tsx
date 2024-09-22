@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import TimeTableCard from "./TimeTableCard";
-import { NewSection } from "@/app/api/admin/time-table/route1";
 import { Section, Slots, TimeTable } from "@prisma/client";
 
+// make a type using a type and add a new property
+export type TimeTableWithSlots = TimeTable & { slots: Slots };
+
 export interface SectionWithTimeTable extends Section {
-  TimeTable: TimeTable[];
+  TimeTable: TimeTableWithSlots[];
 }
 
 export default function TimeTableCardList({

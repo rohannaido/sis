@@ -72,6 +72,7 @@ export default function TimeTableForm({
       let timeTableData: any[] | undefined = [];
       classTimeTableList.forEach((classItem) =>
         classItem.Section.forEach((sectionItem) => {
+          // @ts-ignore
           sectionItem?.TimeTable?.forEach((timeTableItem) => {
             timeTableData.push(timeTableItem);
           });
@@ -91,6 +92,7 @@ export default function TimeTableForm({
       let timeTableData: any[] | undefined = [];
       classTimeTableList.forEach((classItem) =>
         classItem.Section.forEach((sectionItem) => {
+          // @ts-ignore
           sectionItem?.TimeTable?.forEach((timeTableItem) => {
             timeTableData.push(timeTableItem);
           });

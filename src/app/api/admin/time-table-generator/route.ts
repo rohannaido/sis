@@ -87,6 +87,7 @@ export async function GET() {
 
   classSlotsWithTimeTable.forEach((classItem) => {
     classItem.Section.forEach((sectionItem) => {
+      // @ts-ignore
       sectionItem.TimeTable = timeTableList
         .filter((timeTableItem) => timeTableItem.sectionId == sectionItem.id)
         .map((timeTableItem) => {
@@ -99,6 +100,7 @@ export async function GET() {
             (teacherItem) => teacherItem.id == timeTableItem.teacherId
           );
 
+          // @ts-ignore
           const { TeacherClassGradeSubjectLink, ...restTeacher } = teacher;
 
           return {

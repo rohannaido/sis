@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
-import { timeTableRequestBodySchema } from "../route";
+import { z } from "zod";
+const timeTableRequestBodySchema = z.array(
+  z.object({
+    classGradeId: z.number(),
+    sectionId: z.number(),
+    slotsGroupId: z.number(),
+    dayOfWeek: z.string(),
+    slotsId: z.number(),
+    subjectId: z.number(),
+    teacherId: z.number(),
+  })
+);
 
 type Params = {
   timeTableId: string;
@@ -75,6 +86,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 
   classSlotsWithTimeTable.forEach((classItem) => {
     classItem.Section.forEach((sectionItem) => {
+      // @ts-ignore
       sectionItem.TimeTable = timeTableList
         .filter((timeTableItem) => timeTableItem.sectionId == sectionItem.id)
         .map((timeTableItem) => {
@@ -87,6 +99,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
             (teacherItem) => teacherItem.id == timeTableItem.teacherId
           );
 
+          // @ts-ignore
           const { TeacherClassGradeSubjectLink, ...restTeacher } = teacher;
 
           return {

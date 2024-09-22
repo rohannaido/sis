@@ -41,7 +41,7 @@ export type Student = {
   email: string;
 };
 
-export const columns: ColumnDef<Student>[] = [
+const columns: ColumnDef<Student>[] = [
   {
     accessorKey: "name",
     header: "Name",
