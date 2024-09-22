@@ -13,6 +13,7 @@ export const getAllSubjects = async (email: string) => {
                   id: true,
                   name: true,
                   classGradeId: true,
+                  periodCountPerWeek: true,
                 },
               },
             },

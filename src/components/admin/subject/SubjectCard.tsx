@@ -18,6 +18,7 @@ export type Subject = {
   id: number;
   classGradeId: number;
   name: string | null;
+  periodCountPerWeek: number | null;
 };
 
 export const SubjectCard = ({ subject }: { subject: Subject }) => {

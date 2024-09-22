@@ -2,7 +2,7 @@ import db from "@/db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export const timeTableRequestBodySchema = z.array(
+const timeTableRequestBodySchema = z.array(
   z.object({
     classGradeId: z.number(),
     sectionId: z.number(),

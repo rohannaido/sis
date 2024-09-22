@@ -1,4 +1,3 @@
-import { NewSection, newSlot } from "@/app/api/admin/time-table/route1";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Slots, TimeTable } from "@prisma/client";
 import { SectionWithTimeTable } from "./TimeTableCardList";
@@ -78,19 +77,23 @@ export default function TimeTableCard({
                       className="flex flex-col justify-center items-center w-full h-full"
                       draggable="true"
                     >
-                      {timeTableMap[dayItem]?.[slotItem.slotNumber] ? (
+                      {timeTableMap[dayItem]?.[
+                        parseInt(slotItem.slotNumber?.toString() || "0")
+                      ] ? (
                         <>
                           <div>
                             {
-                              timeTableMap[dayItem]?.[slotItem.slotNumber]
-                                ?.subject?.name
+                              timeTableMap[dayItem]?.[
+                                parseInt(slotItem.slotNumber?.toString() || "0")
+                              ]?.subject?.name
                             }
                           </div>
                           <div>
                             (
                             {
-                              timeTableMap[dayItem]?.[slotItem.slotNumber]
-                                ?.teacher?.user?.name
+                              timeTableMap[dayItem]?.[
+                                parseInt(slotItem.slotNumber?.toString() || "0")
+                              ]?.teacher?.user?.name
                             }
                             )
                           </div>
