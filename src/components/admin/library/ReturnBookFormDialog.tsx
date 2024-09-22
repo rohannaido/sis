@@ -39,6 +39,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+const borrowBookSchema = z.object({
+  userId: z.string(),
+});
+
 export default function ReturnBookFormDialog({
   bookId,
   open,
@@ -52,10 +56,19 @@ export default function ReturnBookFormDialog({
 }) {
   const [book, setBook] = useState<Book | null>(null);
   const [borrowTxn, setBorrowTxn] = useState<any>({});
+  const [userList, setUserList] = useState<User[]>([]);
+
+  const form = useForm<z.infer<typeof borrowBookSchema>>({
+    resolver: zodResolver(borrowBookSchema),
+    defaultValues: {
+      userId: "",
+    },
+  });
 
   useEffect(() => {
     fetchBook();
     fetchBookBorrowDetail();
+    fetchBookBorrowUserDetail();
   }, [bookId]);
 
   async function fetchBook() {
@@ -80,12 +93,24 @@ export default function ReturnBookFormDialog({
     }
   }
 
-  async function returnBook() {
+  async function fetchBookBorrowUserDetail() {
+    try {
+      const response = await axios.get(
+        `/api/library/books/${bookId}/borrow-return/users`
+      );
+      setUserList(response.data);
+    } catch (err: any) {
+      toast("Something went wrong finding users");
+    } finally {
+    }
+  }
+
+  async function returnBook(userId: string) {
     try {
       const response = await axios.patch(
         `/api/library/books/${bookId}/borrow-return`,
         {
-          userId: borrowTxn?.userId,
+          userId: userId,
           txnType: "RETURN",
         }
       );
@@ -97,18 +122,87 @@ export default function ReturnBookFormDialog({
     }
   }
 
-  function onReturnClick() {
-    returnBook();
+  function onSubmit(data: z.infer<typeof borrowBookSchema>) {
+    console.log("data");
+    console.log(data);
+    const userId = data.userId;
+    returnBook(userId);
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>Return Book - {book && book.title}</DialogHeader>
-        <div>User - {borrowTxn?.user?.name}</div>
-        <div className="flex justify-end">
-          <Button onClick={onReturnClick}>Return</Button>
-        </div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 lg:grid-cols-2"
+          >
+            <FormField
+              control={form.control}
+              name="userId"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>User</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[200px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? userList.find(
+                                (userItem) => userItem.id === field.value
+                              )?.name
+                            : "Select user"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search user..." />
+                        <CommandList>
+                          <CommandEmpty>No user found.</CommandEmpty>
+                          <CommandGroup>
+                            {userList.map((userItem) => (
+                              <CommandItem
+                                value={userItem.name!}
+                                key={userItem.id}
+                                onSelect={() => {
+                                  form.setValue("userId", userItem.id);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    userItem.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {userItem.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="lg:col-span-2 flex justify-end">
+              <Button type="submit">Return</Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

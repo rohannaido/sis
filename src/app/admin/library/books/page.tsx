@@ -79,6 +79,7 @@ export default function BooksPage() {
       ),
     },
     {
+      header: "Copies",
       accessorKey: "copies",
     },
     {
