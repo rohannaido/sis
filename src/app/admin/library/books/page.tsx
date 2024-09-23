@@ -20,27 +20,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { ColumnDef } from "@tanstack/react-table";
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+  CalendarDays,
+  CircleX,
+  Download,
+  Info,
+  MoreHorizontal,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { sampleBooks } from "./sampleBooks";
+import {
+  downloadExcelWithData,
+  getExcelOutputDataExceptHeader,
+} from "@/lib/excel";
+import axios from "axios";
+import { cn } from "@/lib/utils";
 
 export type Book = {
   id: number;
@@ -50,9 +54,15 @@ export type Book = {
   borrowedCopies: number;
 };
 
+function downloadBooksUploadSampleExcel() {
+  downloadExcelWithData(sampleBooks, "books_sample.xlsx");
+}
+
 export default function BooksPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [excelUploadData, setExcelUploadData] = useState<any[]>([]);
   const [bookList, setBookList] = useState<Book[]>([]);
   const [editingBookId, setEditingBookId] = useState<number | null>(null);
   const [openBookForm, setOpenBookForm] = useState<boolean>(false);
@@ -156,6 +166,46 @@ export default function BooksPage() {
     }
   }
 
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    console.log(file);
+
+    setSelectedFile(file);
+
+    const reader = new FileReader();
+
+    // When the file is successfully read
+    reader.onload = (e) => {
+      const data = new Uint8Array(e?.target?.result);
+      const excelData = getExcelOutputDataExceptHeader(data);
+      setExcelUploadData(excelData);
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+
+  async function uploadBooks() {
+    try {
+      const response = await axios.post(
+        "/api/library/books/bulk",
+        excelUploadData
+      );
+      toast({
+        description: "Books uploaded successfully",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        description: "Something went wrong while uploading books",
+      });
+    } finally {
+    }
+  }
+
   useEffect(() => {
     fetchBooks();
   }, []);
@@ -166,12 +216,74 @@ export default function BooksPage() {
         <div className="flex flex-col gap-2">
           <CardTitle>Books</CardTitle>
         </div>
-        <BookDialog
-          bookId={editingBookId}
-          callbackFn={() => fetchBooks()}
-          open={openBookForm}
-          setOpen={setOpenBookForm}
-        />
+        <div className="flex flex-row gap-4">
+          <div
+            className={cn(
+              "flex w-full max-w-md items-center gap-1.5 py-2 px-4",
+              selectedFile && "border-2 border-primary rounded-lg"
+            )}
+          >
+            <Label htmlFor="bulk_books">Import books</Label>
+
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Info />
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80">
+                <div className="flex justify-between space-x-4 text-sm">
+                  <div className="space-y-1">
+                    <h4 className="font-semibold">Bulk upload books</h4>
+                    <p>For easy of uploading all the existing books</p>
+                    <div className="flex flex-row gap-2 items-center pt-2">
+                      <span>Download sample</span>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          downloadBooksUploadSampleExcel();
+                        }}
+                      >
+                        <Download />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
+            <Input
+              id="bulk_books"
+              type="file"
+              accept=".xlsx"
+              onChange={handleFileChange}
+            />
+            {selectedFile && (
+              <div className="flex flex-row gap-2">
+                <Button
+                  disabled={!selectedFile}
+                  onClick={() => {
+                    uploadBooks();
+                  }}
+                >
+                  Upload
+                </Button>
+                <Button
+                  onClick={() => setSelectedFile(null)}
+                  variant={"outline"}
+                  className="p-2"
+                >
+                  <CircleX />
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="py-2 px-4">
+            <BookDialog
+              bookId={editingBookId}
+              callbackFn={() => fetchBooks()}
+              open={openBookForm}
+              setOpen={setOpenBookForm}
+            />
+          </div>
+        </div>
         {openBorrowBookForm && (
           <BorrowBookFormDialog
             callbackFn={() => fetchBooks()}
