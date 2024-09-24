@@ -9,9 +9,20 @@ const bookRequestSchema = z.object({
 });
 
 export async function GET() {
-  const bookList = await getAllBooks();
+  try {
+    const bookList = await getAllBooks();
 
-  return NextResponse.json(bookList);
+    return NextResponse.json(bookList);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {

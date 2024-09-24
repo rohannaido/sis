@@ -179,7 +179,7 @@ export default function BooksPage() {
     const reader = new FileReader();
 
     // When the file is successfully read
-    reader.onload = (e) => {
+    reader.onload = (e: Event) => {
       const data = new Uint8Array(e?.target?.result);
       const excelData = getExcelOutputDataExceptHeader(data);
       setExcelUploadData(excelData);

@@ -1,4 +1,5 @@
 import { addBook } from "@/lib/book.service";
+import { booksImportQueue } from "@/workers/booksImport.worker";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -26,12 +27,13 @@ export async function POST(req: NextRequest) {
     }
 
     for (const book of parsedRequest.data) {
-      await addBook(book.title, book.author, book.copies);
+      booksImportQueue.add("Upload Books", book);
+      // await addBook(book.title, book.author, book.copies);
     }
 
     return NextResponse.json(
       {
-        message: "Saved books!",
+        message: "Saving books!",
       },
       {
         status: 200,
