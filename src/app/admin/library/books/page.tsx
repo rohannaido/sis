@@ -45,6 +45,8 @@ import {
 } from "@/lib/excel";
 import axios from "axios";
 import { cn } from "@/lib/utils";
+import { useRecoilState } from "recoil";
+import { jobsList as jobsListAtom } from "@/store/atoms/jobs";
 
 export type Book = {
   id: number;
@@ -59,6 +61,8 @@ function downloadBooksUploadSampleExcel() {
 }
 
 export default function BooksPage() {
+  const [jobs, setJobs] = useRecoilState<any[] | null>(jobsListAtom);
+
   const { toast } = useToast();
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -188,6 +192,17 @@ export default function BooksPage() {
     reader.readAsArrayBuffer(file);
   }
 
+  // TODO: REFACTOR AND USE PROPER STATE MANAGEMENT PRINCIPLES
+  async function fetchUserJobs() {
+    try {
+      const response = await axios.get("/api/jobs");
+      setJobs(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  }
+
   async function uploadBooks() {
     try {
       const response = await axios.post(
@@ -197,11 +212,22 @@ export default function BooksPage() {
       toast({
         description: "Books uploaded successfully",
       });
+      fetchUserJobs();
     } catch (err) {
       toast({
         variant: "destructive",
         description: "Something went wrong while uploading books",
       });
+      throw err;
+    } finally {
+    }
+  }
+
+  async function handleUploadBook() {
+    try {
+      await uploadBooks();
+      setSelectedFile(null);
+    } catch (err) {
     } finally {
     }
   }
@@ -224,7 +250,6 @@ export default function BooksPage() {
             )}
           >
             <Label htmlFor="bulk_books">Import books</Label>
-
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Info />
@@ -260,7 +285,7 @@ export default function BooksPage() {
                 <Button
                   disabled={!selectedFile}
                   onClick={() => {
-                    uploadBooks();
+                    handleUploadBook();
                   }}
                 >
                   Upload

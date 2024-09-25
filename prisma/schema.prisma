@@ -23,6 +23,8 @@ model User {
   Student       Student[]
   Teacher       Teacher[]
   BookBorrowing BookBorrow[]
+
+  BackgroundJob BackgroundJob[]
 }
 
 model Student {
@@ -181,4 +183,22 @@ model BookBorrow {
   lendDate   DateTime  @default(now())
   dueDate    DateTime  @db.Date
   returnDate DateTime?
+}
+
+enum BackgroundJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model BackgroundJob {
+  id                 Int                 @id @default(autoincrement())
+  userId             String
+  user               User                @relation(fields: [userId], references: [id])
+  title              String
+  status             BackgroundJobStatus
+  progress           Int                 @default(0)
+  completionNotified Boolean             @default(false)
 }

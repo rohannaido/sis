@@ -1,7 +1,9 @@
-import { addBook } from "@/lib/book.service";
+import { createJob } from "@/lib/backgroundJob.service";
 import { booksImportQueue } from "@/workers/booksImport.worker";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import db from "@/db";
 
 const bookBulkRequestSchema = z.array(
   z.object({
@@ -26,12 +28,45 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await booksImportQueue.add("Upload Books", parsedRequest.data);
-    // await addBook(book.title, book.author, book.copies);
+    const session = await getServerSession();
+
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        {
+          error: "Session not found",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const user = await db.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          error: "User not found",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const job = await createJob("Upload Books", user.id);
+    await booksImportQueue.add("Upload Books", {
+      bookList: parsedRequest.data,
+      jobId: job.id,
+    });
 
     return NextResponse.json(
       {
-        message: "Saving books!",
+        message: "Books upload started!",
       },
       {
         status: 200,

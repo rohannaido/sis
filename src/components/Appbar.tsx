@@ -5,6 +5,7 @@ import { AppbarAuth } from "./AppbarAuth";
 import { ThemeToggler } from "./landing/theme-toggler";
 import { ToggleButton } from "./Sidebar";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
+import JobProgress from "./job/JobProgress";
 
 export const Appbar = () => {
   const [sidebarOpen, setSidebarOpen] = useRecoilState(sidebarOpenAtom);
@@ -27,6 +28,9 @@ export const Appbar = () => {
           </div>
 
           <div className="flex items-center space-x-2">
+            <div>
+              <JobProgress />
+            </div>
             <div className="hidden items-center justify-around space-x-3 sm:flex md:block md:w-auto">
               <AppbarAuth />
             </div>
