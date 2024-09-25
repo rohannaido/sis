@@ -26,10 +26,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    for (const book of parsedRequest.data) {
-      booksImportQueue.add("Upload Books", book);
-      // await addBook(book.title, book.author, book.copies);
-    }
+    await booksImportQueue.add("Upload Books", parsedRequest.data);
+    // await addBook(book.title, book.author, book.copies);
 
     return NextResponse.json(
       {

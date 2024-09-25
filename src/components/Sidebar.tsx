@@ -13,12 +13,6 @@ import {
   SquareLibrary,
   UserRoundPen,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
 
 export function Sidebar({}: {}) {
   const pathName = usePathname();
