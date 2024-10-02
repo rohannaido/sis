@@ -1,9 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getSession, signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -60,7 +67,7 @@ const Signin = () => {
     <section className="flex h-screen items-center justify-center">
       <Card className="mx-auto w-[70%] md:w-[70%] lg:w-[30%]">
         <CardHeader>
-          <CardTitle>Signin to your Account</CardTitle>
+          <CardTitle>Sign in to your Account</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
@@ -153,13 +160,21 @@ const Signin = () => {
             </div>
           </div>
           <Button
-            className="my-3 w-full"
+            className="mt-4 w-full"
             disabled={checkingPassword}
             onClick={handleSubmit}
           >
             Login
           </Button>
         </CardContent>
+        <CardFooter className="flex justify-center">
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </section>
   );

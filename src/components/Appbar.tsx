@@ -6,9 +6,12 @@ import { ThemeToggler } from "./landing/theme-toggler";
 import { ToggleButton } from "./Sidebar";
 import { sidebarOpen as sidebarOpenAtom } from "@/store/atoms/sidebar";
 import JobProgress from "./job/JobProgress";
+import React from "react";
+import { useSession } from "next-auth/react";
 
 export const Appbar = () => {
   const [sidebarOpen, setSidebarOpen] = useRecoilState(sidebarOpenAtom);
+  const session = useSession();
 
   return (
     <>
@@ -16,14 +19,14 @@ export const Appbar = () => {
         <div className="mx-auto flex w-full items-center justify-between md:max-w-screen-2xl">
           {/* TODO AFTER LOGIN TOGGLE */}
           <div className="flex gap-4">
-            {
+            {session?.data?.user && (
               <ToggleButton
                 onClick={() => {
                   setSidebarOpen((p) => !p);
                 }}
                 sidebarOpen={sidebarOpen ? false : true}
               />
-            }
+            )}
             <div>SIS</div>
           </div>
 
