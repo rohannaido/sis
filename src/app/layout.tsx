@@ -4,6 +4,7 @@ import "./globals.css";
 import { Appbar } from "@/components/Appbar";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+import Socket from "@/components/socket/Socket";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           <Appbar />
           {children}
           <Toaster />
+          <Socket />
         </Providers>
       </body>
     </html>

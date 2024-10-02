@@ -12,6 +12,7 @@ import {
   Share,
   SquareLibrary,
   UserRoundPen,
+  UsersRound,
 } from "lucide-react";
 
 export function Sidebar({}: {}) {
@@ -75,6 +76,14 @@ export function Sidebar({}: {}) {
             </div>
           )}
         </div>
+        <Link
+          href="/admin/active-users"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          prefetch={false}
+        >
+          <UsersRound className="h-5 w-5" />
+          Active Users
+        </Link>
         <Link
           href="/admin/students"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
