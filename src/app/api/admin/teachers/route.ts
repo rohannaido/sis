@@ -14,8 +14,27 @@ const requestBodySchema = z.object({
   ),
 });
 
-// TODO: add pagination
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const classGradeId = req.nextUrl.searchParams.get("classGradeId");
+  const subjectId = req.nextUrl.searchParams.get("subjectId");
+  const where: any = {};
+
+  if (classGradeId) {
+    where.TeacherClassGradeSubjectLink = {
+      some: {
+        classGradeId: parseInt(classGradeId),
+      },
+    };
+  }
+
+  if (subjectId) {
+    where.TeacherClassGradeSubjectLink = {
+      some: {
+        subjectId: parseInt(subjectId),
+      },
+    };
+  }
+
   const teacherList = await db.teacher.findMany({
     select: {
       id: true,
@@ -26,6 +45,7 @@ export async function GET() {
         },
       },
     },
+    where,
   });
 
   const parsedTeacherList = teacherList.map((item) => ({

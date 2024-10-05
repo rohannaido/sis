@@ -15,6 +15,7 @@ import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { ClassGradeTimeTable } from "@/lib/timeTableGenerator";
 import ClassSubjectsPage from "@/components/admin/time-table/TimeTableClassSettings";
+import TimeTableBuilder from "./TimeTableBuilder";
 
 export default function TimeTableForm({
   type,
@@ -161,9 +162,10 @@ export default function TimeTableForm({
               </DialogContent>
             </Dialog>
 
-            <div className="relative max-h-[600px]">
+            <TimeTableBuilder />
+            {/* <div className="relative max-h-[600px]">
               <TimeTableCardList classTimeTableList={classTimeTableList} />
-            </div>
+            </div> */}
           </CardContent>
         </Card>
         <div className="flex justify-end mt-2">
@@ -175,7 +177,7 @@ export default function TimeTableForm({
         </div>
       </div>
 
-      <div className="rounded-lg flex flex-col gap-2 sm:fixed sm:top-[80px] sm:right-8">
+      {/* <div className="rounded-lg flex flex-col gap-2 sm:fixed sm:top-[80px] sm:right-8">
         <Button
           className="h-20 flex flex-col justify-between p-3"
           variant="secondary"
@@ -192,7 +194,7 @@ export default function TimeTableForm({
           <Clock10 />
           Slot Settings
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

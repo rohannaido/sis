@@ -67,3 +67,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+.bg-stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    #e2e8f0,
+    #e2e8f0 10px,
+    #f8fafc 10px,
+    #f8fafc 20px
+  );
+}
+
+.bg-stripes-dark {
+  background: repeating-linear-gradient(
+    45deg,
+    #4a5568,
+    /* Darker gray line */ #4a5568 10px,
+    #2d3748 10px,
+    /* Lighter gray */ #2d3748 20px
+  );
+}

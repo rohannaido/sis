@@ -24,6 +24,8 @@ const requestBodySchema = z.object({
 });
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const forFullweek = req.nextUrl.searchParams.get("forFullweek");
+
   const slotGroupId = parseInt(context.params.slotGroupId);
 
   let slotGroup = await db.slotsGroup.findFirst({
@@ -62,7 +64,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
     );
   }
 
-  if (slotGroup) {
+  if (slotGroup && !(forFullweek === "true")) {
     slotGroup.Slots = groupSlotsBySlotNumber(slotGroup.Slots);
   }
 
