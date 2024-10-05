@@ -251,12 +251,15 @@ export default function TimeTableBuilder() {
       (dayItem: any) => dayItem.day === day
     ).slots = newDaySlots.slots;
 
-    resetTeacherTimeTable(newTimeTable);
+    resetAndGenerateTeacherTimeTable(newTimeTable);
     setTimeTable(newTimeTable);
   }
 
-  function generateTeacherTimeTable(timeTable: any[]) {
-    const newTeacherTimeTable = [...teacherTimeTable];
+  function generateTeacherTimeTable(timeTable: any[], action: string = "add") {
+    let newTeacherTimeTable = [...teacherTimeTable];
+    if (action === "reset") {
+      newTeacherTimeTable = [];
+    }
 
     timeTable.forEach((timeTableItem) => {
       timeTableItem.dayWiseSlots.forEach((slotsForDay: any) => {
@@ -311,46 +314,11 @@ export default function TimeTableBuilder() {
         });
       });
     });
-    console.log("newTeacherTimeTable", newTeacherTimeTable);
     setTeacherTimeTable(newTeacherTimeTable);
   }
 
-  function resetTeacherTimeTable(timeTable: any[]) {
-    const newTeacherTimeTable = [...teacherTimeTable];
-
-    newTeacherTimeTable.forEach((teacherTimeTableItem: any) => {
-      teacherTimeTableItem.dayWiseSlots.forEach((dayWiseSlotsItem: any) => {
-        const newSlots = dayWiseSlotsItem.slots.map((slotItem: any) => {
-          const currentTimeTableSlotItem = timeTable[
-            currentTimeTableIndex!
-          ].dayWiseSlots
-            .find(
-              (dayWiseSlotsItem: any) => dayWiseSlotsItem.day === slotItem.day
-            )
-            .slots.find(
-              (currentTimeTableSlotItem: any) =>
-                currentTimeTableSlotItem.slotNumber === slotItem.slotNumber
-            );
-
-          if (
-            !(
-              currentTimeTableSlotItem?.subject &&
-              currentTimeTableSlotItem?.teacher
-            )
-          ) {
-            slotItem.subject = null;
-            slotItem.teacher = null;
-            slotItem.isAllocated = false;
-          }
-
-          return slotItem;
-        });
-
-        dayWiseSlotsItem.slots = newSlots;
-      });
-    });
-
-    setTeacherTimeTable(newTeacherTimeTable);
+  function resetAndGenerateTeacherTimeTable(timeTable: any[]) {
+    generateTeacherTimeTable(timeTable, "reset");
   }
 
   return (
