@@ -127,8 +127,8 @@ export default function TeacherForm({
   const handleClassGradeSelect = (classGradeId: string, index: number) => {
     const classGradeIdInt = parseInt(classGradeId);
     fetchSubjectByClassGrade(classGradeIdInt).then((dataList) => {
-      setClassGradeSubjectList(() => {
-        const updatedList = [...classGradeSubjectList];
+      setClassGradeSubjectList((prevClassGradeSubjectList) => {
+        const updatedList = [...prevClassGradeSubjectList];
         updatedList[index] = dataList;
         return updatedList;
       });
