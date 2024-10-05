@@ -149,6 +149,9 @@ export default function TimeTableBuilder() {
     setClassGrade(
       classGrades.find((classGrade) => classGrade.id === classGradeId)
     );
+    setSection(undefined);
+    setSubject(undefined);
+    setTeacher(undefined);
     fetchSectionsForClassGrade(classGradeId);
     fetchSubjectsForClassGrade(classGradeId);
   }
@@ -156,12 +159,14 @@ export default function TimeTableBuilder() {
   function handleSectionChange(value: string) {
     const sectionId = parseInt(value);
     setSection(sections.find((section) => section.id === sectionId));
+    setTeacher(undefined);
     fetchCurrentTimeTableForSection(sectionId);
   }
 
   function handleSubjectChange(value: string) {
     const subjectId = parseInt(value);
     setSubject(subjects.find((subject) => subject.id === subjectId));
+    setTeacher(undefined);
     fetchTeachersForSubject(subjectId);
   }
 
@@ -202,7 +207,14 @@ export default function TimeTableBuilder() {
   }
 
   function handlePeriodClick(day: string, slot: Slots) {
-    console.log("timeTable", timeTable);
+    if (!subject || !teacher) {
+      toast({
+        variant: "destructive",
+        description: "Please select a subject and teacher",
+      });
+      return;
+    }
+
     const newTimeTable = [...timeTable];
     const daySlots = newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
       (dayItem: any) => dayItem.day === day
@@ -326,7 +338,10 @@ export default function TimeTableBuilder() {
       <div className="grid grid-cols-4 gap-4">
         <div>
           <Label htmlFor="classGrade">Class</Label>
-          <Select onValueChange={handleClassGradeChange}>
+          <Select
+            value={classGrade?.id?.toString() || ""}
+            onValueChange={handleClassGradeChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select class" />
             </SelectTrigger>
@@ -346,7 +361,10 @@ export default function TimeTableBuilder() {
         </div>
         <div>
           <Label htmlFor="section">Section</Label>
-          <Select onValueChange={handleSectionChange}>
+          <Select
+            value={section?.id?.toString() || ""}
+            onValueChange={handleSectionChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select section" />
             </SelectTrigger>
@@ -364,7 +382,10 @@ export default function TimeTableBuilder() {
         </div>
         <div>
           <Label htmlFor="subject">Subject</Label>
-          <Select onValueChange={handleSubjectChange}>
+          <Select
+            value={subject?.id?.toString() || ""}
+            onValueChange={handleSubjectChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select subject" />
             </SelectTrigger>
@@ -382,7 +403,10 @@ export default function TimeTableBuilder() {
         </div>
         <div>
           <Label htmlFor="teacher">Teacher</Label>
-          <Select onValueChange={handleTeacherChange}>
+          <Select
+            value={teacher?.id?.toString() || ""}
+            onValueChange={handleTeacherChange}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select teacher" />
             </SelectTrigger>
@@ -423,25 +447,12 @@ export default function TimeTableBuilder() {
                     <TableCell
                       key={day}
                       className={cn(
-                        (teacherTimeTable
-                          ?.find(
-                            (teacherItem: any) =>
-                              teacherItem.teacherId == teacher?.id
-                          )
-                          ?.dayWiseSlots?.find(
-                            (dayItem: any) => dayItem.day === day
-                          )
-                          ?.slots?.find(
+                        timeTable[currentTimeTableIndex].dayWiseSlots
+                          .find((dayItem: any) => dayItem.day === day)
+                          .slots.find(
                             (slotItem: any) =>
                               slotItem.slotNumber === slot.slotNumber
-                          )?.isAllocated &&
-                          timeTable[currentTimeTableIndex].dayWiseSlots
-                            .find((dayItem: any) => dayItem.day === day)
-                            .slots.find(
-                              (slotItem: any) =>
-                                slotItem.slotNumber === slot.slotNumber
-                            ).subject?.name) ||
-                          slot.type === "Break"
+                          ).subject?.name || slot.type === "Break"
                           ? ""
                           : teacherTimeTable
                               ?.find(
@@ -484,19 +495,7 @@ export default function TimeTableBuilder() {
                     >
                       {slot.type === "Break" ? (
                         <div>-</div>
-                      ) : teacherTimeTable
-                          ?.find(
-                            (teacherItem: any) =>
-                              teacherItem.teacherId == teacher?.id
-                          )
-                          ?.dayWiseSlots?.find(
-                            (dayItem: any) => dayItem.day === day
-                          )
-                          ?.slots?.find(
-                            (slotItem: any) =>
-                              slotItem.slotNumber === slot.slotNumber
-                          )?.isAllocated &&
-                        timeTable[currentTimeTableIndex].dayWiseSlots
+                      ) : timeTable[currentTimeTableIndex].dayWiseSlots
                           .find((dayItem: any) => dayItem.day === day)
                           .slots.find(
                             (slotItem: any) =>
