@@ -63,6 +63,28 @@ const Signin = () => {
       setCheckingPassword(false);
     }
   };
+
+  async function handleGoogleSignin() {
+    const res = await signIn("google", {
+      redirect: false,
+    });
+    console.log("res");
+    console.log(res);
+    if (!res?.error) {
+      const session = await getSession();
+      console.log("session", session);
+      // TODO: HIGH PRIORITY
+      // if (session?.user?.role === "admin") {
+      router.push("/admin");
+      // } else {
+      //   router.push("/student");
+      // }
+      toast.success("Signed In");
+    } else {
+      toast.error("oops something went wrong..!");
+    }
+  }
+
   return (
     <section className="flex h-screen items-center justify-center">
       <Card className="mx-auto w-[70%] md:w-[70%] lg:w-[30%]">
@@ -165,6 +187,13 @@ const Signin = () => {
             onClick={handleSubmit}
           >
             Login
+          </Button>
+          <Button
+            className="mt-4 w-full"
+            variant="outline"
+            onClick={() => handleGoogleSignin()}
+          >
+            Login with Google
           </Button>
         </CardContent>
         <CardFooter className="flex justify-center">

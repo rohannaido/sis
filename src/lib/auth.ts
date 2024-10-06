@@ -6,6 +6,7 @@ import prisma from "@/db";
 import { NextAuthOptions } from "next-auth";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import GoogleProvider from "next-auth/providers/google";
 
 export interface session extends Session {
   user: {
@@ -45,6 +46,10 @@ const generateJWT = async (payload: JWTPayload) => {
 
 export const authOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
