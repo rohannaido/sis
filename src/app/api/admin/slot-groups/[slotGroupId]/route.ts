@@ -42,6 +42,8 @@ export async function GET(req: NextRequest, context: { params: Params }) {
           startTime: true,
           endTime: true,
           type: true,
+          id: true,
+          slotGroupId: true,
         },
       },
     },
@@ -53,6 +55,8 @@ export async function GET(req: NextRequest, context: { params: Params }) {
     startTime: string;
     endTime: string;
     type: string;
+    id: number;
+    slotGroupId: number;
   }[] {
     return Object.values(
       slots.reduce((acc, slot) => {

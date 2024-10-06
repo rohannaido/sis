@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Clock10, School } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SlotGroupPage from "@/components/admin/time-table/SlotGroupPage";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { ClassGradeTimeTable } from "@/lib/timeTableGenerator";
 import ClassSubjectsPage from "@/components/admin/time-table/TimeTableClassSettings";
-import TimeTableBuilder from "./TimeTableBuilder";
+import TimeTableBuilder, { TimeTableBuilderRef } from "./TimeTableBuilder";
 
 export default function TimeTableForm({
   type,
@@ -31,6 +31,7 @@ export default function TimeTableForm({
   const [openClassSettings, setOpenClassSettings] = useState<boolean>(false);
   const [openSlotGroupSettings, setOpenSlotGroupSettings] =
     useState<boolean>(false);
+  const timeTableBuilderRef = useRef<TimeTableBuilderRef>(null);
 
   useEffect(() => {
     if (type == "EDIT") {
@@ -120,10 +121,14 @@ export default function TimeTableForm({
     }
   }
 
+  function handlePreviewAndSave() {
+    timeTableBuilderRef.current?.previewAndSave();
+  }
+
   return (
     <div className="flex justify-between">
-      <div className="w-full max-w-6xl">
-        <Card className="w-full max-w-6xl overflow-y-auto lg:mt-4">
+      <div className="w-full">
+        <Card className="w-full overflow-y-auto lg:mt-4">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
               <CardTitle>Time table</CardTitle>
@@ -132,7 +137,7 @@ export default function TimeTableForm({
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              {type != "EDIT" ? (
+              {/* {type != "EDIT" ? (
                 <Button
                   onClick={handleGenerateTimeTableClick}
                   variant="default"
@@ -141,7 +146,10 @@ export default function TimeTableForm({
                 </Button>
               ) : (
                 <></>
-              )}
+              )} */}
+              <Button onClick={() => handlePreviewAndSave()}>
+                Preview & Save
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -162,22 +170,23 @@ export default function TimeTableForm({
               </DialogContent>
             </Dialog>
 
-            <TimeTableBuilder />
+            <TimeTableBuilder ref={timeTableBuilderRef} />
             {/* <div className="relative max-h-[600px]">
               <TimeTableCardList classTimeTableList={classTimeTableList} />
             </div> */}
           </CardContent>
         </Card>
         <div className="flex justify-end mt-2">
-          {classTimeTableList?.length ? (
+          {/* {classTimeTableList?.length ? (
             <Button onClick={handleTimeTableSave}>Save</Button>
           ) : (
-            <></>
-          )}
+            <span></span>
+          )} */}
         </div>
       </div>
 
-      {/* <div className="rounded-lg flex flex-col gap-2 sm:fixed sm:top-[80px] sm:right-8">
+      {/* <div className="rounded-lg flex flex-col gap-2 sm:fixed sm:top-[80px] sm:right-8"> */}
+      {/* <div className="">
         <Button
           className="h-20 flex flex-col justify-between p-3"
           variant="secondary"
