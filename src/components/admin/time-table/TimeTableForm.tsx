@@ -131,7 +131,11 @@ export default function TimeTableForm({
         <Card className="w-full overflow-y-auto lg:mt-4">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
-              <CardTitle>Time table</CardTitle>
+              <CardTitle>
+                {type != "EDIT"
+                  ? "Generate Time Table"
+                  : `Edit Time Table - ${timeTableId}`}
+              </CardTitle>
               <CardDescription>
                 You can generate and manage time tables here.
               </CardDescription>
@@ -170,7 +174,11 @@ export default function TimeTableForm({
               </DialogContent>
             </Dialog>
 
-            <TimeTableBuilder ref={timeTableBuilderRef} />
+            <TimeTableBuilder
+              ref={timeTableBuilderRef}
+              type={type}
+              timeTableId={timeTableId}
+            />
             {/* <div className="relative max-h-[600px]">
               <TimeTableCardList classTimeTableList={classTimeTableList} />
             </div> */}

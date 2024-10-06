@@ -44,74 +44,33 @@ export async function GET(req: NextRequest, context: { params: Params }) {
     );
   }
 
-  const classSlotsWithTimeTable = await db.classGrade.findMany({
+  const timeTableList = await db.timeTableGroup.findUnique({
     where: {
-      slotsGroupId: {
-        not: null,
-      },
+      id: timeTableId,
     },
     include: {
-      SlotsGroup: {
+      TimeTable: {
         include: {
-          Slots: true,
-        },
-      },
-      Subject: true,
-      Section: {
-        include: {
-          TimeTable: {
+          classGrade: true,
+          section: true,
+          slots: true,
+          teacher: {
             include: {
-              slots: true,
-              subject: true,
-              teacher: {
-                include: {
-                  user: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
                 },
               },
             },
           },
+          subject: true,
         },
       },
     },
   });
 
-  const teacherList = await db.teacher.findMany({
-    include: {
-      TeacherClassGradeSubjectLink: true,
-      user: true,
-    },
-  });
-
-  const timeTableList = timeTableGroup.TimeTable;
-
-  classSlotsWithTimeTable.forEach((classItem) => {
-    classItem.Section.forEach((sectionItem) => {
-      // @ts-ignore
-      sectionItem.TimeTable = timeTableList
-        .filter((timeTableItem) => timeTableItem.sectionId == sectionItem.id)
-        .map((timeTableItem) => {
-          const { ...rest } = timeTableItem;
-
-          const subject = classItem.Subject.find(
-            (subjectItem) => subjectItem.id == timeTableItem.subjectId
-          );
-          const teacher = teacherList.find(
-            (teacherItem) => teacherItem.id == timeTableItem.teacherId
-          );
-
-          // @ts-ignore
-          const { TeacherClassGradeSubjectLink, ...restTeacher } = teacher;
-
-          return {
-            subject,
-            teacher: restTeacher,
-            ...rest,
-          };
-        });
-    });
-  });
-
-  return NextResponse.json(classSlotsWithTimeTable);
+  return NextResponse.json(timeTableList);
 }
 
 export async function PUT(req: NextRequest, context: { params: Params }) {
