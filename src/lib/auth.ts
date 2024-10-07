@@ -110,6 +110,34 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET || "secret",
   callbacks: {
+    signIn: async ({ user, account, profile }) => {
+      if (account?.provider === "google" && user.email) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        if (existingUser) {
+          if (existingUser.password) {
+            return false;
+          }
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              name: user.name,
+            },
+          });
+        } else {
+          await prisma.user.create({
+            data: {
+              name: user.name,
+              email: user.email,
+            },
+          });
+        }
+      }
+
+      return true;
+    },
     session: async ({ session, token }): Promise<session> => {
       const newSession: session = session as session;
       if (newSession.user && token.uid) {
