@@ -25,6 +25,32 @@ model User {
   BookBorrowing BookBorrow[]
 
   BackgroundJob BackgroundJob[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Organization {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  User                         User[]
+  Student                      Student[]
+  Teacher                      Teacher[]
+  TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
+  ClassGrade                   ClassGrade[]
+  Subject                      Subject[]
+  Section                      Section[]
+  Chapter                      Chapter[]
+  ChapterContent               ChapterContent[]
+  SlotsGroup                   SlotsGroup[]
+  Slots                        Slots[]
+  SectionSubjectTeacher        SectionSubjectTeacher[]
+  TimeTableGroup               TimeTableGroup[]
+  TimeTable                    TimeTable[]
+  Book                         Book[]
+  BookBorrow                   BookBorrow[]
+  BackgroundJob                BackgroundJob[]
 }
 
 model Student {
@@ -36,6 +62,9 @@ model Student {
   classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
   sectionId    Int
   section      Section    @relation(fields: [sectionId], references: [id])
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Teacher {
@@ -45,6 +74,9 @@ model Teacher {
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
   TimeTable                    TimeTable[]
   SectionSubjectTeacher        SectionSubjectTeacher[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model TeacherClassGradeSubjectLink {
@@ -55,6 +87,9 @@ model TeacherClassGradeSubjectLink {
   classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
   subjectId    Int
   subject      Subject    @relation(fields: [subjectId], references: [id])
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model ClassGrade {
@@ -68,6 +103,9 @@ model ClassGrade {
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
 
   TimeTable TimeTable[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Subject {
@@ -81,6 +119,9 @@ model Subject {
   TeacherClassGradeSubjectLink TeacherClassGradeSubjectLink[]
   TimeTable                    TimeTable[]
   SectionSubjectTeacher        SectionSubjectTeacher[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Section {
@@ -91,6 +132,9 @@ model Section {
   Student               Student[]
   TimeTable             TimeTable[]
   SectionSubjectTeacher SectionSubjectTeacher[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Chapter {
@@ -100,6 +144,9 @@ model Chapter {
   subject   Subject @relation(fields: [subjectId], references: [id])
 
   ChapterContent ChapterContent[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model ChapterContent {
@@ -109,6 +156,9 @@ model ChapterContent {
   name      String
   type      String
   url       String?
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model SlotsGroup {
@@ -117,6 +167,9 @@ model SlotsGroup {
   Slots      Slots[]
   ClassGrade ClassGrade[]
   TimeTable  TimeTable[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Slots {
@@ -129,6 +182,9 @@ model Slots {
   endTime     String
   type        String
   TimeTable   TimeTable[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model SectionSubjectTeacher {
@@ -139,12 +195,18 @@ model SectionSubjectTeacher {
   subject   Subject @relation(fields: [subjectId], references: [id])
   teacherId Int
   teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model TimeTableGroup {
   id Int @id @default(autoincrement())
 
   TimeTable TimeTable[]
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model TimeTable {
@@ -164,6 +226,9 @@ model TimeTable {
   subject          Subject?       @relation(fields: [subjectId], references: [id])
   teacherId        Int?
   teacher          Teacher?       @relation(fields: [teacherId], references: [id])
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model Book {
@@ -172,6 +237,9 @@ model Book {
   author     String
   bookBorrow BookBorrow[]
   copies     Int          @default(0)
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model BookBorrow {
@@ -183,6 +251,9 @@ model BookBorrow {
   lendDate   DateTime  @default(now())
   dueDate    DateTime  @db.Date
   returnDate DateTime?
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 enum BackgroundJobStatus {
@@ -201,4 +272,7 @@ model BackgroundJob {
   status             BackgroundJobStatus
   progress           Int                 @default(0)
   completionNotified Boolean             @default(false)
+
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
