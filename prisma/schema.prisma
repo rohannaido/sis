@@ -31,8 +31,8 @@ model User {
 }
 
 model Organization {
-  id   Int    @id @default(autoincrement())
-  name String
+  id   Int     @id @default(autoincrement())
+  name String?
 
   User                         User[]
   Student                      Student[]

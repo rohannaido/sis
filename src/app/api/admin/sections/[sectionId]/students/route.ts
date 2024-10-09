@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 type Params = {
   sectionId: string;
@@ -12,10 +14,14 @@ const requestBodySchema = z.object({
 });
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const sectionId = parseInt(context.params.sectionId);
 
   let studentList = await db.student.findMany({
     where: {
+      organizationId: organizationId,
       sectionId: sectionId,
     },
     include: {
@@ -41,6 +47,9 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 }
 
 export async function POST(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parseResult = requestBodySchema.safeParse(await req.json());
 
   if (!parseResult.success) {
@@ -65,6 +74,7 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   const user = await db.user.create({
     data: {
+      organizationId,
       email,
       name,
       role: "STUDENT",
@@ -75,6 +85,7 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   await db.student.create({
     data: {
+      organizationId,
       classGradeId: sectionDetail.classGradeId,
       userId: user.id,
       sectionId,

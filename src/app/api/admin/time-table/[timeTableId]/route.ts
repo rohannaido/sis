@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 const timeTableRequestBodySchema = z.array(
   z.object({
     classGradeId: z.number(),
@@ -18,11 +20,15 @@ type Params = {
 };
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const timeTableId = parseInt(context.params.timeTableId);
 
   const timeTableGroup = await db.timeTableGroup.findFirst({
     where: {
       id: timeTableId,
+      organizationId,
     },
     include: {
       TimeTable: {
@@ -74,6 +80,9 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 }
 
 export async function PUT(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = timeTableRequestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -112,6 +121,7 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
 
   const timeTable = await db.timeTable.createMany({
     data: parsedRequest.data.map((timeTableItem) => ({
+      organizationId: organizationId,
       timeTableGroupId: timeTableId,
       ...timeTableItem,
     })),

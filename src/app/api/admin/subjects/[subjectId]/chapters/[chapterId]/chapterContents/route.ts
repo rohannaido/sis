@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
   name: z.string(),
@@ -14,6 +16,9 @@ type Params = {
 };
 
 export async function POST(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parseResult = requestBodySchema.safeParse(await req.json());
 
   if (!parseResult.success) {
@@ -28,6 +33,7 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   await db.chapterContent.create({
     data: {
+      organizationId,
       chapterId,
       name,
       type,
@@ -46,10 +52,14 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 }
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const chapterId = parseInt(context.params.chapterId);
 
   const chapterContent = await db.chapterContent.findMany({
     where: {
+      organizationId: organizationId,
       chapterId,
     },
   });

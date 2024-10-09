@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
 import { DaysOfWeek, timeFormat } from "@/lib/utils";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 type Params = {
   slotGroupId: string;
@@ -77,6 +79,9 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 
 // TODO: OPTIMIZE DO NOT DELTE ALL
 export async function PUT(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -127,12 +132,14 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
     startTime: string;
     endTime: string;
     slotNumber: number;
+    organizationId: number;
   }[] = [];
 
   // TODO : change create for all 7 days to dynamic
   for (const day of Object.values(DaysOfWeek)) {
     slotsList.forEach((slot) =>
       slotsListWithDays.push({
+        organizationId,
         ...slot,
         dayOfWeek: day,
       })

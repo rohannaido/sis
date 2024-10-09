@@ -32,10 +32,10 @@ export class UserRepository {
     }
   }
 
-  async createUser(input: User) {
+  async createUser(input: User, organizationId: number) {
     try {
       const user = await db.user.create({
-        data: input,
+        data: { ...input, organizationId },
       });
 
       return user;

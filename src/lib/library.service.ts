@@ -4,7 +4,8 @@ import { checkBookAvailable, getBookById } from "./book.service";
 export async function lendBook(
   bookId: number,
   userId: string,
-  dueDate: string
+  dueDate: string,
+  organizationId: number
 ): Promise<void> {
   const isBookAvailable = await checkBookAvailable(bookId);
   if (!isBookAvailable) {
@@ -26,6 +27,7 @@ export async function lendBook(
 
   await db.bookBorrow.create({
     data: {
+      organizationId: organizationId,
       bookId,
       userId,
       dueDate,
@@ -66,8 +68,11 @@ export async function returnBook(
   console.log(`Book has been returned.`);
 }
 
-export async function getAllBookBorrowTxn() {
+export async function getAllBookBorrowTxn(organizationId: number) {
   return await db.bookBorrow.findMany({
+    where: {
+      organizationId,
+    },
     include: {
       book: true,
       user: true,

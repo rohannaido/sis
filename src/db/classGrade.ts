@@ -1,8 +1,11 @@
 import db from "@/db";
 import { ClassGrade } from "@prisma/client";
 
-export async function getAllClassGrades() {
+export async function getAllClassGrades(organizationId: number) {
   const classGrades = await db.classGrade.findMany({
+    where: {
+      organizationId,
+    },
     orderBy: {
       id: "desc",
     },

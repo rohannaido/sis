@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
   name: z.string(),
@@ -15,9 +17,14 @@ const requestBodySchema = z.object({
 });
 
 export async function GET(req: NextRequest) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const classGradeId = req.nextUrl.searchParams.get("classGradeId");
   const subjectId = req.nextUrl.searchParams.get("subjectId");
-  const where: any = {};
+  const where: any = {
+    organizationId: organizationId,
+  };
 
   if (classGradeId) {
     where.TeacherClassGradeSubjectLink = {
@@ -58,6 +65,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -71,6 +81,7 @@ export async function POST(req: NextRequest) {
 
   const user = await db.user.create({
     data: {
+      organizationId,
       name,
       email,
     },
@@ -78,6 +89,7 @@ export async function POST(req: NextRequest) {
 
   const teacher = await db.teacher.create({
     data: {
+      organizationId,
       userId: user.id,
     },
   });
@@ -89,6 +101,7 @@ export async function POST(req: NextRequest) {
 
   const teacherClassSubjectLinkList = parsedTeacherClassSubjectLink.map(
     (item) => ({
+      organizationId,
       ...item,
       teacherId: teacher.id,
     })

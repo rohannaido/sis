@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
 import { DaysOfWeek, timeFormat } from "@/lib/utils";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 // TODO: add validations for time
 const requestBodySchema = z.object({
@@ -22,10 +24,16 @@ const requestBodySchema = z.object({
 
 // TODO: add pagination
 export async function GET() {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const slotGroupList = await db.slotsGroup.findMany({
     select: {
       id: true,
       name: true,
+    },
+    where: {
+      organizationId,
     },
   });
 
@@ -33,6 +41,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -46,6 +57,7 @@ export async function POST(req: NextRequest) {
 
   const slotGroup = await db.slotsGroup.create({
     data: {
+      organizationId,
       name,
     },
   });
@@ -62,12 +74,14 @@ export async function POST(req: NextRequest) {
     startTime: string;
     endTime: string;
     slotNumber: number;
+    organizationId: number;
   }[] = [];
 
   // TODO : change create for all 7 days to dynamic
   for (const day of Object.values(DaysOfWeek)) {
     slotsList.forEach((slot) =>
       slotsListWithDays.push({
+        organizationId,
         ...slot,
         dayOfWeek: day,
       })

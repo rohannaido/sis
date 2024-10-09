@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
 import bcrypt from "bcrypt";
+import { UserSession } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 const signupRequestSchema = z.object({
   name: z.string().min(3, {
@@ -54,8 +56,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const organization = await db.organization.create({
+      data: {
+        name: parsedRequest.data.schoolName,
+      },
+    });
+
     const user = await db.user.create({
       data: {
+        organizationId: organization.id,
         name,
         email,
         password: hashedPassword,

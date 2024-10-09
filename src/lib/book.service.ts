@@ -5,10 +5,12 @@ import { Book as BookDb } from "@prisma/client";
 export async function addBook(
   title: string,
   author: string,
-  copies: number
+  copies: number,
+  organizationId: number
 ): Promise<void> {
   await db.book.create({
     data: {
+      organizationId: organizationId,
       title: title,
       author: author,
       copies: copies,
@@ -16,10 +18,13 @@ export async function addBook(
   });
 }
 
-export async function getAllBooks(): Promise<BookDb[]> {
+export async function getAllBooks(organizationId: number): Promise<BookDb[]> {
   const bookListDb = await db.book.findMany({
     include: {
       bookBorrow: true,
+    },
+    where: {
+      organizationId: organizationId,
     },
   });
 
@@ -121,9 +126,13 @@ export async function checkBookAvailable(bookId: number): Promise<boolean> {
   return bookBorrows < book.copies;
 }
 
-export async function currentBookBorrowTxn(bookId: number) {
+export async function currentBookBorrowTxn(
+  bookId: number,
+  organizationId: number
+) {
   const bookBorrows = await db.bookBorrow.findMany({
     where: {
+      organizationId,
       bookId,
     },
     include: {
@@ -141,9 +150,13 @@ export async function currentBookBorrowTxn(bookId: number) {
   return bookBorrows?.[bookBorrows?.length - 1];
 }
 
-export async function getAllBookBorrowedUsers(bookId: number) {
+export async function getAllBookBorrowedUsers(
+  bookId: number,
+  organizationId: number
+) {
   const bookBorrows = await db.bookBorrow.findMany({
     where: {
+      organizationId,
       bookId,
       returnDate: null,
     },

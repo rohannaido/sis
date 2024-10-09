@@ -8,19 +8,21 @@ import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 
-export interface session extends Session {
+export interface UserSession extends Session {
   user: {
     id: string;
     jwtToken: string;
     role: string;
     email: string;
     name: string;
+    organizationId: number;
   };
 }
 
 interface token extends JWT {
   uid: string;
   jwtToken: string;
+  organizationId: number;
 }
 
 interface User {
@@ -28,6 +30,7 @@ interface User {
   name: string;
   email: string;
   token: string;
+  organizationId: number;
 }
 
 const generateJWT = async (payload: JWTPayload) => {
@@ -68,6 +71,7 @@ export const authOptions = {
               password: true,
               id: true,
               name: true,
+              organizationId: true,
             },
           });
 
@@ -92,6 +96,7 @@ export const authOptions = {
             });
 
             return {
+              organizationId: userDb.organizationId,
               id: userDb.id,
               name: userDb.name,
               email: credentials.username,
@@ -127,8 +132,10 @@ export const authOptions = {
             },
           });
         } else {
+          const organization = await prisma.organization.create({});
           await prisma.user.create({
             data: {
+              organizationId: organization.id,
               name: user.name,
               email: user.email,
             },
@@ -138,9 +145,10 @@ export const authOptions = {
 
       return true;
     },
-    session: async ({ session, token }): Promise<session> => {
-      const newSession: session = session as session;
+    session: async ({ session, token }): Promise<UserSession> => {
+      const newSession: UserSession = session as UserSession;
       if (newSession.user && token.uid) {
+        newSession.user.organizationId = token.organizationId as number;
         newSession.user.id = token.uid as string;
         newSession.user.jwtToken = token.jwtToken as string;
         newSession.user.role = process.env.ADMINS?.split(",").includes(
@@ -156,8 +164,10 @@ export const authOptions = {
 
       if (user) {
         newToken.uid = user.id;
+        newToken.organizationId = (user as User).organizationId;
         newToken.jwtToken = (user as User).token;
       }
+
       return newToken;
     },
   },

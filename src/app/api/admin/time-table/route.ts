@@ -1,4 +1,6 @@
 import db from "@/db";
+import { UserSession } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -15,12 +17,22 @@ const timeTableRequestBodySchema = z.array(
 );
 
 export async function GET() {
-  const timeTableGroups = await db.timeTableGroup.findMany();
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
+  const timeTableGroups = await db.timeTableGroup.findMany({
+    where: {
+      organizationId: organizationId,
+    },
+  });
 
   return NextResponse.json(timeTableGroups);
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = timeTableRequestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -30,10 +42,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const timeTableGroup = await db.timeTableGroup.create({ data: {} });
+  const timeTableGroup = await db.timeTableGroup.create({
+    data: {
+      organizationId,
+    },
+  });
 
   const timeTable = await db.timeTable.createMany({
     data: parsedRequest.data.map((timeTableItem) => ({
+      organizationId,
       timeTableGroupId: timeTableGroup.id,
       ...timeTableItem,
     })),

@@ -1,6 +1,6 @@
 import db from "@/db";
 
-export const getAllTeachers = async () => {
+export const getAllTeachers = async (organizationId: number) => {
   const teacherList = await db.teacher.findMany({
     include: {
       user: {
@@ -9,6 +9,9 @@ export const getAllTeachers = async () => {
           email: true,
         },
       },
+    },
+    where: {
+      organizationId,
     },
   });
 

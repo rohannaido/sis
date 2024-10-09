@@ -1,4 +1,5 @@
 import db from "@/db";
+import { UserSession } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -17,13 +18,17 @@ export async function GET() {
   }
 
   const user = await db.user.findUnique({
-    where: { email: session?.user?.email },
+    where: {
+      email: session?.user?.email,
+      organizationId: (session as UserSession)?.user?.organizationId,
+    },
   });
 
   const jobList = await db.backgroundJob.findMany({
     where: {
       userId: user?.id,
       completionNotified: false,
+      organizationId: (session as UserSession)?.user?.organizationId,
     },
   });
 

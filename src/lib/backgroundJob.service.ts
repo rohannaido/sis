@@ -1,9 +1,14 @@
 import db from "@/db";
 import { BackgroundJobStatus } from "@prisma/client";
 
-export async function createJob(jobName: string, userId: string) {
+export async function createJob(
+  jobName: string,
+  userId: string,
+  organizationId: number
+) {
   const job = await db.backgroundJob.create({
     data: {
+      organizationId: organizationId,
       title: jobName,
       userId: userId,
       status: "PENDING",

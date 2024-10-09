@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
+import { getServerSession } from "next-auth";
+import { UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
   slotsGroupId: z.number(),
@@ -80,6 +82,9 @@ export async function PUT(
 }
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const classGradeId = parseInt(context.params.classGradeId);
 
   const classGrade = await db.classGrade.findFirst({
@@ -108,6 +113,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
       periodCountPerWeek: true,
     },
     where: {
+      organizationId,
       classGradeId,
       periodCountPerWeek: {
         not: 0,

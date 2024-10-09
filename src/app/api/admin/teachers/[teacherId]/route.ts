@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
+import { UserSession } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 type Params = {
   teacherId: string;
@@ -65,6 +67,9 @@ export async function PUT(
     };
   }
 ) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const teacherId = parseInt(context.params.teacherId);
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
@@ -90,6 +95,7 @@ export async function PUT(
   const user = await db.user.update({
     where: {
       id: teacherDetail.userId,
+      organizationId: organizationId,
     },
     data: {
       name,
@@ -100,6 +106,7 @@ export async function PUT(
   const teacherSubjectList = await db.teacherClassGradeSubjectLink.findMany({
     where: {
       teacherId: teacherId,
+      organizationId: organizationId,
     },
     select: {
       id: true,
@@ -121,6 +128,7 @@ export async function PUT(
       id: {
         in: teacherSubjectIdDeleteList,
       },
+      organizationId: organizationId,
     },
   });
 
@@ -133,11 +141,13 @@ export async function PUT(
         },
         where: {
           id: teacherClassSubjectItem.id,
+          organizationId: organizationId,
         },
       });
     } else {
       await db.teacherClassGradeSubjectLink.create({
         data: {
+          organizationId: organizationId,
           teacherId: teacherId,
           classGradeId: teacherClassSubjectItem.classGradeId,
           subjectId: teacherClassSubjectItem.subjectId,
