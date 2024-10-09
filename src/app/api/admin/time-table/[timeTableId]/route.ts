@@ -116,6 +116,7 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
   await db.timeTable.deleteMany({
     where: {
       timeTableGroupId: timeTableId,
+      organizationId,
     },
   });
 

@@ -24,6 +24,9 @@ export async function PUT(
     params: Params;
   }
 ) {
+  const session = await getServerSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = requestBodySchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -57,6 +60,7 @@ export async function PUT(
     },
     where: {
       classGradeId,
+      organizationId: organizationId,
     },
   });
 

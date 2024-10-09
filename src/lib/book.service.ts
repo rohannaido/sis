@@ -76,7 +76,8 @@ export async function updateBook(
   bookId: number,
   title?: string,
   author?: string,
-  copies?: number
+  copies?: number,
+  organizationId?: number
 ): Promise<void> {
   const updateData: Partial<BookDb> = {};
 
@@ -95,6 +96,7 @@ export async function updateBook(
   await db.book.update({
     where: {
       id: bookId,
+      organizationId: organizationId,
     },
     data: updateData,
   });
@@ -102,10 +104,14 @@ export async function updateBook(
   console.log(`Book with ID ${bookId} has been updated.`);
 }
 
-export async function removeBook(bookId: number): Promise<void> {
+export async function removeBook(
+  bookId: number,
+  organizationId: number
+): Promise<void> {
   await db.book.delete({
     where: {
       id: bookId,
+      organizationId: organizationId,
     },
   });
 }

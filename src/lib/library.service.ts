@@ -37,7 +37,8 @@ export async function lendBook(
 
 export async function returnBook(
   bookId: number,
-  userId: string
+  userId: string,
+  organizationId: number
 ): Promise<void> {
   const book = await getBookById(bookId);
   if (!book) {
@@ -62,6 +63,7 @@ export async function returnBook(
     },
     where: {
       id: borrow.id,
+      organizationId: organizationId,
     },
   });
 
