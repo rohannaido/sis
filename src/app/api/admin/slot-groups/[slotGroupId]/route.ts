@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
 import { DaysOfWeek, timeFormat } from "@/lib/utils";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { UserSession } from "@/lib/auth";
 
 type Params = {
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 
 // TODO: OPTIMIZE DO NOT DELTE ALL
 export async function PUT(req: NextRequest, context: { params: Params }) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parsedRequest = requestBodySchema.safeParse(await req.json());

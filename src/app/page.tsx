@@ -1,11 +1,11 @@
 import { LandingPage } from "@/components/landing/landing-page";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { authOptions } from "@/lib/auth";
 import { Sidebar } from "@/components/Sidebar";
 import { redirect } from "next/navigation";
 
 const getUserDetails = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   return session;
 };
 

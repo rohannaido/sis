@@ -1,3 +1,4 @@
+import { getServerAuthSession, UserSession } from "@/lib/auth";
 import { addBook, getAllBooks } from "@/lib/book.service";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -10,7 +11,10 @@ const bookRequestSchema = z.object({
 
 export async function GET() {
   try {
-    const bookList = await getAllBooks();
+    const session = await getServerAuthSession();
+    const organizationId = (session as UserSession)?.user?.organizationId;
+
+    const bookList = await getAllBooks(organizationId);
 
     return NextResponse.json(bookList);
   } catch (error: any) {
@@ -26,6 +30,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerAuthSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const parsedRequest = bookRequestSchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -42,7 +49,8 @@ export async function POST(req: NextRequest) {
   await addBook(
     parsedRequest.data.title,
     parsedRequest.data.author,
-    parsedRequest.data.copies
+    parsedRequest.data.copies,
+    organizationId
   );
 
   return NextResponse.json(

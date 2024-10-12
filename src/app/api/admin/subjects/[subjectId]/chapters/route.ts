@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
 import { UserSession } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 
 type Params = {
   subjectId: string;
@@ -13,7 +13,7 @@ const requestBodySchema = z.object({
 });
 
 export async function GET(req: NextRequest, context: { params: Params }) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const subjectId = parseInt(context.params.subjectId);
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 }
 
 export async function POST(req: NextRequest, context: { params: Params }) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parseResult = requestBodySchema.safeParse(await req.json());

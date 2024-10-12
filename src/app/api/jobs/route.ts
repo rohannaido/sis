@@ -1,10 +1,10 @@
 import db from "@/db";
 import { UserSession } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
 
   if (!session?.user?.email) {
     return NextResponse.json(

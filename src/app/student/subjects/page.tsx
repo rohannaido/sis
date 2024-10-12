@@ -1,9 +1,9 @@
 import StudentSubjectList from "@/components/student/subject/StudentSubjectList";
 import { getAllSubjects } from "@/db/subject";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 
 async function getSubjects() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const subjects = await getAllSubjects(session?.user?.email || "");
   return subjects;
 }

@@ -1,6 +1,6 @@
 import { createJob } from "@/lib/backgroundJob.service";
 import { booksImportQueue } from "@/workers/booksImport.worker";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const session = await getServerSession();
+    const session = await getServerAuthSession();
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const job = await createJob("Upload Books", user.id);
+    const job = await createJob("Upload Books", user.id, user.organizationId);
     await booksImportQueue.add("Upload Books", {
       bookList: parsedRequest.data,
       jobId: job.id,

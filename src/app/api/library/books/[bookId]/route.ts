@@ -1,3 +1,4 @@
+import { getServerAuthSession, UserSession } from "@/lib/auth";
 import { getBookById, updateBook } from "@/lib/book.service";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -20,6 +21,8 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 }
 
 export async function PUT(req: NextRequest, context: { params: Params }) {
+  const session = await getServerAuthSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
   const parsedRequest = bookRequestSchema.safeParse(await req.json());
 
   if (!parsedRequest.success) {
@@ -39,7 +42,8 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
     bookId,
     parsedRequest.data.title,
     parsedRequest.data.author,
-    parsedRequest.data.copies
+    parsedRequest.data.copies,
+    organizationId
   );
 
   return NextResponse.json(

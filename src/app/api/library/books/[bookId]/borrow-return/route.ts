@@ -1,3 +1,4 @@
+import { getServerAuthSession, UserSession } from "@/lib/auth";
 import { currentBookBorrowTxn, getBookById } from "@/lib/book.service";
 import { lendBook, returnBook } from "@/lib/library.service";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,9 @@ const returnRequestSchema = z.object({
 });
 
 export async function POST(req: NextRequest, context: { params: Params }) {
+  const session = await getServerAuthSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const bookId = parseInt(context.params.bookId);
 
   const parsedRequest = borrowRequestSchema.safeParse(await req.json());
@@ -40,9 +44,9 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   try {
     if (txnType == "BORROW") {
-      await lendBook(bookId, userId, dueDate);
+      await lendBook(bookId, userId, dueDate, organizationId);
     } else {
-      await returnBook(bookId, userId);
+      await returnBook(bookId, userId, organizationId);
     }
 
     return NextResponse.json(
@@ -66,6 +70,9 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 }
 
 export async function PATCH(req: NextRequest, context: { params: Params }) {
+  const session = await getServerAuthSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const bookId = parseInt(context.params.bookId);
 
   const parsedRequest = returnRequestSchema.safeParse(await req.json());
@@ -84,7 +91,7 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
   const { userId, txnType } = parsedRequest.data;
 
   try {
-    await returnBook(bookId, userId);
+    await returnBook(bookId, userId, organizationId);
 
     return NextResponse.json(
       {
@@ -107,7 +114,10 @@ export async function PATCH(req: NextRequest, context: { params: Params }) {
 }
 
 export async function GET(req: NextRequest, context: { params: Params }) {
+  const session = await getServerAuthSession();
+  const organizationId = (session as UserSession)?.user?.organizationId;
+
   const bookId = parseInt(context.params.bookId);
-  const bookBorrowDetail = await currentBookBorrowTxn(bookId);
+  const bookBorrowDetail = await currentBookBorrowTxn(bookId, organizationId);
   return NextResponse.json(bookBorrowDetail);
 }

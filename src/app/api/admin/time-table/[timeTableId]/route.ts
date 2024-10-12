@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { UserSession } from "@/lib/auth";
 const timeTableRequestBodySchema = z.array(
   z.object({
@@ -20,7 +20,7 @@ type Params = {
 };
 
 export async function GET(req: NextRequest, context: { params: Params }) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const timeTableId = parseInt(context.params.timeTableId);
@@ -80,7 +80,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 }
 
 export async function PUT(req: NextRequest, context: { params: Params }) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parsedRequest = timeTableRequestBodySchema.safeParse(await req.json());

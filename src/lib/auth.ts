@@ -134,6 +134,7 @@ export const authOptions = {
           },
         });
 
+        let newUser;
         if (existingUser) {
           if (existingUser.password) {
             return false;
@@ -146,7 +147,7 @@ export const authOptions = {
           });
         } else {
           const organization = await prisma.organization.create({});
-          await prisma.user.create({
+          newUser = await prisma.user.create({
             data: {
               organizationId: organization.id,
               name: user.name,
@@ -162,6 +163,9 @@ export const authOptions = {
         if (existingUser) {
           (user as any).organizationId = existingUser.organizationId;
           (user as any).isAdmin = existingUser.isAdmin;
+        } else if (newUser) {
+          (user as any).organizationId = newUser.organizationId;
+          (user as any).isAdmin = newUser.isAdmin;
         }
       }
 

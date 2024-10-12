@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
@@ -9,7 +9,7 @@ const requestBodySchema = z.object({
 });
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const classGrades = await db.classGrade.findMany({
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parseResult = requestBodySchema.safeParse(await req.json());

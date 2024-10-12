@@ -3,7 +3,7 @@ import { z } from "zod";
 import db from "@/db";
 import bcrypt from "bcrypt";
 import { UserSession } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 
 const signupRequestSchema = z.object({
   name: z.string().min(3, {

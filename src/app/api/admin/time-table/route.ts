@@ -1,6 +1,6 @@
 import db from "@/db";
 import { UserSession } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ const timeTableRequestBodySchema = z.array(
 );
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const timeTableGroups = await db.timeTableGroup.findMany({
@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parsedRequest = timeTableRequestBodySchema.safeParse(await req.json());

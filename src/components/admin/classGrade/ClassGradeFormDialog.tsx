@@ -54,9 +54,10 @@ export const ClassGradeFormDialog = ({
     setIsLoading(true);
     try {
       await axios.post("/api/admin/classGrades", data);
-      toast("class succesfully created");
+      toast("Class successfully created");
       setOpen(false);
       callbackFn();
+      form.reset(); // Reset the form after successful submission
     } catch (error: any) {
       console.log(error);
       toast(error.message);

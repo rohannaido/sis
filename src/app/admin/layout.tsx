@@ -1,4 +1,3 @@
-import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
 import { Sidebar } from "@/components/Sidebar";

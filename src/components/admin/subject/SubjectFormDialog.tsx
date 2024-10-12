@@ -63,11 +63,13 @@ export const SubjectFormDialog = ({
         `/api/admin/classGrades/${classGrade.id}/subjects`,
         formData
       );
-      toast("section succesfully created");
+      toast("section successfully created");
       setOpen(false);
       if (callbackFn) {
         callbackFn();
       }
+      // Clear the form
+      form.reset();
     } catch (error: any) {
       console.log(error);
       toast(error.message);

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import db from "@/db";
 import { DaysOfWeek, timeFormat } from "@/lib/utils";
-import { getServerSession } from "next-auth";
+import {  getServerAuthSession } from "@/lib/auth";
 import { UserSession } from "@/lib/auth";
 
 // TODO: add validations for time
@@ -24,7 +24,7 @@ const requestBodySchema = z.object({
 
 // TODO: add pagination
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const slotGroupList = await db.slotsGroup.findMany({
@@ -41,7 +41,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
   const organizationId = (session as UserSession)?.user?.organizationId;
 
   const parsedRequest = requestBodySchema.safeParse(await req.json());
