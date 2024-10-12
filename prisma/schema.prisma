@@ -20,6 +20,7 @@ model User {
   token         String?
   password      String?
   role          String?
+  isAdmin       Boolean      @default(false)
   Student       Student[]
   Teacher       Teacher[]
   BookBorrowing BookBorrow[]

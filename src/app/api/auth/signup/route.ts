@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
         name,
         email,
         password: hashedPassword,
+        isAdmin: true,
       },
     });
 

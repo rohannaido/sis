@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { JWTPayload, SignJWT, importJWK } from "jose";
 import bcrypt from "bcrypt";
 import prisma from "@/db";
-import { NextAuthOptions } from "next-auth";
+import { getServerSession, NextAuthOptions } from "next-auth";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
@@ -16,6 +16,7 @@ export interface UserSession extends Session {
     email: string;
     name: string;
     organizationId: number;
+    isAdmin: boolean;
   };
 }
 
@@ -23,6 +24,7 @@ interface token extends JWT {
   uid: string;
   jwtToken: string;
   organizationId: number;
+  isAdmin: boolean;
 }
 
 interface User {
@@ -31,6 +33,7 @@ interface User {
   email: string;
   token: string;
   organizationId: number;
+  isAdmin: boolean;
 }
 
 const generateJWT = async (payload: JWTPayload) => {
@@ -72,6 +75,7 @@ export const authOptions = {
               id: true,
               name: true,
               organizationId: true,
+              isAdmin: true,
             },
           });
 
@@ -101,6 +105,7 @@ export const authOptions = {
               name: userDb.name,
               email: credentials.username,
               token: jwt,
+              isAdmin: userDb.isAdmin,
             };
           }
 
@@ -119,6 +124,14 @@ export const authOptions = {
       if (account?.provider === "google" && user.email) {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            organizationId: true,
+            isAdmin: true,
+            password: true,
+          },
         });
 
         if (existingUser) {
@@ -138,8 +151,17 @@ export const authOptions = {
               organizationId: organization.id,
               name: user.name,
               email: user.email,
+              isAdmin: true,
             },
           });
+        }
+
+        user.id = existingUser?.id ?? "";
+        user.name = existingUser?.name ?? "";
+        user.email = existingUser?.email ?? "";
+        if (existingUser) {
+          (user as any).organizationId = existingUser.organizationId;
+          (user as any).isAdmin = existingUser.isAdmin;
         }
       }
 
@@ -156,6 +178,7 @@ export const authOptions = {
         )
           ? "admin"
           : "user";
+        newSession.user.isAdmin = token.isAdmin as boolean;
       }
       return newSession!;
     },
@@ -166,8 +189,8 @@ export const authOptions = {
         newToken.uid = user.id;
         newToken.organizationId = (user as User).organizationId;
         newToken.jwtToken = (user as User).token;
+        newToken.isAdmin = (user as User).isAdmin;
       }
-
       return newToken;
     },
   },
@@ -175,3 +198,7 @@ export const authOptions = {
     signIn: "/signin",
   },
 } satisfies NextAuthOptions;
+
+export async function getServerAuthSession() {
+  return await getServerSession(authOptions);
+}

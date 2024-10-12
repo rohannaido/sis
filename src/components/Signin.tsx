@@ -65,23 +65,29 @@ const Signin = () => {
   };
 
   async function handleGoogleSignin() {
-    const res = await signIn("google", {
+    const result = await signIn("google", {
       redirect: false,
+      
     });
-    console.log("res");
-    console.log(res);
-    if (!res?.error) {
-      const session = await getSession();
-      console.log("session", session);
-      // TODO: HIGH PRIORITY
-      // if (session?.user?.role === "admin") {
-      router.push("/admin");
-      // } else {
-      //   router.push("/student");
-      // }
+
+    console.log("RESULT");
+    console.log(result);
+
+    if (result?.error) {
+      toast.error("Google sign-in failed");
+      return;
+    }
+
+    const session = await getSession();
+    if (session?.user) {
+      if ("isAdmin" in session.user && session.user.isAdmin) {
+        router.push("/admin");
+      } else {
+        router.push("/student");
+      }
       toast.success("Signed In");
     } else {
-      toast.error("oops something went wrong..!");
+      toast.error("Failed to get user session");
     }
   }
 

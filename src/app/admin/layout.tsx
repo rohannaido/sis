@@ -2,20 +2,20 @@ import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { getServerAuthSession, UserSession } from "@/lib/auth";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  console.log("TEST ADMIN");
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
 
   if (!session || !session.user) {
     return redirect("/signin");
   }
 
-  if (!process.env.ADMINS?.split(",").includes(session.user.email!)) {
+  if (!(session as UserSession).user.isAdmin) {
     return notFound();
   }
 
