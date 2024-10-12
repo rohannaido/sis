@@ -2,6 +2,7 @@ import { LandingPage } from "@/components/landing/landing-page";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Sidebar } from "@/components/Sidebar";
+import { redirect } from "next/navigation";
 
 const getUserDetails = async () => {
   const session = await getServerSession(authOptions);
@@ -10,6 +11,10 @@ const getUserDetails = async () => {
 
 export default async function Home() {
   const session = await getUserDetails();
+
+  if (session?.user?.isAdmin) {
+    redirect("/admin");
+  }
 
   if (session?.user) {
     return (
