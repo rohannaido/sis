@@ -40,7 +40,7 @@ const teacherSchema = z.object({
   title: z.string().min(3, {
     message: "Name must be 3 characters long.",
   }),
-  email: z.string().email("Enter a valid Email."),
+  email: z.string().email("Enter a valid Email.").or(z.literal('')),
   teacherClassSubjectLink: z.array(
     z.object({
       id: z.number(),
@@ -78,9 +78,10 @@ export default function TeacherForm({
     try {
       const response = await fetch(`/api/admin/teachers/${teacherId}`);
       const data = await response.json();
-      const { name, teacherClassGradeSubjectLink, ...formData } = data;
+      const { name, email, teacherClassGradeSubjectLink, ...formData } = data;
 
       formData.title = name;
+      formData.email = email || "";
       formData.teacherClassSubjectLink = teacherClassGradeSubjectLink;
       form.reset(formData);
 

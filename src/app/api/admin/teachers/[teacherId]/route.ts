@@ -49,7 +49,7 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 
 const requestBodySchema = z.object({
   name: z.string(),
-  email: z.string().email(),
+  email: z.string().email().or(z.literal('')),
   teacherClassSubjectLink: z.array(
     z.object({
       id: z.number(),
@@ -99,7 +99,7 @@ export async function PUT(
     },
     data: {
       name,
-      email,
+      email: email || null,
     },
   });
 

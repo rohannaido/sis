@@ -64,6 +64,9 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
   ) => {
     const { toast } = useToast();
 
+    const [slotGroups, setSlotGroups] = useState<SlotsGroup[]>([]);
+    const [slotGroup, setSlotGroup] = useState<SlotsGroup>();
+
     const [classGrades, setClassGrades] = useState<ClassGrade[]>([]);
     const [classGrade, setClassGrade] = useState<ClassGrade>();
 
@@ -98,8 +101,8 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
     const [teacherTimeTable, setTeacherTimeTable] = useState<any[]>([]);
 
     useEffect(() => {
+      fetchSlotGroups();
       fetchClassGrades();
-      fetchSlotGroup();
     }, []);
 
     useEffect(() => {
@@ -206,10 +209,23 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
       );
     }
 
-    async function fetchSlotGroup() {
+    async function fetchSlotGroups() {
+      try {
+        const response = await fetch(`/api/admin/slot-groups`);
+        const data = await response.json();
+        setSlotGroups(data);
+      } catch (err) {
+        toast({
+          description: "Something went wrong while searching for slot groups",
+        });
+      } finally {
+      }
+    }
+
+    async function fetchSlotGroup(slotGroupId: number) {
       try {
         const response = await fetch(
-          `/api/admin/slot-groups/1?forFullweek=true`
+          `/api/admin/slot-groups/${slotGroupId}?forFullweek=true`
         );
         const data = await response.json();
         setSlots(data.Slots);
@@ -280,6 +296,14 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
         });
       } finally {
       }
+    }
+
+    function handleSlotGroupChange(value: string) {
+      const slotGroupId = parseInt(value);
+      setSlotGroup(
+        slotGroups.find((slotGroup) => slotGroup.id === slotGroupId)
+      );
+      fetchSlotGroup(slotGroupId);
     }
 
     function handleClassGradeChange(value: string) {
@@ -610,7 +634,31 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
           </DialogContent>
         </Dialog>
         <div className="w-3/4">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-5 gap-4">
+            <div>
+              <Label htmlFor="slotGroup">Slot Group</Label>
+              <Select
+                value={slotGroup?.id?.toString() || ""}
+                onValueChange={handleSlotGroupChange}
+                disabled={timeTable.length > 0}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select slot group" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {slotGroups?.map((slotGroup) => (
+                      <SelectItem
+                        key={slotGroup.id}
+                        value={slotGroup.id.toString()}
+                      >
+                        {slotGroup.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
             <div>
               <Label htmlFor="classGrade">Class</Label>
               <Select
@@ -740,19 +788,19 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
                                 ).subject?.name || slot.type === "Break"
                                 ? ""
                                 : teacherTimeTable
-                                    ?.find(
-                                      (teacherItem: any) =>
-                                        teacherItem.teacherId == teacher?.id
-                                    )
-                                    ?.dayWiseSlots?.find(
-                                      (dayItem: any) => dayItem.day === day
-                                    )
-                                    ?.slots?.find(
-                                      (slotItem: any) =>
-                                        slotItem.slotNumber === slot.slotNumber
-                                    )?.isAllocated
-                                ? "bg-stripes-dark"
-                                : "hover:bg-muted cursor-pointer"
+                                  ?.find(
+                                    (teacherItem: any) =>
+                                      teacherItem.teacherId == teacher?.id
+                                  )
+                                  ?.dayWiseSlots?.find(
+                                    (dayItem: any) => dayItem.day === day
+                                  )
+                                  ?.slots?.find(
+                                    (slotItem: any) =>
+                                      slotItem.slotNumber === slot.slotNumber
+                                  )?.isAllocated
+                                  ? "bg-stripes-dark"
+                                  : "hover:bg-muted cursor-pointer"
                             )}
                             onClick={
                               teacherTimeTable
@@ -767,13 +815,13 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
                                   (slotItem: any) =>
                                     slotItem.slotNumber === slot.slotNumber
                                 )?.isAllocated ||
-                              timeTable[currentTimeTableIndex].dayWiseSlots
-                                .find((dayItem: any) => dayItem.day === day)
-                                .slots.find(
-                                  (slotItem: any) =>
-                                    slotItem.slotNumber === slot.slotNumber
-                                ).subject?.name ||
-                              slot.type === "Break"
+                                timeTable[currentTimeTableIndex].dayWiseSlots
+                                  .find((dayItem: any) => dayItem.day === day)
+                                  .slots.find(
+                                    (slotItem: any) =>
+                                      slotItem.slotNumber === slot.slotNumber
+                                  ).subject?.name ||
+                                slot.type === "Break"
                                 ? undefined
                                 : () => handlePeriodClick(day, slot)
                             }
@@ -781,11 +829,11 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
                             {slot.type === "Break" ? (
                               <div>-</div>
                             ) : timeTable[currentTimeTableIndex].dayWiseSlots
-                                .find((dayItem: any) => dayItem.day === day)
-                                .slots.find(
-                                  (slotItem: any) =>
-                                    slotItem.slotNumber === slot.slotNumber
-                                ).subject?.name ? (
+                              .find((dayItem: any) => dayItem.day === day)
+                              .slots.find(
+                                (slotItem: any) =>
+                                  slotItem.slotNumber === slot.slotNumber
+                              ).subject?.name ? (
                               <div className="flex items-center justify-between gap-2 px-2">
                                 <div className="flex flex-col">
                                   <div className="text-sm">

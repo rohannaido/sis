@@ -6,7 +6,7 @@ import { UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
   name: z.string(),
-  email: z.string().email(),
+  email: z.string().email().or(z.literal('')),
   teacherClassSubjectLink: z.array(
     z.object({
       id: z.number(),
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
     data: {
       organizationId,
       name,
-      email,
+      email: email || null,
     },
   });
 

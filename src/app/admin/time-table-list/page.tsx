@@ -31,7 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { EllipsisVertical, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -61,7 +61,7 @@ export default function TimeTableListPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+                <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -72,9 +72,13 @@ export default function TimeTableListPage() {
                   );
                 }}
               >
+                <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -114,9 +118,10 @@ export default function TimeTableListPage() {
           <CardDescription>You can manage timetables.</CardDescription>
         </div>
         <Link href="/admin/time-table-list/time-table">
-          <Button variant="outline">+ Time Table</Button>
+          <Button>+ Time Table</Button>
         </Link>
       </CardHeader>
+
 
       <Table>
         <TableHeader>
@@ -128,9 +133,9 @@ export default function TimeTableListPage() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 );
               })}

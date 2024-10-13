@@ -31,7 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { EllipsisVertical, MoreHorizontal, Pencil, Trash, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -72,7 +72,7 @@ export default function TeachersPage() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
+                <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -83,9 +83,13 @@ export default function TeachersPage() {
                   );
                 }}
               >
+                <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -125,7 +129,7 @@ export default function TeachersPage() {
           <CardDescription>You can manage teachers.</CardDescription>
         </div>
         <Link href="/admin/teachers/manage-teacher">
-          <Button variant="outline">+ Teacher</Button>
+          <Button variant="outline">+ New</Button>
         </Link>
       </CardHeader>
 
