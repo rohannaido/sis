@@ -1,5 +1,5 @@
 import { createJob } from "@/lib/backgroundJob.service";
-import { booksImportQueue } from "@/workers/booksImport.worker";
+// import { booksImportQueue } from "@/workers/booksImport.worker";
 import {  getServerAuthSession } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -59,13 +59,13 @@ export async function POST(req: NextRequest) {
     }
 
     const job = await createJob("Upload Books", user.id, user.organizationId);
-    await booksImportQueue.add("Upload Books", {
-      bookList: parsedRequest.data.map((book) => ({
-        ...book,
-        organizationId: user.organizationId,
-      })),
-      jobId: job.id,
-    });
+    // await booksImportQueue.add("Upload Books", {
+    //   bookList: parsedRequest.data.map((book) => ({
+    //     ...book,
+    //     organizationId: user.organizationId,
+    //   })),
+    //   jobId: job.id,
+    // });
 
     return NextResponse.json(
       {
