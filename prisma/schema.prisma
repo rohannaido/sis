@@ -163,11 +163,12 @@ model ChapterContent {
 }
 
 model SlotsGroup {
-  id         Int          @id @default(autoincrement())
-  name       String
-  Slots      Slots[]
-  ClassGrade ClassGrade[]
-  TimeTable  TimeTable[]
+  id              Int              @id @default(autoincrement())
+  name            String
+  timeTableGroups TimeTableGroup[]
+  Slots           Slots[]
+  ClassGrade      ClassGrade[]
+  TimeTable       TimeTable[]
 
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id])
@@ -202,7 +203,11 @@ model SectionSubjectTeacher {
 }
 
 model TimeTableGroup {
-  id Int @id @default(autoincrement())
+  id   Int     @id @default(autoincrement())
+  name String?
+
+  slotsGroupId Int?
+  slotsGroup   SlotsGroup? @relation(fields: [slotsGroupId], references: [id])
 
   TimeTable TimeTable[]
 

@@ -76,9 +76,11 @@ enum SlotType {
 export default function SlotGroupForm({
   type,
   slotGroupId,
+  onSuccess,
 }: {
   type?: string;
   slotGroupId?: number;
+  onSuccess?: () => void;
 }) {
   const router = useRouter();
 
@@ -118,10 +120,11 @@ export default function SlotGroupForm({
   const handleAddSlotAppend = () => {
     append({
       slotNumber: fields.length + 1,
-      // id: 0,
-      startDateTime: new Date(),
-      endDateTime: new Date(),
-      type: "",
+      startDateTime: fields.length > 0 ? new Date(fields[fields.length - 1].endDateTime.getTime()) : new Date(),
+      endDateTime: fields.length > 0
+        ? new Date(fields[fields.length - 1].endDateTime.getTime() + (fields[0].endDateTime.getTime() - fields[0].startDateTime.getTime()))
+        : new Date(new Date().getTime() + 60 * 60 * 1000),
+      type: SlotType.CLASS,
     });
     if (slotsList.length < fields.length) {
       setSlotsList(() => {
@@ -156,11 +159,7 @@ export default function SlotGroupForm({
 
   const onSubmit = async (data: z.infer<typeof slotGroupSchema>) => {
     try {
-      console.log("ON SUBMIT");
-
       const { title, slots, ...rest } = data;
-
-      console.log(data);
 
       const formattedSlots = slots.map((slotItem) => ({
         // id: slotItem.id,
@@ -176,8 +175,6 @@ export default function SlotGroupForm({
         slots: formattedSlots,
       };
 
-      console.log(formData);
-
       if (type === "EDIT") {
         const res = await axios.put(
           `/api/admin/slot-groups/${slotGroupId}`,
@@ -188,9 +185,7 @@ export default function SlotGroupForm({
         const res = await axios.post("/api/admin/slot-groups", formData);
         toast.success("Slots created Successfully");
       }
-      setTimeout(() => {
-        router.push("/admin/time-table/slot-groups");
-      }, 500);
+      onSuccess?.();
     } catch (err: any) {
       toast.error(err.message);
     } finally {

@@ -42,7 +42,11 @@ export default function SlotGroupPage() {
               {slotFormType === "EDIT" ? <>Edit</> : <>Add</>} Slot Group
             </CardTitle>
           </div>
-          <SlotGroupForm type={slotFormType} slotGroupId={slotGroupEditId} />
+          <SlotGroupForm
+            type={slotFormType}
+            slotGroupId={slotGroupEditId}
+            onSuccess={() => setOpenEditor(false)}
+          />
         </div>
       ) : (
         <SlotGroupListPage

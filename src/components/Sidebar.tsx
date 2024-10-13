@@ -15,7 +15,7 @@ import {
   UsersRound,
 } from "lucide-react";
 
-export function Sidebar({}: {}) {
+export function Sidebar({ }: {}) {
   const pathName = usePathname();
 
   const [sidebarOpen, setSidebarOpen] = useRecoilState(sidebarOpenAtom);
@@ -34,9 +34,8 @@ export function Sidebar({}: {}) {
   return (
     //
     <div
-      className={`${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } w-[200px] min-w-[200px] flex-col border-r bg-background p-4 md:flex absolute z-20 sm:sticky sm:top-[64px] sm:h-sidebar transition-transform duration-300`}
+      className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } w-[200px] min-w-[200px] flex-col border-r bg-background p-4 md:flex absolute z-20 sm:sticky sm:top-[64px] sm:h-sidebar transition-transform duration-300`}
     >
       <nav className="flex flex-col gap-2">
         {/* <Link
@@ -134,19 +133,16 @@ export function ToggleButton({
       className="flex flex-col items-center justify-center"
     >
       <span
-        className={`block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${
-          !sidebarOpen ? "translate-y-1 rotate-45" : "-translate-y-0.5"
-        }`}
+        className={`block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${!sidebarOpen ? "translate-y-1 rotate-45" : "-translate-y-0.5"
+          }`}
       ></span>
       <span
-        className={`my-0.5 block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${
-          !sidebarOpen ? "opacity-0" : "opacity-100"
-        }`}
+        className={`my-0.5 block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${!sidebarOpen ? "opacity-0" : "opacity-100"
+          }`}
       ></span>
       <span
-        className={`block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${
-          !sidebarOpen ? "-translate-y-1 -rotate-45" : "translate-y-0.5"
-        }`}
+        className={`block h-0.5 w-6 rounded-sm bg-black transition-all duration-300 ease-out dark:bg-white ${!sidebarOpen ? "-translate-y-1 -rotate-45" : "translate-y-0.5"
+          }`}
       ></span>
     </button>
   );

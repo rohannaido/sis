@@ -31,7 +31,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -80,9 +80,13 @@ export default function SlotGroupListPage({
               <DropdownMenuItem
                 onClick={() => editAction(parseInt(row.getValue("id")))}
               >
+                <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -118,7 +122,7 @@ export default function SlotGroupListPage({
     <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
-          <CardTitle>Time table Slots</CardTitle>
+          <CardTitle>Slot Groups</CardTitle>
           <CardDescription>You can manage time table slots.</CardDescription>
         </div>
         <Button onClick={() => addAction()} variant="outline">
@@ -136,9 +140,9 @@ export default function SlotGroupListPage({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 );
               })}

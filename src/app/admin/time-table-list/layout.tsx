@@ -9,7 +9,7 @@ export default function TimeTableLayout({
 }) {
   return (
     <>
-      <div className="mx-auto justify-between p-2 text-black dark:text-white">
+      <div className="">
         {children}
       </div>
     </>

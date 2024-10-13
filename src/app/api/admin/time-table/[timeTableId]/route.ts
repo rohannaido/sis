@@ -3,17 +3,21 @@ import db from "@/db";
 import { z } from "zod";
 import {  getServerAuthSession } from "@/lib/auth";
 import { UserSession } from "@/lib/auth";
-const timeTableRequestBodySchema = z.array(
-  z.object({
-    classGradeId: z.number(),
-    sectionId: z.number(),
-    slotsGroupId: z.number(),
-    dayOfWeek: z.string(),
-    slotsId: z.number(),
-    subjectId: z.number(),
-    teacherId: z.number(),
-  })
-);
+
+const timeTableRequestBodySchema = z.object({
+  timeTable: z.array(
+    z.object({
+      classGradeId: z.number(),
+      sectionId: z.number(),
+      slotsGroupId: z.number(),
+      dayOfWeek: z.string(),
+      slotsId: z.number(),
+      subjectId: z.number(),
+      teacherId: z.number(),
+    })
+  ),
+  slotsGroupId: z.number(),
+});
 
 type Params = {
   timeTableId: string;
@@ -55,6 +59,11 @@ export async function GET(req: NextRequest, context: { params: Params }) {
       id: timeTableId,
     },
     include: {
+      slotsGroup: {
+        include: {
+          Slots: true,
+        },
+      },
       TimeTable: {
         include: {
           classGrade: true,
@@ -121,7 +130,7 @@ export async function PUT(req: NextRequest, context: { params: Params }) {
   });
 
   const timeTable = await db.timeTable.createMany({
-    data: parsedRequest.data.map((timeTableItem) => ({
+    data: parsedRequest.data.timeTable.map((timeTableItem) => ({
       organizationId: organizationId,
       timeTableGroupId: timeTableId,
       ...timeTableItem,

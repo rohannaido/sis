@@ -4,17 +4,20 @@ import {  getServerAuthSession } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const timeTableRequestBodySchema = z.array(
-  z.object({
-    classGradeId: z.number(),
-    sectionId: z.number(),
-    slotsGroupId: z.number(),
-    dayOfWeek: z.string(),
-    slotsId: z.number(),
-    subjectId: z.number(),
-    teacherId: z.number(),
-  })
-);
+const timeTableRequestBodySchema = z.object({
+  timeTable: z.array(
+    z.object({
+      classGradeId: z.number(),
+      sectionId: z.number(),
+      slotsGroupId: z.number(),
+      dayOfWeek: z.string(),
+      slotsId: z.number(),
+      subjectId: z.number(),
+      teacherId: z.number(),
+    })
+  ),
+  slotsGroupId: z.number(),
+});
 
 export async function GET() {
   const session = await getServerAuthSession();
@@ -23,6 +26,9 @@ export async function GET() {
   const timeTableGroups = await db.timeTableGroup.findMany({
     where: {
       organizationId: organizationId,
+    },
+    include: {
+      slotsGroup: true,
     },
   });
 
@@ -45,11 +51,12 @@ export async function POST(req: NextRequest) {
   const timeTableGroup = await db.timeTableGroup.create({
     data: {
       organizationId,
+      slotsGroupId: parsedRequest.data.slotsGroupId,
     },
   });
 
   const timeTable = await db.timeTable.createMany({
-    data: parsedRequest.data.map((timeTableItem) => ({
+    data: parsedRequest.data.timeTable.map((timeTableItem) => ({
       organizationId,
       timeTableGroupId: timeTableGroup.id,
       ...timeTableItem,

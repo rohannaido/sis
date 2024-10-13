@@ -33,7 +33,7 @@ import {
   Subject,
   User,
 } from "@prisma/client";
-import { CircleX } from "lucide-react";
+import { CircleX, PlusCircle } from "lucide-react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   Dialog,
@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import axios from "axios";
 import { string } from "zod";
+import SlotGroupPage from "./SlotGroupPage";
 
 type Teacher = {
   id: number;
@@ -85,6 +86,9 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
     const [togglePreviewAndSaveDialog, setTogglePreviewAndSaveDialog] =
       useState<boolean>(false);
 
+    const [slotGroupDialogOpen, setSlotGroupDialogOpen] =
+      useState<boolean>(false);
+
     const weekDays = [
       "Monday",
       "Tuesday",
@@ -108,10 +112,19 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
     useEffect(() => {
       if (props.type === "EDIT" && props.timeTableId) {
         fetchTimeTable().then((timeTableData) => {
-          parseTimeTableForEdit(timeTableData.TimeTable);
+          setSlotGroup(timeTableData.slotsGroup);
+          setSlots(timeTableData.slotsGroup.Slots);
+          const newGroupedSlots = groupSlotsBySlotNumber(
+            timeTableData.slotsGroup.Slots
+          );
+          setGroupedSlots(newGroupedSlots);
+          parseTimeTableForEdit(
+            timeTableData.TimeTable,
+            timeTableData.slotsGroup.Slots
+          );
         });
       }
-    }, [props.type, props.timeTableId, slots]);
+    }, [props.type, props.timeTableId]);
 
     async function fetchTimeTable() {
       try {
@@ -127,7 +140,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
       }
     }
 
-    function parseTimeTableForEdit(timeTableData: any[]) {
+    function parseTimeTableForEdit(timeTableData: any[], slots: Slots[]) {
       const newTimeTable: any[] = [];
       timeTableData.forEach((timeTableItem) => {
         let sectionTimeTable = newTimeTable.find(
@@ -175,7 +188,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
         });
       });
 
-      generateTeacherTimeTable(newTimeTable);
+      generateTeacherTimeTable(newTimeTable, "edit", slots);
       setTimeTable(newTimeTable);
     }
 
@@ -193,7 +206,6 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
 
     useImperativeHandle(ref, () => ({
       previewAndSave: () => {
-        console.log("REFFF");
         handlePreviewAndSave();
       },
     }));
@@ -423,8 +435,6 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
         }),
       };
 
-      console.log(newDaySlots, "newDaySlots");
-
       newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
         (dayItem: any) => dayItem.day === day
       ).slots = newDaySlots.slots;
@@ -435,7 +445,8 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
 
     function generateTeacherTimeTable(
       timeTable: any[],
-      action: string = "add"
+      action: string = "add",
+      slots: Slots[] = []
     ) {
       let newTeacherTimeTable = [...teacherTimeTable];
       if (action === "reset") {
@@ -448,8 +459,6 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
             if (!slot?.subject || !slot?.teacher) {
               return;
             }
-
-            console.log("slot", slot);
 
             let teacherItem = newTeacherTimeTable.find(
               (teacherTimeTableItem) =>
@@ -534,10 +543,16 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
         if (props.timeTableId && props.type === "EDIT") {
           await axios.put(
             `/api/admin/time-table/${props.timeTableId}`,
-            timeTableData
+            {
+              timeTable: timeTableData,
+              slotsGroupId: slotGroup?.id,
+            }
           );
         } else {
-          await axios.post("/api/admin/time-table", timeTableData);
+          await axios.post("/api/admin/time-table", {
+            timeTable: timeTableData,
+            slotsGroupId: slotGroup?.id,
+          });
         }
         toast({
           title: "Saved Time Table!",
@@ -636,7 +651,25 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
         <div className="w-3/4">
           <div className="grid grid-cols-5 gap-4">
             <div>
-              <Label htmlFor="slotGroup">Slot Group</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="slotGroup">Slot Group</Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => {
+                    setSlotGroupDialogOpen(true);
+                  }}
+                >
+                  <PlusCircle className="h-4 w-4" />
+                  <span className="sr-only">Edit/Create Slot Group</span>
+                </Button>
+              </div>
+              <Dialog open={slotGroupDialogOpen} onOpenChange={setSlotGroupDialogOpen}>
+                <DialogContent className="h-screen min-w-[800px] m-0 p-0">
+                  <SlotGroupPage />
+                </DialogContent>
+              </Dialog>
               <Select
                 value={slotGroup?.id?.toString() || ""}
                 onValueChange={handleSlotGroupChange}
@@ -660,7 +693,10 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
               </Select>
             </div>
             <div>
-              <Label htmlFor="classGrade">Class</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="classGrade">Class</Label>
+                <div className="h-8 w-8 p-0"></div>
+              </div>
               <Select
                 value={classGrade?.id?.toString() || ""}
                 onValueChange={handleClassGradeChange}
@@ -683,7 +719,10 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
               </Select>
             </div>
             <div>
-              <Label htmlFor="section">Section</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="section">Section</Label>
+                <div className="h-8 w-8 p-0"></div>
+              </div>
               <Select
                 value={section?.id?.toString() || ""}
                 onValueChange={handleSectionChange}
@@ -707,7 +746,10 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
               </Select>
             </div>
             <div>
-              <Label htmlFor="subject">Subject</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="subject">Subject</Label>
+                <div className="h-8 w-8 p-0"></div>
+              </div>
               <Select
                 value={subject?.id?.toString() || ""}
                 onValueChange={handleSubjectChange}
@@ -731,7 +773,10 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
               </Select>
             </div>
             <div>
-              <Label htmlFor="teacher">Teacher</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="teacher">Teacher</Label>
+                <div className="h-8 w-8 p-0"></div>
+              </div>
               <Select
                 value={teacher?.id?.toString() || ""}
                 onValueChange={handleTeacherChange}
@@ -898,14 +943,14 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
               <Table>
                 <TableHeader>
                   <TableHead>Name</TableHead>
-                  <TableHead>Weekly periods</TableHead>
+                  {/* <TableHead>Weekly periods</TableHead> */}
                   <TableHead>Added periods</TableHead>
                 </TableHeader>
                 <TableBody>
                   {subjects?.map((subjectItem) => (
                     <TableRow key={subjectItem.id}>
                       <TableCell>{subjectItem.name}</TableCell>
-                      <TableCell>{subjectItem.periodCountPerWeek}</TableCell>
+                      {/* <TableCell>{subjectItem.periodCountPerWeek}</TableCell> */}
                       <TableCell>
                         {timeTable[
                           currentTimeTableIndex!

@@ -52,6 +52,14 @@ export default function TimeTableListPage() {
       cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
     },
     {
+      accessorKey: "name",
+      header: "Name",
+    },
+    {
+      accessorKey: "slotsGroup.name",
+      header: "Slot Group",
+    },
+    {
       accessorKey: "id",
       header: "Actions",
       enableHiding: false,
