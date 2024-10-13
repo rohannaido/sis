@@ -16,3 +16,23 @@ export async function GET(req: NextRequest, context: { params: Params }) {
 
   return NextResponse.json(classGrade);
 }
+
+export async function DELETE(req: NextRequest, context: { params: Params }) {
+  try {
+    const classGradeId = parseInt(context.params.classGradeId);
+
+    await db.classGrade.delete({
+      where: {
+        id: classGradeId,
+      },
+    });
+
+    return NextResponse.json({ message: "Class grade deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting class grade:", error);
+    return NextResponse.json(
+      { message: "Failed to delete class grade" },
+      { status: 500 }
+    );
+  }
+}

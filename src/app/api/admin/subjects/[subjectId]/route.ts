@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/db";
 import { z } from "zod";
+import { getServerAuthSession, UserSession } from "@/lib/auth";
 
 const requestBodySchema = z.object({
   name: z.string(),
@@ -26,6 +27,23 @@ export async function GET(req: NextRequest, context: { params: Params }) {
   });
 
   return NextResponse.json(subject);
+}
+
+export async function DELETE(req: NextRequest, context: { params: Params }) {
+  try {
+    const session = await getServerAuthSession();
+    const organizationId = (session as UserSession)?.user?.organizationId;
+
+  const subjectId = parseInt(context.params.subjectId);
+
+  await db.subject.delete({
+    where: { id: subjectId, organizationId },
+  });
+
+    return NextResponse.json({ message: "Subject deleted successfully" });
+  } catch (error) {
+    return NextResponse.json({ message: "Failed to delete subject" }, { status: 500 });
+  }
 }
 
 // export async function POST(req: NextRequest, context: { params: Params }) {

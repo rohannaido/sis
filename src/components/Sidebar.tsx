@@ -39,15 +39,15 @@ export function Sidebar({}: {}) {
       } w-[200px] min-w-[200px] flex-col border-r bg-background p-4 md:flex absolute z-20 sm:sticky sm:top-[64px] sm:h-sidebar transition-transform duration-300`}
     >
       <nav className="flex flex-col gap-2">
-        <Link
+        {/* <Link
           href="/admin"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           prefetch={false}
         >
           <HomeIcon className="h-5 w-5" />
           Dashboard
-        </Link>
-        <div>
+        </Link> */}
+        {/* <div>
           <div
             onClick={() => setLibraryMenuOpen(!libraryMenuOpen)}
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -75,23 +75,23 @@ export function Sidebar({}: {}) {
               </Link>
             </div>
           )}
-        </div>
-        <Link
+        </div> */}
+        {/* <Link
           href="/admin/active-users"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           prefetch={false}
         >
           <UsersRound className="h-5 w-5" />
           Active Users
-        </Link>
-        <Link
+        </Link> */}
+        {/* <Link
           href="/admin/students"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           prefetch={false}
         >
           <SquareLibrary className="h-5 w-5" />
           Students
-        </Link>
+        </Link> */}
         <Link
           href="/admin/classGrades"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"

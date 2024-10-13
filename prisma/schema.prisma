@@ -60,7 +60,7 @@ model Student {
   userId       String
   user         User       @relation(fields: [userId], references: [id])
   classGradeId Int
-  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id], onDelete: Cascade)
   sectionId    Int
   section      Section    @relation(fields: [sectionId], references: [id])
 
@@ -85,9 +85,9 @@ model TeacherClassGradeSubjectLink {
   teacherId    Int
   teacher      Teacher    @relation(fields: [teacherId], references: [id])
   classGradeId Int
-  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id])
+  classGrade   ClassGrade @relation(fields: [classGradeId], references: [id], onDelete: Cascade)
   subjectId    Int
-  subject      Subject    @relation(fields: [subjectId], references: [id])
+  subject      Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   organizationId Int
   organization   Organization @relation(fields: [organizationId], references: [id])
@@ -112,7 +112,7 @@ model ClassGrade {
 model Subject {
   id                 Int        @id @default(autoincrement())
   classGradeId       Int
-  classGrade         ClassGrade @relation(fields: [classGradeId], references: [id])
+  classGrade         ClassGrade @relation(fields: [classGradeId], references: [id], onDelete: Cascade)
   periodCountPerWeek Int        @default(0)
   name               String?
 
@@ -128,7 +128,7 @@ model Subject {
 model Section {
   id                    Int                     @id @default(autoincrement())
   classGradeId          Int
-  classGrade            ClassGrade              @relation(fields: [classGradeId], references: [id])
+  classGrade            ClassGrade              @relation(fields: [classGradeId], references: [id], onDelete: Cascade)
   name                  String?
   Student               Student[]
   TimeTable             TimeTable[]
@@ -215,7 +215,7 @@ model TimeTable {
   timeTableGroupId Int
   timeTableGroup   TimeTableGroup @relation(fields: [timeTableGroupId], references: [id])
   classGradeId     Int
-  classGrade       ClassGrade     @relation(fields: [classGradeId], references: [id])
+  classGrade       ClassGrade     @relation(fields: [classGradeId], references: [id], onDelete: Cascade)
   sectionId        Int
   section          Section        @relation(fields: [sectionId], references: [id])
   slotsGroupId     Int

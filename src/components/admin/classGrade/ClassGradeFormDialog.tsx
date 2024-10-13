@@ -21,12 +21,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const classSchema = z.object({
   title: z.string().min(1, {
@@ -34,14 +35,36 @@ const classSchema = z.object({
   }),
 });
 
+const classGradeList = [
+  { id: 1, title: "1" },
+  { id: 2, title: "2" },
+  { id: 3, title: "3" },
+  { id: 4, title: "4" },
+  { id: 5, title: "5" },
+  { id: 6, title: "6" },
+  { id: 7, title: "7" },
+  { id: 8, title: "8" },
+  { id: 9, title: "9" },
+  { id: 10, title: "10" },
+  { id: 11, title: "11" },
+  { id: 12, title: "12" },
+];
+
 export const ClassGradeFormDialog = ({
   callbackFn,
+  existingClasses,
 }: {
   callbackFn: Function;
+  existingClasses: any[];
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentClassGradeList, setCurrentClassGradeList] = useState<any[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    setCurrentClassGradeList(classGradeList.filter((item) => !existingClasses.some((existingItem) => existingItem.title === item.title)));
+  }, [existingClasses]);
 
   const form = useForm<z.infer<typeof classSchema>>({
     resolver: zodResolver(classSchema),
@@ -65,6 +88,7 @@ export const ClassGradeFormDialog = ({
       setIsLoading(false);
     }
   };
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -89,7 +113,25 @@ export const ClassGradeFormDialog = ({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter the class title" {...field} />
+                    {/* <Input placeholder="Enter the class title" {...field} /> */}
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a class" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currentClassGradeList.map((item) => (
+                          <SelectItem
+                            key={item.id}
+                            value={item.id.toString()}
+                          >
+                            Class {item.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

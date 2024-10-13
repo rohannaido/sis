@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ClassGrades from "./classGrades/page";
 
 export default function Page() {
   return (
     <main className="flex-1 overflow-auto p-4 md:p-6">
-      Temp data
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <ClassGrades />
+      {/* Temp data */}
+      {/* <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Classes</CardTitle>
@@ -103,7 +105,7 @@ export default function Page() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </main>
   );
 }

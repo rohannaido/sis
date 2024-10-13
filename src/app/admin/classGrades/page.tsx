@@ -42,13 +42,29 @@ export default function ClassGrades() {
           <CardTitle>Class</CardTitle>
           <CardDescription>You can manage classes.</CardDescription>
         </div>
-        <ClassGradeFormDialog callbackFn={() => fetchClasses()} />
+        {classGrades.length > 0 && (
+          <ClassGradeFormDialog callbackFn={() => fetchClasses()} existingClasses={classGrades} />
+        )}
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div>Loading...</div>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading classes...</p>
+          </div>
+        ) : classGrades.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No classes found</h3>
+            <p className="mt-1 text-sm text-gray-500">Get started by creating a new class.</p>
+            <div className="mt-6">
+              <ClassGradeFormDialog callbackFn={fetchClasses} existingClasses={classGrades} />
+            </div>
+          </div>
         ) : (
-          <ClassGradeList classGrades={classGrades} />
+          <ClassGradeList
+            classGrades={classGrades}
+            callbackFn={fetchClasses}
+          />
         )}
       </CardContent>
     </Card>

@@ -41,20 +41,33 @@ export default function SubjectsPage() {
   }, [classGrade]);
 
   return (
-    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-6">
+    <Card className="mx-auto w-full max-w-6xl overflow-y-auto lg:mt-10">
       <CardHeader className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
           <CardTitle>Subjects</CardTitle>
           <CardDescription>You can manage subjects.</CardDescription>
         </div>
-        <SubjectFormDialog
-          callbackFn={() => fetchSubjects()}
-          classGrade={classGrade!}
-        />
+        {subjects.length > 0 && (
+          <SubjectFormDialog
+            callbackFn={() => fetchSubjects()}
+            classGrade={classGrade!}
+          />
+        )}
       </CardHeader>
       <CardContent>
         {subjectsLoading ? (
-          <div>Loading...</div>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading subjects...</p>
+          </div>
+        ) : subjects.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No subjects found</h3>
+            <p className="mt-1 text-sm text-gray-500">Get started by creating a new subject.</p>
+            <div className="mt-6">
+              <SubjectFormDialog callbackFn={fetchSubjects} classGrade={classGrade!} />
+            </div>
+          </div>
         ) : (
           <SubjectList subjects={subjects} />
         )}

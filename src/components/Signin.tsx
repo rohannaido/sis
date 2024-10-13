@@ -13,9 +13,10 @@ import { getSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 
 const Signin = () => {
+  const { toast } = useToast();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [checkingPassword, setCheckingPassword] = useState(false);
   const [requiredError, setRequiredError] = useState({
@@ -57,9 +58,21 @@ const Signin = () => {
       // } else {
       //   router.push("/student");
       // }
-      toast.success("Signed In");
+      toast({
+        description: "Signed In",
+      });
     } else {
-      toast.error("oops something went wrong..!");
+      if (res?.status === 401) {
+        toast({
+          variant: "destructive",
+          description: "Invalid email or password!",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "Something went wrong!",
+        });
+      }
       setCheckingPassword(false);
     }
   };
@@ -74,7 +87,10 @@ const Signin = () => {
     console.log(result);
 
     if (result?.error) {
-      toast.error("Google sign-in failed");
+      toast({
+        variant: "destructive",
+        description: "Google sign-in failed",
+      });
       return;
     }
 
@@ -85,9 +101,14 @@ const Signin = () => {
       } else {
         router.push("/student");
       }
-      toast.success("Signed In");
+      toast({
+        description: "Signed In",
+      });
     } else {
-      toast.error("Failed to get user session");
+      toast({
+        variant: "destructive",
+        description: "Failed to get user session",
+      });
     }
   }
 
