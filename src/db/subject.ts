@@ -14,6 +14,7 @@ export const getAllSubjects = async (email: string) => {
                   name: true,
                   classGradeId: true,
                   periodCountPerWeek: true,
+                  organizationId: true,
                 },
               },
             },

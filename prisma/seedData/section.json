@@ -1,1 +1,32 @@
-[{"id":1,"classGradeId":1,"name":"A"},{"id":2,"classGradeId":1,"name":"B"},{"id":3,"classGradeId":2,"name":"A"},{"id":4,"classGradeId":2,"name":"B"},{"id":5,"classGradeId":1,"name":"C"}]
+[
+    {
+        "id": 1,
+        "classGradeId": 1,
+        "name": "A",
+        "organizationId": 1
+    },
+    {
+        "id": 2,
+        "classGradeId": 1,
+        "name": "B",
+        "organizationId": 1
+    },
+    {
+        "id": 3,
+        "classGradeId": 2,
+        "name": "A",
+        "organizationId": 1
+    },
+    {
+        "id": 4,
+        "classGradeId": 2,
+        "name": "B",
+        "organizationId": 1
+    },
+    {
+        "id": 5,
+        "classGradeId": 1,
+        "name": "C",
+        "organizationId": 1
+    }
+]

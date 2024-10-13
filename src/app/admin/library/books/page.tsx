@@ -120,15 +120,15 @@ export default function BooksPage() {
             <DropdownMenuContent align="end">
               {parseInt(row.getValue("borrowedCopies") || "0") !=
                 row.getValue("copies") && (
-                <DropdownMenuItem
-                  onClick={() => {
-                    setEditingBookId(row.getValue("id"));
-                    setOpenBorrowBookForm(true);
-                  }}
-                >
-                  Borrow
-                </DropdownMenuItem>
-              )}
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setEditingBookId(row.getValue("id"));
+                      setOpenBorrowBookForm(true);
+                    }}
+                  >
+                    Borrow
+                  </DropdownMenuItem>
+                )}
               {parseInt(row.getValue("borrowedCopies") || "0") > 0 && (
                 <DropdownMenuItem
                   onClick={() => {
@@ -183,8 +183,8 @@ export default function BooksPage() {
     const reader = new FileReader();
 
     // When the file is successfully read
-    reader.onload = (e: Event) => {
-      const data = new Uint8Array(e?.target?.result);
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const data = new Uint8Array(e.target?.result as ArrayBuffer);
       const excelData = getExcelOutputDataExceptHeader(data);
       setExcelUploadData(excelData);
     };

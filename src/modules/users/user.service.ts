@@ -11,7 +11,7 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  async registerUser(user: User) {
+  async registerUser(user: User, organizationId: number) {
     try {
       this.userRepository.getUserByUsername(user.name);
 
@@ -19,7 +19,7 @@ export class UserService {
         throw new Error("Username taken!"); // TODO: have error types
       }
 
-      const newUser = this.userRepository.createUser(user);
+      const newUser = this.userRepository.createUser(user, organizationId);
 
       return newUser;
     } catch (error) {

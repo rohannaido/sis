@@ -60,7 +60,10 @@ export async function POST(req: NextRequest) {
 
     const job = await createJob("Upload Books", user.id, user.organizationId);
     await booksImportQueue.add("Upload Books", {
-      bookList: parsedRequest.data,
+      bookList: parsedRequest.data.map((book) => ({
+        ...book,
+        organizationId: user.organizationId,
+      })),
       jobId: job.id,
     });
 

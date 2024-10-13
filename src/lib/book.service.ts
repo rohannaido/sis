@@ -33,6 +33,7 @@ export async function getAllBooks(organizationId: number): Promise<BookDb[]> {
       (bookBorrowItem) => !bookBorrowItem.returnDate
     )?.length;
     return {
+      organizationId: bookListItem.organizationId,
       id: bookListItem.id,
       title: bookListItem.title,
       author: bookListItem.author,

@@ -32,6 +32,7 @@ async function seedUsers() {
       name: "Test",
       password:
         "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJpYXQiOjE3MjI0NDg1OTQsImV4cCI6MTc1Mzk4NDU5NH0.V4wKMokFAuzKCfVEGbB4KN2_NQP3Meu-tX9v1_NGbag",
+      organizationId: 1,
     },
   });
   const rohan = await db.user.upsert({
@@ -42,6 +43,7 @@ async function seedUsers() {
       name: "Rohan",
       password:
         "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJpYXQiOjE3MjIyNzE1NjgsImV4cCI6MTc1MzgwNzU2OH0.z05_GvZ-JuLCOwYY8TZWf1mZcRqUgC5Z61Fv9mdTqJI",
+      organizationId: 1,
     },
   });
   console.log({ test, rohan });

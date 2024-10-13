@@ -55,7 +55,12 @@ export type TimeTableBuilderRef = {
   previewAndSave: () => void;
 };
 
-const TimeTableBuilder = forwardRef<TimeTableBuilderRef>(
+interface TimeTableBuilderProps {
+  type?: string;
+  timeTableId?: string;
+}
+
+const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
   (
     props: {
       type?: string;

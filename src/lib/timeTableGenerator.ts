@@ -142,6 +142,7 @@ export class TimeTableGenerator {
       }
 
       sectionTeacherForSubject = {
+        organizationId: classItem.organizationId,
         id: 0,
         sectionId: section.id,
         teacherId: teacherForSubject?.id!,
@@ -171,7 +172,8 @@ export class TimeTableGenerator {
         slotsId: slot.id,
         dayOfWeek: slot.dayOfWeek,
         subjectId: subjectToAdd.id,
-        teacherId: sectionTeacherForSubject.teacherId,
+        teacherId: sectionTeacherForSubject?.teacherId,
+        organizationId: classItem.organizationId,
         Slot: slot,
       },
       newSectionTeacherForSubject: newTeacherLink
