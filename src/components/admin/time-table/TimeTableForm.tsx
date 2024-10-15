@@ -15,7 +15,7 @@ import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { ClassGradeTimeTable } from "@/lib/timeTableGenerator";
 import ClassSubjectsPage from "@/components/admin/time-table/TimeTableClassSettings";
-import TimeTableBuilder, { TimeTableBuilderRef } from "./TimeTableBuilder";
+import TimeTableBuilder, { TimeTableBuilderRef } from "./timeTableBuilder/TimeTableBuilder";
 
 export default function TimeTableForm({
   type,

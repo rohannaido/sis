@@ -43,7 +43,8 @@ import {
 } from "@/components/ui/dialog";
 import axios from "axios";
 import { string } from "zod";
-import SlotGroupPage from "./SlotGroupPage";
+import SlotGroupPage from "../SlotGroupPage";
+import TimeTableCell from "./TimeTableCell";
 
 type Teacher = {
   id: number;
@@ -827,112 +828,17 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
                           </div>
                         </TableCell>
                         {weekDays.map((day) => (
-                          <TableCell
+                          <TimeTableCell
                             key={day}
-                            className={cn(
-                              timeTable[currentTimeTableIndex].dayWiseSlots
-                                .find((dayItem: any) => dayItem.day === day)
-                                .slots.find(
-                                  (slotItem: any) =>
-                                    slotItem.slotNumber === slot.slotNumber
-                                ).subject?.name || slot.type === "Break"
-                                ? ""
-                                : teacherTimeTable
-                                  ?.find(
-                                    (teacherItem: any) =>
-                                      teacherItem.teacherId == teacher?.id
-                                  )
-                                  ?.dayWiseSlots?.find(
-                                    (dayItem: any) => dayItem.day === day
-                                  )
-                                  ?.slots?.find(
-                                    (slotItem: any) =>
-                                      slotItem.slotNumber === slot.slotNumber
-                                  )?.isAllocated
-                                  ? "bg-stripes-dark"
-                                  : "hover:bg-muted cursor-pointer"
-                            )}
-                            onClick={
-                              teacherTimeTable
-                                ?.find(
-                                  (teacherItem: any) =>
-                                    teacherItem.teacherId == teacher?.id
-                                )
-                                ?.dayWiseSlots?.find(
-                                  (dayItem: any) => dayItem.day === day
-                                )
-                                ?.slots?.find(
-                                  (slotItem: any) =>
-                                    slotItem.slotNumber === slot.slotNumber
-                                )?.isAllocated ||
-                                timeTable[currentTimeTableIndex].dayWiseSlots
-                                  .find((dayItem: any) => dayItem.day === day)
-                                  .slots.find(
-                                    (slotItem: any) =>
-                                      slotItem.slotNumber === slot.slotNumber
-                                  ).subject?.name ||
-                                slot.type === "Break"
-                                ? undefined
-                                : () => handlePeriodClick(day, slot)
-                            }
-                          >
-                            {slot.type === "Break" ? (
-                              <div>-</div>
-                            ) : timeTable[currentTimeTableIndex].dayWiseSlots
-                              .find((dayItem: any) => dayItem.day === day)
-                              .slots.find(
-                                (slotItem: any) =>
-                                  slotItem.slotNumber === slot.slotNumber
-                              ).subject?.name ? (
-                              <div className="flex items-center justify-between gap-2 px-2">
-                                <div className="flex flex-col">
-                                  <div className="text-sm">
-                                    {
-                                      timeTable[
-                                        currentTimeTableIndex
-                                      ].dayWiseSlots
-                                        .find(
-                                          (dayItem: any) => dayItem.day === day
-                                        )
-                                        .slots.find(
-                                          (slotItem: any) =>
-                                            slotItem.slotNumber ===
-                                            slot.slotNumber
-                                        ).subject?.name
-                                    }
-                                  </div>
-                                  <div className="text-sm text-muted-foreground">
-                                    {
-                                      timeTable[
-                                        currentTimeTableIndex
-                                      ].dayWiseSlots
-                                        .find(
-                                          (dayItem: any) => dayItem.day === day
-                                        )
-                                        .slots.find(
-                                          (slotItem: any) =>
-                                            slotItem.slotNumber ===
-                                            slot.slotNumber
-                                        ).teacher?.name
-                                    }
-                                  </div>
-                                </div>
-                                <div>
-                                  <Button
-                                    variant="ghost"
-                                    className="p-2"
-                                    onClick={() =>
-                                      handlePeriodClearClick(day, slot)
-                                    }
-                                  >
-                                    <CircleX />
-                                  </Button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
-                          </TableCell>
+                            timeTable={timeTable}
+                            currentTimeTableIndex={currentTimeTableIndex}
+                            day={day}
+                            slot={slot}
+                            teacherTimeTable={teacherTimeTable}
+                            teacher={teacher}
+                            handlePeriodClick={handlePeriodClick}
+                            handlePeriodClearClick={handlePeriodClearClick}
+                          />
                         ))}
                       </TableRow>
                     ))}
