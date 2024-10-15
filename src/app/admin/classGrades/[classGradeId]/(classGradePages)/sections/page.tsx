@@ -60,7 +60,7 @@ export default function SectionsPage() {
           </div>
         ) : sections.length === 0 ? (
           <div className="text-center py-12">
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No sections found</h3>
+            <h3 className="mt-2 text-lg font-medium text-gray-500">No sections found</h3>
             <p className="mt-1 text-sm text-gray-500">Get started by creating a new section.</p>
             <div className="mt-6">
               <SectionFormDialog callbackFn={fetchSections} classGrade={classGrade!} />
