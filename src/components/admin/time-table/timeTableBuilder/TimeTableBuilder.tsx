@@ -45,6 +45,9 @@ import axios from "axios";
 import { string } from "zod";
 import SlotGroupPage from "../SlotGroupPage";
 import TimeTableCell from "./TimeTableCell";
+import ClassSubjectDetail from "./ClassSubjectDetail";
+import TimeTablePreview from "./TimeTablePreview";
+import TimeTableBuilderForm from "./TimeTableBuilderForm";
 
 type Teacher = {
   id: number;
@@ -575,237 +578,33 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
 
     return (
       <div className="flex gap-4">
-        <Dialog
+        <TimeTablePreview
           open={togglePreviewAndSaveDialog}
           onOpenChange={setTogglePreviewAndSaveDialog}
-        >
-          <DialogContent className="sm:max-w-[900px] sm:h-full overflow-y-scroll">
-            <DialogHeader>
-              <DialogTitle>Preview and save</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-2">
-              {timeTable?.map((timeTableItem) => (
-                <Card
-                  key={timeTableItem.classGradeId + timeTableItem.sectionId}
-                >
-                  <CardHeader>
-                    Class {timeTableItem.classGradeName} Section{" "}
-                    {timeTableItem.sectionName}{" "}
-                  </CardHeader>
-                  <CardDescription>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Day</TableHead>
-                          {weekDays?.map((day) => (
-                            <TableHead key={day}>{day}</TableHead>
-                          ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {groupedSlots?.map((slot) => (
-                          <TableRow key={slot.id}>
-                            <TableCell>
-                              <div>
-                                <div>{slot.startTime}</div>
-                                <div>{slot.endTime}</div>
-                              </div>
-                            </TableCell>
-                            {weekDays.map((day) => (
-                              <TableCell key={day}>
-                                <div className="flex flex-col">
-                                  <div className="text-primary">
-                                    {
-                                      timeTableItem.dayWiseSlots
-                                        .find(
-                                          (dayItem: any) => dayItem.day === day
-                                        )
-                                        .slots.find(
-                                          (slotItem: any) =>
-                                            slotItem.slotNumber ===
-                                            slot.slotNumber
-                                        ).subject?.name
-                                    }
-                                  </div>
-                                  <div className="text-sm text-muted-foreground">
-                                    {
-                                      timeTableItem.dayWiseSlots
-                                        .find(
-                                          (dayItem: any) => dayItem.day === day
-                                        )
-                                        .slots.find(
-                                          (slotItem: any) =>
-                                            slotItem.slotNumber ===
-                                            slot.slotNumber
-                                        ).teacher?.name
-                                    }
-                                  </div>
-                                </div>
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardDescription>
-                </Card>
-              ))}
-            </div>
-            <Button onClick={() => saveTimeTable()}>Save</Button>
-          </DialogContent>
-        </Dialog>
+          timeTable={timeTable}
+          weekDays={weekDays}
+          groupedSlots={groupedSlots || []}
+          onSave={saveTimeTable}
+        />
         <div className="w-3/4">
-          <div className="grid grid-cols-5 gap-4">
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="slotGroup">Slot Group</Label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => {
-                    setSlotGroupDialogOpen(true);
-                  }}
-                >
-                  <PlusCircle className="h-4 w-4" />
-                  <span className="sr-only">Edit/Create Slot Group</span>
-                </Button>
-              </div>
-              <Dialog open={slotGroupDialogOpen} onOpenChange={setSlotGroupDialogOpen}>
-                <DialogContent className="h-screen min-w-[800px] m-0 p-0">
-                  <SlotGroupPage />
-                </DialogContent>
-              </Dialog>
-              <Select
-                value={slotGroup?.id?.toString() || ""}
-                onValueChange={handleSlotGroupChange}
-                disabled={timeTable.length > 0}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select slot group" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {slotGroups?.map((slotGroup) => (
-                      <SelectItem
-                        key={slotGroup.id}
-                        value={slotGroup.id.toString()}
-                      >
-                        {slotGroup.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="classGrade">Class</Label>
-                <div className="h-8 w-8 p-0"></div>
-              </div>
-              <Select
-                value={classGrade?.id?.toString() || ""}
-                onValueChange={handleClassGradeChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select class" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {classGrades?.map((classGrade) => (
-                      <SelectItem
-                        key={classGrade.id}
-                        value={classGrade.id.toString()}
-                      >
-                        {classGrade.title}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="section">Section</Label>
-                <div className="h-8 w-8 p-0"></div>
-              </div>
-              <Select
-                value={section?.id?.toString() || ""}
-                onValueChange={handleSectionChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select section" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    {sections?.map((section) => (
-                      <SelectItem
-                        key={section.id}
-                        value={section.id.toString()}
-                      >
-                        {section.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="subject">Subject</Label>
-                <div className="h-8 w-8 p-0"></div>
-              </div>
-              <Select
-                value={subject?.id?.toString() || ""}
-                onValueChange={handleSubjectChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select subject" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    {subjects?.map((subject) => (
-                      <SelectItem
-                        key={subject.id}
-                        value={subject.id.toString()}
-                      >
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="teacher">Teacher</Label>
-                <div className="h-8 w-8 p-0"></div>
-              </div>
-              <Select
-                value={teacher?.id?.toString() || ""}
-                onValueChange={handleTeacherChange}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select teacher" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectGroup>
-                    {teachers?.map((teacher) => (
-                      <SelectItem
-                        key={teacher.id}
-                        value={teacher.id.toString()}
-                      >
-                        {teacher.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <TimeTableBuilderForm
+            slotGroup={slotGroup}
+            slotGroups={slotGroups}
+            classGrade={classGrade}
+            classGrades={classGrades}
+            section={section}
+            sections={sections}
+            subject={subject}
+            subjects={subjects}
+            teacher={teacher}
+            teachers={teachers}
+            handleSlotGroupChange={handleSlotGroupChange}
+            handleClassGradeChange={handleClassGradeChange}
+            handleSectionChange={handleSectionChange}
+            handleSubjectChange={handleSubjectChange}
+            handleTeacherChange={handleTeacherChange}
+            timeTableLength={timeTable.length}
+          />
           {currentTimeTableIndex !== undefined &&
             currentTimeTableIndex >= 0 && (
               <div className="my-6">
@@ -848,41 +647,11 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
             )}
         </div>
         <div className="w-1/4">
-          <Card>
-            <CardHeader>Class subjects</CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableHead>Name</TableHead>
-                  {/* <TableHead>Weekly periods</TableHead> */}
-                  <TableHead>Added periods</TableHead>
-                </TableHeader>
-                <TableBody>
-                  {subjects?.map((subjectItem) => (
-                    <TableRow key={subjectItem.id}>
-                      <TableCell>{subjectItem.name}</TableCell>
-                      {/* <TableCell>{subjectItem.periodCountPerWeek}</TableCell> */}
-                      <TableCell>
-                        {timeTable[
-                          currentTimeTableIndex!
-                        ]?.dayWiseSlots?.reduce(
-                          (acc: any, dayWiseSlotsItem: any) => {
-                            dayWiseSlotsItem.slots.forEach((slotItem: any) => {
-                              if (slotItem?.subject?.id == subjectItem.id) {
-                                acc += 1;
-                              }
-                            });
-                            return acc;
-                          },
-                          0
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <ClassSubjectDetail
+            subjects={subjects}
+            timeTable={timeTable}
+            currentTimeTableIndex={currentTimeTableIndex}
+          />
         </div>
       </div>
     );
