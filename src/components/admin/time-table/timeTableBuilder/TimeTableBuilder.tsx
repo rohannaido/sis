@@ -46,28 +46,28 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
       slotGroup,
       setSlotGroup,
       slotGroups,
-
+      isSlotGroupsLoading,
       classGrade,
       setClassGrade,
       classGrades,
-
+      isClassGradesLoading,
       section,
       setSection,
       sections,
-
+      isSectionsLoading,
       subject,
       setSubject,
       subjects,
-
+      isSubjectsLoading,
       teacher,
       setTeacher,
       teachers,
-
+      isTeachersLoading,
       slots,
       groupedSlots,
-
       weekDays,
       timeTable,
+      isTimeTableLoading,
       currentTimeTableIndex,
       teacherTimeTable,
 
@@ -131,22 +131,23 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
             slotGroup={slotGroup}
             setSlotGroup={setSlotGroup}
             slotGroups={slotGroups}
-
+            isSlotGroupsLoading={isSlotGroupsLoading}
             classGrade={classGrade}
             setClassGrade={setClassGrade}
             classGrades={classGrades}
-
+            isClassGradesLoading={isClassGradesLoading}
             section={section}
             setSection={setSection}
             sections={sections}
-
+            isSectionsLoading={isSectionsLoading}
             subject={subject}
             setSubject={setSubject}
             subjects={subjects}
-
+            isSubjectsLoading={isSubjectsLoading}
             teacher={teacher}
             setTeacher={setTeacher}
             teachers={teachers}
+            isTeachersLoading={isTeachersLoading}
             timeTableLength={timeTable.length}
           />
           {currentTimeTableIndex !== undefined &&

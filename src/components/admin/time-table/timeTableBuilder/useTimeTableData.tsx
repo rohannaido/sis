@@ -34,8 +34,17 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
     const [currentTimeTableIndex, setCurrentTimeTableIndex] = useState<number>();
     const [teacherTimeTable, setTeacherTimeTable] = useState<any[]>([]);
 
+    // Add loading state variables
+    const [isTimeTableLoading, setIsTimeTableLoading] = useState<boolean>(false);
+    const [isSlotGroupsLoading, setIsSlotGroupsLoading] = useState<boolean>(false);
+    const [isClassGradesLoading, setIsClassGradesLoading] = useState<boolean>(false);
+    const [isSectionsLoading, setIsSectionsLoading] = useState<boolean>(false);
+    const [isSubjectsLoading, setIsSubjectsLoading] = useState<boolean>(false);
+    const [isTeachersLoading, setIsTeachersLoading] = useState<boolean>(false);
+
     useEffect(() => {
         if (type === "EDIT" && timeTableId) {
+            setIsTimeTableLoading(true);
             fetchTimeTable(parseInt(timeTableId)).then((timeTableData) => {
                 setSlotGroup(timeTableData.slotsGroup);
                 setSlots(timeTableData.slotsGroup.Slots);
@@ -47,13 +56,20 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
                     timeTableData.TimeTable,
                     timeTableData.slotsGroup.Slots
                 );
-            });
+            }).finally(() => setIsTimeTableLoading(false));
         }
     }, [type, timeTableId]);
 
     useEffect(() => {
-        fetchSlotGroups().then(setSlotGroups);
-        fetchClassGrades().then(setClassGrades);
+        setIsSlotGroupsLoading(true);
+        setIsClassGradesLoading(true);
+        Promise.all([
+            fetchSlotGroups().then(setSlotGroups),
+            fetchClassGrades().then(setClassGrades)
+        ]).finally(() => {
+            setIsSlotGroupsLoading(false);
+            setIsClassGradesLoading(false);
+        });
     }, []);
 
     useEffect(() => {
@@ -62,7 +78,7 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
                 setSlots(data.Slots);
                 const newGroupedSlots = groupSlotsBySlotNumber(data.Slots);
                 setGroupedSlots(newGroupedSlots);
-            });
+            }).finally(() => { });
         }
     }, [slotGroup]);
 
@@ -71,8 +87,15 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
             setSection(undefined);
             setSubject(undefined);
             setTeacher(undefined);
-            fetchSectionsForClassGrade(classGrade?.id).then(setSections);
-            fetchSubjectsForClassGrade(classGrade?.id).then(setSubjects);
+            setIsSectionsLoading(true);
+            setIsSubjectsLoading(true);
+            Promise.all([
+                fetchSectionsForClassGrade(classGrade?.id).then(setSections),
+                fetchSubjectsForClassGrade(classGrade?.id).then(setSubjects)
+            ]).finally(() => {
+                setIsSectionsLoading(false);
+                setIsSubjectsLoading(false);
+            });
         }
     }, [classGrade]);
 
@@ -86,9 +109,10 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
     useEffect(() => {
         if (subject && classGrade) {
             setTeacher(undefined);
-            fetchTeachersForSubject(classGrade?.id, subject?.id).then(setTeachers);
+            setIsTeachersLoading(true);
+            fetchTeachersForSubject(classGrade?.id, subject?.id).then(setTeachers).finally(() => setIsTeachersLoading(false));
         }
-    }, [subject]);
+    }, [subject, classGrade]);
 
     useEffect(() => {
         console.log("timeTable", timeTable);
@@ -99,6 +123,8 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
         return Object.values(
             slots.reduce((acc, slot) => {
                 if (!acc[slot.slotNumber]) {
+                    slot.startTime = slot.startTime.split(":").slice(0, 2).join(":");
+                    slot.endTime = slot.endTime.split(":").slice(0, 2).join(":");
                     acc[slot.slotNumber] = slot;
                 }
                 return acc;
@@ -361,6 +387,11 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
         assignSubjectAndTeacherToSlot,
         clearSubjectAndTeacherFromSlot,
         saveTimeTable,
+        isTimeTableLoading,
+        isSlotGroupsLoading,
+        isClassGradesLoading,
+        isSectionsLoading,
+        isSubjectsLoading,
+        isTeachersLoading,
     };
 }
-
