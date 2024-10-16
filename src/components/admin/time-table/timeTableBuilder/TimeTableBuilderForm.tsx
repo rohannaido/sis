@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import SlotGroupPage from "../SlotGroupPage";
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface TimeTableFormProps {
     slotGroup: any;
@@ -30,24 +31,34 @@ interface TimeTableFormProps {
     setTeacher: (value: any) => void;
     teachers: any[];
     timeTableLength: number;
+    isSlotGroupsLoading: boolean;
+    isClassGradesLoading: boolean;
+    isSectionsLoading: boolean;
+    isSubjectsLoading: boolean;
+    isTeachersLoading: boolean;
 }
 
 const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
     slotGroup,
     setSlotGroup,
     slotGroups,
+    isSlotGroupsLoading,
     classGrade,
     setClassGrade,
     classGrades,
+    isClassGradesLoading,
     section,
     setSection,
     sections,
+    isSectionsLoading,
     subject,
     setSubject,
     subjects,
+    isSubjectsLoading,
     teacher,
     setTeacher,
     teachers,
+    isTeachersLoading,
     timeTableLength,
 }) => {
     const [slotGroupDialogOpen, setSlotGroupDialogOpen] = React.useState<boolean>(false);
@@ -74,7 +85,7 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         <SlotGroupPage />
                     </DialogContent>
                 </Dialog>
-                <Select
+                {isSlotGroupsLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={slotGroup?.id?.toString() || ""}
                     onValueChange={(value) => {
                         setSlotGroup(slotGroups.find((slotGroup) => slotGroup.id?.toString() === value));
@@ -97,13 +108,14 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                }
             </div>
             <div>
                 <div className="flex items-center justify-between">
                     <Label htmlFor="classGrade">Class</Label>
                     <div className="h-8 w-8 p-0"></div>
                 </div>
-                <Select
+                {isClassGradesLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={classGrade?.id?.toString() || ""}
                     onValueChange={(value) => {
                         setClassGrade(classGrades.find((classGrade) => classGrade.id?.toString() === value));
@@ -125,13 +137,14 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                }
             </div>
             <div>
                 <div className="flex items-center justify-between">
                     <Label htmlFor="section">Section</Label>
                     <div className="h-8 w-8 p-0"></div>
                 </div>
-                <Select
+                {isSectionsLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={section?.id?.toString() || ""}
                     onValueChange={(value) => {
                         setSection(sections.find((section) => section.id?.toString() === value));
@@ -154,13 +167,14 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                }
             </div>
             <div>
                 <div className="flex items-center justify-between">
                     <Label htmlFor="subject">Subject</Label>
                     <div className="h-8 w-8 p-0"></div>
                 </div>
-                <Select
+                {isSubjectsLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={subject?.id?.toString() || ""}
                     onValueChange={(value) => {
                         setSubject(subjects.find((subject) => subject.id?.toString() === value));
@@ -183,13 +197,14 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                }
             </div>
             <div>
                 <div className="flex items-center justify-between">
                     <Label htmlFor="teacher">Teacher</Label>
                     <div className="h-8 w-8 p-0"></div>
                 </div>
-                <Select
+                {isTeachersLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={teacher?.id?.toString() || ""}
                     onValueChange={(value) => {
                         setTeacher(teachers.find((teacher) => teacher.id?.toString() === value));
@@ -212,6 +227,7 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                }
             </div>
         </div>
     );

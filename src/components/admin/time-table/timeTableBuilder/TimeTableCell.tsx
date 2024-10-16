@@ -59,50 +59,45 @@ export default function TimeTableCell({
     const slotDetails = getSlotDetails(day, slot.slotNumber);
     const teacherSlotDetails = teacher ? getTeacherSlotDetails(teacher.id, day, slot.slotNumber) : null;
 
-    return (
-        <TableCell
-            className={cn(
-                slotDetails?.subject?.name || slot.type === "Break"
-                    ? ""
-                    : teacherSlotDetails?.isAllocated
-                        ? "bg-stripes-dark"
-                        : "hover:bg-muted cursor-pointer"
-            )}
-            onClick={
-                teacherSlotDetails?.isAllocated ||
-                    slotDetails?.subject?.name ||
-                    slot.type === "Break"
-                    ? undefined
-                    : () => handlePeriodClick(day, slot)
-            }
-        >
-            {slot.type === "Break" ? (
-                <div>-</div>
-            ) : slotDetails?.subject?.name ? (
-                <div className="flex items-center justify-between gap-2 px-2">
-                    <div className="flex flex-col">
-                        <div className="text-sm">
-                            {slotDetails?.subject?.name}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                            {slotDetails?.teacher?.name}
-                        </div>
+    if (slot.type === "Break") {
+        return <TableCell className="text-center">-</TableCell>;
+    }
+
+    if (slotDetails?.subject?.name) {
+        return <TableCell>
+            <div className="flex items-center justify-between gap-2 px-2">
+                <div className="flex flex-col">
+                    <div className="text-sm">
+                        {slotDetails?.subject?.name}
                     </div>
-                    <div>
-                        <Button
-                            variant="ghost"
-                            className="p-2"
-                            onClick={() =>
-                                handlePeriodClearClick(day, slot)
-                            }
-                        >
-                            <CircleX />
-                        </Button>
+                    <div className="text-sm text-muted-foreground">
+                        {slotDetails?.teacher?.name}
                     </div>
                 </div>
-            ) : (
-                <div></div>
-            )}
+                <div>
+                    <Button
+                        variant="ghost"
+                        className="p-2"
+                        onClick={() =>
+                            handlePeriodClearClick(day, slot)
+                        }
+                    >
+                        <CircleX />
+                    </Button>
+                </div>
+            </div>
+        </TableCell>
+    } else if (teacherSlotDetails?.isAllocated) {
+        return (
+            <TableCell className="bg-stripes-dark">
+            </TableCell>)
+    }
+
+    return (
+        <TableCell
+            className={cn("hover:bg-muted cursor-pointer")}
+            onClick={() => handlePeriodClick(day, slot)}
+        >
         </TableCell>
     );
 }
