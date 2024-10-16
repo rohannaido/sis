@@ -15,39 +15,39 @@ import SlotGroupPage from "../SlotGroupPage";
 
 interface TimeTableFormProps {
     slotGroup: any;
+    setSlotGroup: (value: any) => void;
     slotGroups: any[];
     classGrade: any;
+    setClassGrade: (value: any) => void;
     classGrades: any[];
     section: any;
+    setSection: (value: any) => void;
     sections: any[];
     subject: any;
+    setSubject: (value: any) => void;
     subjects: any[];
     teacher: any;
+    setTeacher: (value: any) => void;
     teachers: any[];
-    handleSlotGroupChange: (value: string) => void;
-    handleClassGradeChange: (value: string) => void;
-    handleSectionChange: (value: string) => void;
-    handleSubjectChange: (value: string) => void;
-    handleTeacherChange: (value: string) => void;
     timeTableLength: number;
 }
 
 const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
     slotGroup,
+    setSlotGroup,
     slotGroups,
     classGrade,
+    setClassGrade,
     classGrades,
     section,
+    setSection,
     sections,
     subject,
+    setSubject,
     subjects,
     teacher,
+    setTeacher,
     teachers,
-    handleSlotGroupChange,
-    handleClassGradeChange,
-    handleSectionChange,
-    handleSubjectChange,
-    handleTeacherChange,
     timeTableLength,
 }) => {
     const [slotGroupDialogOpen, setSlotGroupDialogOpen] = React.useState<boolean>(false);
@@ -76,7 +76,9 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 </Dialog>
                 <Select
                     value={slotGroup?.id?.toString() || ""}
-                    onValueChange={handleSlotGroupChange}
+                    onValueChange={(value) => {
+                        setSlotGroup(slotGroups.find((slotGroup) => slotGroup.id?.toString() === value));
+                    }}
                     disabled={timeTableLength > 0}
                 >
                     <SelectTrigger>
@@ -103,7 +105,9 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 </div>
                 <Select
                     value={classGrade?.id?.toString() || ""}
-                    onValueChange={handleClassGradeChange}
+                    onValueChange={(value) => {
+                        setClassGrade(classGrades.find((classGrade) => classGrade.id?.toString() === value));
+                    }}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select class" />
@@ -129,7 +133,9 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 </div>
                 <Select
                     value={section?.id?.toString() || ""}
-                    onValueChange={handleSectionChange}
+                    onValueChange={(value) => {
+                        setSection(sections.find((section) => section.id?.toString() === value));
+                    }}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select section" />
@@ -156,7 +162,9 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 </div>
                 <Select
                     value={subject?.id?.toString() || ""}
-                    onValueChange={handleSubjectChange}
+                    onValueChange={(value) => {
+                        setSubject(subjects.find((subject) => subject.id?.toString() === value));
+                    }}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select subject" />
@@ -183,7 +191,9 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 </div>
                 <Select
                     value={teacher?.id?.toString() || ""}
-                    onValueChange={handleTeacherChange}
+                    onValueChange={(value) => {
+                        setTeacher(teachers.find((teacher) => teacher.id?.toString() === value));
+                    }}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select teacher" />
