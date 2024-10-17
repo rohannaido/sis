@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { CircleX } from "lucide-react";
+import { CircleX, Lock, X } from "lucide-react";
 
 export default function TimeTableCell({
     timeTable,
@@ -12,6 +12,7 @@ export default function TimeTableCell({
     teacher,
     handlePeriodClick,
     handlePeriodClearClick,
+    draggable,
 }: {
     timeTable: any;
     currentTimeTableIndex: number;
@@ -21,6 +22,7 @@ export default function TimeTableCell({
     teacher: any | null;
     handlePeriodClick: (day: string, slot: any) => void;
     handlePeriodClearClick: (day: string, slot: any) => void;
+    draggable: boolean;
 }) {
     const getSlotDetails = (day: string, slotNumber: number) => {
         const daySlot = timeTable[currentTimeTableIndex].dayWiseSlots.find(
@@ -64,33 +66,48 @@ export default function TimeTableCell({
     }
 
     if (slotDetails?.subject?.name) {
-        return <TableCell>
-            <div className="flex items-center justify-between gap-2 px-2">
-                <div className="flex flex-col">
-                    <div className="text-sm">
+        return (
+            <TableCell className="p-1 relative">
+                <div
+                    draggable={draggable} onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', JSON.stringify({ day, slot }));
+                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        const data = JSON.parse(e.dataTransfer.getData('text'));
+                        // Implement your logic for handling the drop
+                        // This might involve swapping periods or updating the timetable
+                    }}
+                    className="relative flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="absolute top-0 right-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 z-10 rounded-none rounded-tr-md"
+                        onClick={() => handlePeriodClearClick(day, slot)}
+                    >
+                        <X className="h-3 w-3" />
+                    </Button>
+                    <div className="text-sm font-medium text-foreground">
                         {slotDetails?.subject?.name}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs text-muted-foreground">
                         {slotDetails?.teacher?.name}
                     </div>
                 </div>
-                <div>
-                    <Button
-                        variant="ghost"
-                        className="p-2"
-                        onClick={() =>
-                            handlePeriodClearClick(day, slot)
-                        }
-                    >
-                        <CircleX />
-                    </Button>
-                </div>
-            </div>
-        </TableCell>
+            </TableCell>
+        );
     } else if (teacherSlotDetails?.isAllocated) {
         return (
-            <TableCell className="bg-stripes-dark">
-            </TableCell>)
+            <TableCell className="p-1">
+                <div className="h-10 flex items-center justify-between gap-2 p-2 bg-muted rounded-md cursor-not-allowed">
+                    <div className="flex items-center">
+                        <Lock className="h-4 w-4 text-muted-foreground mr-2" />
+                        <span className="text-xs text-muted-foreground">Assigned</span>
+                    </div>
+                </div>
+            </TableCell>
+        );
     }
 
     return (

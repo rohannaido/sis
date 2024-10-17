@@ -153,19 +153,19 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           {currentTimeTableIndex !== undefined &&
             currentTimeTableIndex >= 0 && (
               <div className="my-6">
-                <Table>
+                <Table className="table-fixed">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Day</TableHead>
+                      <TableHead className="w-24">Day</TableHead>
                       {weekDays?.map((day) => (
-                        <TableHead key={day}>{day}</TableHead>
+                        <TableHead key={day} className="w-1/7">{day}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {groupedSlots?.map((slot) => (
                       <TableRow key={slot.id}>
-                        <TableCell>
+                        <TableCell className="w-24">
                           <div>
                             <div>{slot.startTime}</div>
                             <div>{slot.endTime}</div>
@@ -182,6 +182,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
                             teacher={teacher}
                             handlePeriodClick={handlePeriodClick}
                             handlePeriodClearClick={handlePeriodClearClick}
+                            draggable={true}
                           />
                         ))}
                       </TableRow>
