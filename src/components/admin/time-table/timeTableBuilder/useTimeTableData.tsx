@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { fetchSlotGroups, fetchClassGrades, fetchSectionsForClassGrade, fetchSubjectsForClassGrade, fetchTeachersForSubject, fetchSlotGroupDetails, fetchTimeTable, createTimeTable, updateTimeTable } from './api';
 import { ClassGrade, Section, Slots, SlotsGroup, Subject, Teacher } from '@prisma/client';
+import { useTeachers } from '@/features/teachers/api';
+import { useClassGrades } from '@/features/classGrades/api';
+import { useSlotGroups } from '@/features/slotGroups/api';
+import { useSectionsForClassGrade } from '@/features/sections/api';
+import { useSubjectsForClassGrade } from '@/features/subjects/api';
 
 const weekDays = [
     "Monday",
@@ -12,19 +17,19 @@ const weekDays = [
 ];
 
 export function useTimeTableData(type: string | undefined, timeTableId: string | undefined) {
-    const [slotGroups, setSlotGroups] = useState<SlotsGroup[]>([]);
+    const { data: slotGroups, isLoading: isSlotGroupsLoading } = useSlotGroups();
     const [slotGroup, setSlotGroup] = useState<SlotsGroup>();
 
-    const [classGrades, setClassGrades] = useState<ClassGrade[]>([]);
+    const { data: classGrades, isLoading: isClassGradesLoading } = useClassGrades();
     const [classGrade, setClassGrade] = useState<ClassGrade>();
 
-    const [sections, setSections] = useState<Section[]>([]);
+    const { data: sections, isLoading: isSectionsLoading } = useSectionsForClassGrade(classGrade?.id || null);
     const [section, setSection] = useState<Section>();
 
-    const [subjects, setSubjects] = useState<Subject[]>([]);
+    const { data: subjects, isLoading: isSubjectsLoading } = useSubjectsForClassGrade(classGrade?.id || null);
     const [subject, setSubject] = useState<Subject>();
 
-    const [teachers, setTeachers] = useState<Teacher[]>([]);
+    const { data: teachers, isLoading: isTeachersLoading } = useTeachers(classGrade?.id || null, subject?.id || null);
     const [teacher, setTeacher] = useState<Teacher>();
 
     const [slots, setSlots] = useState<Slots[]>();
@@ -36,11 +41,6 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
 
     // Add loading state variables
     const [isTimeTableLoading, setIsTimeTableLoading] = useState<boolean>(false);
-    const [isSlotGroupsLoading, setIsSlotGroupsLoading] = useState<boolean>(false);
-    const [isClassGradesLoading, setIsClassGradesLoading] = useState<boolean>(false);
-    const [isSectionsLoading, setIsSectionsLoading] = useState<boolean>(false);
-    const [isSubjectsLoading, setIsSubjectsLoading] = useState<boolean>(false);
-    const [isTeachersLoading, setIsTeachersLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (type === "EDIT" && timeTableId) {
@@ -61,18 +61,6 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
     }, [type, timeTableId]);
 
     useEffect(() => {
-        setIsSlotGroupsLoading(true);
-        setIsClassGradesLoading(true);
-        Promise.all([
-            fetchSlotGroups().then(setSlotGroups),
-            fetchClassGrades().then(setClassGrades)
-        ]).finally(() => {
-            setIsSlotGroupsLoading(false);
-            setIsClassGradesLoading(false);
-        });
-    }, []);
-
-    useEffect(() => {
         if (slotGroup) {
             fetchSlotGroupDetails(slotGroup.id).then((data: any) => {
                 setSlots(data.Slots);
@@ -87,15 +75,6 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
             setSection(undefined);
             setSubject(undefined);
             setTeacher(undefined);
-            setIsSectionsLoading(true);
-            setIsSubjectsLoading(true);
-            Promise.all([
-                fetchSectionsForClassGrade(classGrade?.id).then(setSections),
-                fetchSubjectsForClassGrade(classGrade?.id).then(setSubjects)
-            ]).finally(() => {
-                setIsSectionsLoading(false);
-                setIsSubjectsLoading(false);
-            });
         }
     }, [classGrade]);
 
@@ -109,8 +88,6 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
     useEffect(() => {
         if (subject && classGrade) {
             setTeacher(undefined);
-            setIsTeachersLoading(true);
-            fetchTeachersForSubject(classGrade?.id, subject?.id).then(setTeachers).finally(() => setIsTeachersLoading(false));
         }
     }, [subject, classGrade]);
 
@@ -155,7 +132,7 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
                 classGradeId: classGrade.id,
                 classGradeName: classGrade.title,
                 sectionId: section.id,
-                sectionName: sections.find((section) => section.id === section.id)
+                sectionName: sections.find((section: any) => section.id === section.id)
                     ?.name,
                 dayWiseSlots: dayWiseSlots,
             };

@@ -1,5 +1,3 @@
-import axios from "axios";
-
 async function fetchSlotGroups() {
   try {
     const response = await fetch(`/api/admin/slot-groups`);
