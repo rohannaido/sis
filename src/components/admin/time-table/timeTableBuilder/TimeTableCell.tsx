@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { CircleX, Lock, X } from "lucide-react";
+import { useTimeTableContexts } from "./TimeTableSelectionContexts";
 
 export default function TimeTableCell({
     timeTable,
@@ -9,7 +10,6 @@ export default function TimeTableCell({
     day,
     slot,
     teacherTimeTable,
-    teacher,
     handlePeriodClick,
     handlePeriodClearClick,
     draggable,
@@ -19,11 +19,12 @@ export default function TimeTableCell({
     day: string;
     slot: any;
     teacherTimeTable: any;
-    teacher: any | null;
     handlePeriodClick: (day: string, slot: any) => void;
     handlePeriodClearClick: (day: string, slot: any) => void;
     draggable: boolean;
 }) {
+    const { teacher } = useTimeTableContexts();
+
     const getSlotDetails = (day: string, slotNumber: number) => {
         const daySlot = timeTable[currentTimeTableIndex].dayWiseSlots.find(
             (dayItem: any) => dayItem.day === day
@@ -38,7 +39,7 @@ export default function TimeTableCell({
         return slotDetails;
     };
 
-    const getTeacherSlotDetails = (teacherId: string, day: string, slotNumber: number) => {
+    const getTeacherSlotDetails = (teacherId: number, day: string, slotNumber: number) => {
         const teacherSlot = teacherTimeTable.find(
             (teacherItem: any) => teacherItem.teacherId === teacherId
         );
@@ -59,7 +60,7 @@ export default function TimeTableCell({
     };
 
     const slotDetails = getSlotDetails(day, slot.slotNumber);
-    const teacherSlotDetails = teacher ? getTeacherSlotDetails(teacher.id, day, slot.slotNumber) : null;
+    const teacherSlotDetails = teacher ? getTeacherSlotDetails(teacher?.id, day, slot.slotNumber) : null;
 
     if (slot.type === "Break") {
         return <TableCell className="text-center">-</TableCell>;

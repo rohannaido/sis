@@ -16,18 +16,13 @@ import ClassSubjectDetail from "./ClassSubjectDetail";
 import TimeTablePreview from "./TimeTablePreview";
 import TimeTableBuilderForm from "./TimeTableBuilderForm";
 import { useTimeTableData } from "./useTimeTableData";
-
-type Teacher = {
-  id: number;
-  name: string;
-  email: string;
-};
+import { useTimeTableContexts } from "./TimeTableSelectionContexts";
 
 export type TimeTableBuilderRef = {
   previewAndSave: () => void;
 };
 
-interface TimeTableBuilderProps {
+export interface TimeTableBuilderProps {
   type?: string;
   timeTableId?: string;
 }
@@ -42,25 +37,17 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
   ) => {
     const { toast } = useToast();
 
+    const { subject, teacher } = useTimeTableContexts();
+
     const {
-      slotGroup,
-      setSlotGroup,
       slotGroups,
       isSlotGroupsLoading,
-      classGrade,
-      setClassGrade,
       classGrades,
       isClassGradesLoading,
-      section,
-      setSection,
       sections,
       isSectionsLoading,
-      subject,
-      setSubject,
       subjects,
       isSubjectsLoading,
-      teacher,
-      setTeacher,
       teachers,
       isTeachersLoading,
       slots,
@@ -128,24 +115,14 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
         />
         <div className="w-3/4">
           <TimeTableBuilderForm
-            slotGroup={slotGroup}
-            setSlotGroup={setSlotGroup}
             slotGroups={slotGroups}
             isSlotGroupsLoading={isSlotGroupsLoading}
-            classGrade={classGrade}
-            setClassGrade={setClassGrade}
             classGrades={classGrades}
             isClassGradesLoading={isClassGradesLoading}
-            section={section}
-            setSection={setSection}
             sections={sections}
             isSectionsLoading={isSectionsLoading}
-            subject={subject}
-            setSubject={setSubject}
             subjects={subjects}
             isSubjectsLoading={isSubjectsLoading}
-            teacher={teacher}
-            setTeacher={setTeacher}
             teachers={teachers}
             isTeachersLoading={isTeachersLoading}
             timeTableLength={timeTable.length}
@@ -179,7 +156,6 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
                             day={day}
                             slot={slot}
                             teacherTimeTable={teacherTimeTable}
-                            teacher={teacher}
                             handlePeriodClick={handlePeriodClick}
                             handlePeriodClearClick={handlePeriodClearClick}
                             draggable={true}

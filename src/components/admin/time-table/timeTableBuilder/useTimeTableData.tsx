@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { fetchSlotGroups, fetchClassGrades, fetchSectionsForClassGrade, fetchSubjectsForClassGrade, fetchTeachersForSubject, fetchSlotGroupDetails, fetchTimeTable, createTimeTable, updateTimeTable } from './api';
+import { fetchSlotGroupDetails, fetchTimeTable, createTimeTable, updateTimeTable } from './api';
 import { ClassGrade, Section, Slots, SlotsGroup, Subject, Teacher } from '@prisma/client';
 import { useTeachers } from '@/features/teachers/api';
 import { useClassGrades } from '@/features/classGrades/api';
 import { useSlotGroups } from '@/features/slotGroups/api';
 import { useSectionsForClassGrade } from '@/features/sections/api';
 import { useSubjectsForClassGrade } from '@/features/subjects/api';
+import { useTimeTableContexts } from './TimeTableSelectionContexts';
 
 const weekDays = [
     "Monday",
@@ -17,20 +18,17 @@ const weekDays = [
 ];
 
 export function useTimeTableData(type: string | undefined, timeTableId: string | undefined) {
+    const { slotGroup, setSlotGroup, classGrade, setClassGrade, section, setSection, subject, setSubject, teacher, setTeacher } = useTimeTableContexts();
+
     const { data: slotGroups, isLoading: isSlotGroupsLoading } = useSlotGroups();
-    const [slotGroup, setSlotGroup] = useState<SlotsGroup>();
 
     const { data: classGrades, isLoading: isClassGradesLoading } = useClassGrades();
-    const [classGrade, setClassGrade] = useState<ClassGrade>();
 
     const { data: sections, isLoading: isSectionsLoading } = useSectionsForClassGrade(classGrade?.id || null);
-    const [section, setSection] = useState<Section>();
 
     const { data: subjects, isLoading: isSubjectsLoading } = useSubjectsForClassGrade(classGrade?.id || null);
-    const [subject, setSubject] = useState<Subject>();
 
     const { data: teachers, isLoading: isTeachersLoading } = useTeachers(classGrade?.id || null, subject?.id || null);
-    const [teacher, setTeacher] = useState<Teacher>();
 
     const [slots, setSlots] = useState<Slots[]>();
     const [groupedSlots, setGroupedSlots] = useState<Slots[]>();

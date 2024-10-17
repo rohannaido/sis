@@ -13,22 +13,13 @@ import { PlusCircle } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import SlotGroupPage from "../SlotGroupPage";
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTimeTableContexts } from './TimeTableSelectionContexts';
 
 interface TimeTableFormProps {
-    slotGroup: any;
-    setSlotGroup: (value: any) => void;
     slotGroups: any[];
-    classGrade: any;
-    setClassGrade: (value: any) => void;
     classGrades: any[];
-    section: any;
-    setSection: (value: any) => void;
     sections: any[];
-    subject: any;
-    setSubject: (value: any) => void;
     subjects: any[];
-    teacher: any;
-    setTeacher: (value: any) => void;
     teachers: any[];
     timeTableLength: number;
     isSlotGroupsLoading: boolean;
@@ -39,29 +30,21 @@ interface TimeTableFormProps {
 }
 
 const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
-    slotGroup,
-    setSlotGroup,
     slotGroups,
     isSlotGroupsLoading,
-    classGrade,
-    setClassGrade,
     classGrades,
     isClassGradesLoading,
-    section,
-    setSection,
     sections,
     isSectionsLoading,
-    subject,
-    setSubject,
     subjects,
     isSubjectsLoading,
-    teacher,
-    setTeacher,
     teachers,
     isTeachersLoading,
     timeTableLength,
 }) => {
     const [slotGroupDialogOpen, setSlotGroupDialogOpen] = React.useState<boolean>(false);
+
+    const { slotGroup, setSlotGroup, classGrade, setClassGrade, section, setSection, subject, setSubject, teacher, setTeacher } = useTimeTableContexts();
 
     return (
         <div className="grid grid-cols-5 gap-4">
