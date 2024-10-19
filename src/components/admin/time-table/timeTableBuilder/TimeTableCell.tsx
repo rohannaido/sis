@@ -25,7 +25,7 @@ export default function TimeTableCell({
     handlePeriodDrop: (pickedSlotDetails: any, day: string, slot: any) => void;
     draggable: boolean;
 }) {
-    const { teacher } = useTimeTableContexts();
+    const { teacher, setShowPeriodAddGuide } = useTimeTableContexts();
 
     const getSlotDetails = (day: string, slotNumber: number) => {
         const daySlot = timeTable[currentTimeTableIndex].dayWiseSlots.find(
@@ -72,12 +72,14 @@ export default function TimeTableCell({
         return (
             <TableCell className="p-1 relative">
                 <div
+                    onMouseEnter={() => setShowPeriodAddGuide(false)}
+                    onMouseLeave={() => setShowPeriodAddGuide(true)}
                     draggable={draggable}
                     onDragStart={(e) => {
                         e.dataTransfer.setData('text/plain', JSON.stringify(slotDetails));
                     }}
                     onDragOver={(e) => e.preventDefault()}
-                    className="relative flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
+                    className="relative cursor-grab flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
                     <Button
                         variant="ghost"
                         size="sm"
