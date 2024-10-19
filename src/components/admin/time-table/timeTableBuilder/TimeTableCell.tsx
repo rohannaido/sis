@@ -79,7 +79,7 @@ export default function TimeTableCell({
                         e.dataTransfer.setData('text/plain', JSON.stringify(slotDetails));
                     }}
                     onDragOver={(e) => e.preventDefault()}
-                    className="relative cursor-grab flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
+                    className="relative cursor-grab border flex flex-col p-2 pt-4 bg-card rounded-md shadow hover:bg-accent transition-colors overflow-hidden">
                     <Button
                         variant="ghost"
                         size="sm"
