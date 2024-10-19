@@ -121,6 +121,31 @@ export const useTeacher = () => {
     return context;
 };
 
+// Show Period Add Guide Context
+const ShowPeriodAddGuideContext = createContext<{
+    showPeriodAddGuide: boolean;
+    setShowPeriodAddGuide: (showPeriodAddGuide: boolean) => void;
+} | undefined>(undefined);
+
+export const ShowPeriodAddGuideProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [showPeriodAddGuide, setShowPeriodAddGuide] = useState<boolean>(true);
+    return (
+        <ShowPeriodAddGuideContext.Provider value={{ showPeriodAddGuide, setShowPeriodAddGuide }}>
+            {children}
+        </ShowPeriodAddGuideContext.Provider>
+    );
+};
+
+export const useShowPeriodAddGuide = () => {
+    const context = useContext(ShowPeriodAddGuideContext);
+    if (context === undefined) {
+        throw new Error('useShowPeriodAddGuide must be used within a ShowPeriodAddGuideProvider');
+    }
+    return context;
+};
+
+
+
 export const TimeTableSelectionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <SlotGroupProvider>
@@ -128,7 +153,9 @@ export const TimeTableSelectionProvider: React.FC<{ children: ReactNode }> = ({ 
                 <SectionProvider>
                     <SubjectProvider>
                         <TeacherProvider>
-                            {children}
+                            <ShowPeriodAddGuideProvider>
+                                {children}
+                            </ShowPeriodAddGuideProvider>
                         </TeacherProvider>
                     </SubjectProvider>
                 </SectionProvider>
@@ -144,6 +171,7 @@ export const useTimeTableContexts = () => {
     const { section, setSection } = useSection();
     const { subject, setSubject } = useSubject();
     const { teacher, setTeacher } = useTeacher();
+    const { showPeriodAddGuide, setShowPeriodAddGuide } = useShowPeriodAddGuide();
 
-    return { slotGroup, setSlotGroup, classGrade, setClassGrade, section, setSection, subject, setSubject, teacher, setTeacher };
+    return { slotGroup, setSlotGroup, classGrade, setClassGrade, section, setSection, subject, setSubject, teacher, setTeacher, showPeriodAddGuide, setShowPeriodAddGuide };
 };

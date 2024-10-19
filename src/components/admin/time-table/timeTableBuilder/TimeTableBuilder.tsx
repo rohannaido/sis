@@ -37,7 +37,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
   ) => {
     const { toast } = useToast();
 
-    const { subject, teacher } = useTimeTableContexts();
+    const { subject, teacher, showPeriodAddGuide } = useTimeTableContexts();
 
     const {
       slotGroups,
@@ -163,7 +163,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           {currentTimeTableIndex !== undefined &&
             currentTimeTableIndex >= 0 && (
               <div className="my-6 relative" ref={divRef}>
-                {subject && teacher && (
+                {subject && teacher && showPeriodAddGuide && (
                   <div
                     style={{
                       top: mousePos.y,
