@@ -1,6 +1,6 @@
 "use client";
 import { Slots } from "@prisma/client";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Table,
@@ -103,8 +103,36 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
       await saveTimeTable();
     }
 
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const divRef = useRef<HTMLDivElement>(null);
+
+    function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+      if (subject && teacher) {
+        const divRect = divRef.current?.getBoundingClientRect();
+        if (divRect) {
+          const divX = divRect.left;
+          const divY = divRect.top;
+          const divWidth = divRect.width;
+          const divHeight = divRect.height;
+
+          const isInsideDiv = (
+            e.clientX >= divX &&
+            e.clientX <= divX + divWidth &&
+            e.clientY >= divY &&
+            e.clientY <= divY + divHeight
+          );
+
+          if (isInsideDiv) {
+            setMousePos({ x: e.clientX - divX, y: e.clientY - divY });
+          }
+        }
+      }
+    }
+
     return (
-      <div className="flex gap-4">
+      <div
+        className="flex gap-4 relative"
+      >
         <TimeTablePreview
           open={togglePreviewAndSaveDialog}
           onOpenChange={setTogglePreviewAndSaveDialog}
@@ -113,7 +141,23 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           groupedSlots={groupedSlots || []}
           onSave={saveTimeTableAfterPreview}
         />
-        <div className="w-3/4">
+        <div className="w-3/4" onMouseMove={handleMouseMove} ref={divRef}>
+          {subject && teacher && (
+            <div
+              style={{
+                top: mousePos.y,
+                left: mousePos.x,
+                pointerEvents: 'none',
+              }}
+              className="absolute min-w-[130px] z-50 flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
+              <div className="text-sm font-medium text-foreground">
+                {subject?.name}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {teacher?.name}
+              </div>
+            </div>
+          )}
           <TimeTableBuilderForm
             slotGroups={slotGroups}
             isSlotGroupsLoading={isSlotGroupsLoading}

@@ -114,12 +114,12 @@ async function createTimeTable(timeTable: any) {
 }
 
 export {
-  fetchSlotGroups,
+  // fetchSlotGroups,
   fetchSlotGroupDetails,
-  fetchClassGrades,
-  fetchSectionsForClassGrade,
-  fetchSubjectsForClassGrade,
-  fetchTeachersForSubject,
+  // fetchClassGrades,
+  // fetchSectionsForClassGrade,
+  // fetchSubjectsForClassGrade,
+  // fetchTeachersForSubject,
   fetchTimeTable,
   updateTimeTable,
   createTimeTable,

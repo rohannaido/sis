@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { ClassGrade, Section, Subject, Teacher, SlotsGroup } from '@prisma/client'; // Adjust import path as needed
+import { ClassGrade, Section, Subject, SlotsGroup } from '@prisma/client'; // Adjust import path as needed
+export type Teacher = {
+    id: number;
+    name: string;
+    email: string;
+};
 
 // SlotGroup Context
 const SlotGroupContext = createContext<{
