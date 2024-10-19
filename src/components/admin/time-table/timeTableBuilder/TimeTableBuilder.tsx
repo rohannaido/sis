@@ -60,6 +60,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
 
       assignSubjectAndTeacherToSlot,
       clearSubjectAndTeacherFromSlot,
+      moveSlotToAnotherSlot,
       saveTimeTable,
     } = useTimeTableData(props.type, props.timeTableId);
 
@@ -97,6 +98,10 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
 
     function handlePeriodClearClick(day: string, slot: Slots) {
       clearSubjectAndTeacherFromSlot(day, slot);
+    }
+
+    function handlePeriodDrop(pickedSlotDetails: any, day: string, slot: Slots) {
+      moveSlotToAnotherSlot(pickedSlotDetails, day, slot);
     }
 
     async function saveTimeTableAfterPreview() {
@@ -141,23 +146,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           groupedSlots={groupedSlots || []}
           onSave={saveTimeTableAfterPreview}
         />
-        <div className="w-3/4" onMouseMove={handleMouseMove} ref={divRef}>
-          {subject && teacher && (
-            <div
-              style={{
-                top: mousePos.y,
-                left: mousePos.x,
-                pointerEvents: 'none',
-              }}
-              className="absolute min-w-[130px] z-50 flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
-              <div className="text-sm font-medium text-foreground">
-                {subject?.name}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {teacher?.name}
-              </div>
-            </div>
-          )}
+        <div className="w-3/4" onMouseMove={handleMouseMove}>
           <TimeTableBuilderForm
             slotGroups={slotGroups}
             isSlotGroupsLoading={isSlotGroupsLoading}
@@ -173,7 +162,23 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           />
           {currentTimeTableIndex !== undefined &&
             currentTimeTableIndex >= 0 && (
-              <div className="my-6">
+              <div className="my-6 relative" ref={divRef}>
+                {subject && teacher && (
+                  <div
+                    style={{
+                      top: mousePos.y,
+                      left: mousePos.x,
+                      pointerEvents: 'none',
+                    }}
+                    className="absolute min-w-[130px] z-50 flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
+                    <div className="text-sm font-medium text-foreground">
+                      {subject?.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {teacher?.name}
+                    </div>
+                  </div>
+                )}
                 <Table className="table-fixed">
                   <TableHeader>
                     <TableRow>
@@ -202,6 +207,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
                             teacherTimeTable={teacherTimeTable}
                             handlePeriodClick={handlePeriodClick}
                             handlePeriodClearClick={handlePeriodClearClick}
+                            handlePeriodDrop={handlePeriodDrop}
                             draggable={true}
                           />
                         ))}

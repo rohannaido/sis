@@ -12,6 +12,7 @@ export default function TimeTableCell({
     teacherTimeTable,
     handlePeriodClick,
     handlePeriodClearClick,
+    handlePeriodDrop,
     draggable,
 }: {
     timeTable: any;
@@ -21,6 +22,7 @@ export default function TimeTableCell({
     teacherTimeTable: any;
     handlePeriodClick: (day: string, slot: any) => void;
     handlePeriodClearClick: (day: string, slot: any) => void;
+    handlePeriodDrop: (pickedSlotDetails: any, day: string, slot: any) => void;
     draggable: boolean;
 }) {
     const { teacher } = useTimeTableContexts();
@@ -70,16 +72,11 @@ export default function TimeTableCell({
         return (
             <TableCell className="p-1 relative">
                 <div
-                    draggable={draggable} onDragStart={(e) => {
-                        e.dataTransfer.setData('text/plain', JSON.stringify({ day, slot }));
+                    draggable={draggable}
+                    onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', JSON.stringify(slotDetails));
                     }}
                     onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                        e.preventDefault();
-                        const data = JSON.parse(e.dataTransfer.getData('text'));
-                        // Implement your logic for handling the drop
-                        // This might involve swapping periods or updating the timetable
-                    }}
                     className="relative flex flex-col p-2 pt-4 bg-card rounded-md shadow-sm hover:bg-accent transition-colors overflow-hidden">
                     <Button
                         variant="ghost"
@@ -115,6 +112,12 @@ export default function TimeTableCell({
         <TableCell
             className={cn("hover:bg-muted cursor-pointer")}
             onClick={() => handlePeriodClick(day, slot)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+                e.preventDefault();
+                let data = JSON.parse(e.dataTransfer.getData('text'));
+                handlePeriodDrop(data, day, slot);
+            }}
         >
         </TableCell>
     );
