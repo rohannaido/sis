@@ -245,6 +245,51 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
         setTimeTable(newTimeTable);
     }
 
+    function moveSlotToAnotherSlot(pickedSlotDetails: any, day: string, slot: Slots) {
+        const newTimeTable = [...timeTable];
+
+        const daySlots = newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
+            (dayItem: any) => dayItem.day === day
+        );
+
+        const newDaySlots = {
+            ...daySlots,
+            slots: daySlots.slots.map((slotItem: any) => {
+                if (slotItem.slotNumber === slot.slotNumber) {
+                    slotItem.subject = pickedSlotDetails.subject;
+                    slotItem.teacher = pickedSlotDetails.teacher;
+                }
+                return slotItem;
+            }),
+        };
+
+        newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
+            (dayItem: any) => dayItem.day === day
+        ).slots = newDaySlots.slots;
+
+        // clearing the slot from the original slot
+        const pickedSlotDaySlots = newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
+            (dayItem: any) => dayItem.day === pickedSlotDetails.dayOfWeek
+        );
+
+        const newPickedSlotDaySlots = {
+            ...pickedSlotDaySlots,
+            slots: pickedSlotDaySlots.slots.map((slotItem: any) => {
+                if (slotItem.slotNumber === pickedSlotDetails.slotNumber) {
+                    slotItem.subject = null;
+                    slotItem.teacher = null;
+                }
+                return slotItem;
+            }),
+        };
+
+        newTimeTable[currentTimeTableIndex!].dayWiseSlots.find(
+            (dayItem: any) => dayItem.day === pickedSlotDetails.dayOfWeek
+        ).slots = newPickedSlotDaySlots.slots;
+
+        setTimeTable(newTimeTable);
+    }
+
     function parseTimeTableForEdit(timeTableData: any[], slots: Slots[]) {
         const newTimeTable: any[] = [];
         timeTableData.forEach((timeTableItem) => {
@@ -361,6 +406,7 @@ export function useTimeTableData(type: string | undefined, timeTableId: string |
         weekDays,
         assignSubjectAndTeacherToSlot,
         clearSubjectAndTeacherFromSlot,
+        moveSlotToAnotherSlot,
         saveTimeTable,
         isTimeTableLoading,
         isSlotGroupsLoading,

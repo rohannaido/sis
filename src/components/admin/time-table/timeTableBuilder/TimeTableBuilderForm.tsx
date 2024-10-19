@@ -9,7 +9,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import SlotGroupPage from "../SlotGroupPage";
 import { Skeleton } from '@/components/ui/skeleton';
@@ -183,9 +183,17 @@ const TimeTableBuilderForm: React.FC<TimeTableFormProps> = ({
                 }
             </div>
             <div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                     <Label htmlFor="teacher">Teacher</Label>
-                    <div className="h-8 w-8 p-0"></div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => setTeacher(undefined)}
+                    >
+                        <X className="h-4 w-4" />
+                        <span className="sr-only">Clear </span>
+                    </Button>
                 </div>
                 {isTeachersLoading ? <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-gray-500 mx-auto"></div> : <Select
                     value={teacher?.id?.toString() || ""}
