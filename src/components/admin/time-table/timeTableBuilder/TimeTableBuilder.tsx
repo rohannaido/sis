@@ -39,6 +39,8 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
 
     const { subject, teacher, showPeriodAddGuide } = useTimeTableContexts();
 
+    const [isTimeTableSaving, setIsTimeTableSaving] = useState<boolean>(false);
+
     const {
       slotGroups,
       isSlotGroupsLoading,
@@ -105,7 +107,21 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
     }
 
     async function saveTimeTableAfterPreview() {
-      await saveTimeTable();
+      try {
+        setIsTimeTableSaving(true);
+        await saveTimeTable();
+        setTogglePreviewAndSaveDialog(false);
+        toast({
+          description: "Time table saved successfully",
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          description: error?.message || "Something went wrong",
+        });
+      } finally {
+        setIsTimeTableSaving(false);
+      }
     }
 
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -145,6 +161,7 @@ const TimeTableBuilder = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
           weekDays={weekDays}
           groupedSlots={groupedSlots || []}
           onSave={saveTimeTableAfterPreview}
+          isSaving={isTimeTableSaving}
         />
         <div className="w-3/4" onMouseMove={handleMouseMove}>
           <TimeTableBuilderForm
