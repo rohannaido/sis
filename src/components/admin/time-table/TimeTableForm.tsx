@@ -16,7 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ClassGradeTimeTable } from "@/lib/timeTableGenerator";
 import ClassSubjectsPage from "@/components/admin/time-table/TimeTableClassSettings";
 import TimeTableBuilder, { TimeTableBuilderRef } from "./timeTableBuilder/TimeTableBuilder";
-import { TimeTableBuilderWrapped } from "./timeTableBuilder/TimeTableBuilderWrapped";
+import TimeTableBuilderWrapped from "./timeTableBuilder/TimeTableBuilderWrapped";
 
 export default function TimeTableForm({
   type,

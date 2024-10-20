@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import TimeTableBuilder, { TimeTableBuilderProps, TimeTableBuilderRef } from "./TimeTableBuilder";
 import { TimeTableSelectionProvider } from "./TimeTableSelectionContexts";
 
-export const TimeTableBuilderWrapped = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
+const TimeTableBuilderWrapped = forwardRef<TimeTableBuilderRef, TimeTableBuilderProps>(
     (
         props: {
             type?: string;
@@ -16,3 +16,7 @@ export const TimeTableBuilderWrapped = forwardRef<TimeTableBuilderRef, TimeTable
             </TimeTableSelectionProvider>
         );
     });
+
+TimeTableBuilderWrapped.displayName = "TimeTableBuilderWrapped";
+
+export default TimeTableBuilderWrapped;
