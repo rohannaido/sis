@@ -20,6 +20,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Slots } from '@prisma/client';
+import { Loader2 } from 'lucide-react';
 
 interface TimeTablePreviewProps {
     open: boolean;
@@ -28,6 +29,7 @@ interface TimeTablePreviewProps {
     weekDays: string[];
     groupedSlots: Slots[];
     onSave: () => void;
+    isSaving: boolean;
 }
 
 const TimeTablePreview: React.FC<TimeTablePreviewProps> = ({
@@ -37,6 +39,7 @@ const TimeTablePreview: React.FC<TimeTablePreviewProps> = ({
     weekDays,
     groupedSlots,
     onSave,
+    isSaving,
 }) => {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -104,7 +107,16 @@ const TimeTablePreview: React.FC<TimeTablePreviewProps> = ({
                         </Card>
                     ))}
                 </div>
-                <Button onClick={onSave}>Save</Button>
+                <Button onClick={onSave} disabled={isSaving}>
+                    {isSaving ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                        </>
+                    ) : (
+                        'Save'
+                    )}
+                </Button>
             </DialogContent>
         </Dialog>
     );
