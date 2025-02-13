@@ -80,7 +80,7 @@ const Signin = () => {
   async function handleGoogleSignin() {
     const result = await signIn("google", {
       redirect: false,
-      
+
     });
 
     console.log("RESULT");
@@ -222,6 +222,13 @@ const Signin = () => {
           >
             Login with Google
           </Button>
+          <div className="mt-4 text-sm text-muted-foreground">
+            Test credentials:
+            <br />
+            Email: rohan@test.com
+            <br />
+            Password: 123456
+          </div>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
