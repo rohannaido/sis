@@ -2,7 +2,7 @@
 
 ## Link: https://sis-two.vercel.app/
 
-This web application helps users to add school details (class, section, subjects, teachers) and build timetable using a user friendly UI.
+This web application helps users to add school details (class, section, subjects, teachers) and <b>build timetable and slot management</b> using a user friendly UI.
 
 ## Features
 - <b>Save and view School data:</b> Class, Sections, Teachers, subject.
